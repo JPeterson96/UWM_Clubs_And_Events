@@ -6,5 +6,12 @@
     </head>
     <body>
         <h1>Login Screen Placeholder</h1>
+        <form action="/" method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <input type="submit" value="Login">
+            <p> {{ message }}</p>
+        </form>
     </body>
 </html>

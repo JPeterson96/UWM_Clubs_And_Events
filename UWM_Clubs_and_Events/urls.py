@@ -20,4 +20,5 @@ from UWM_Clubs_and_Events.views import login
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', login.as_view(), name='login'),
+    path("login.html", login.as_view()),
 ]
