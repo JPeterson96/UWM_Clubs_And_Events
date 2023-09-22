@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from UWM_Clubs_and_Events.views import login
+from UWM_Clubs_and_Events.views import login, Homepage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', login.as_view(), name='login'),
     path("login.html", login.as_view()),
+    path('homepage.html', Homepage.as_view(), name='homepage'),
+
 ]

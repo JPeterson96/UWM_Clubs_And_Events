@@ -1,9 +1,11 @@
 from django.views import View
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import User
 
 class login(View):
     def get(self, request):
+        user = User.objects.create(email="test@uwm.edu", password="pass", name="Foo Bar")
+        user.save()
         return render(request, 'login.html', {"name": "login"})
 
     def post(self, request):
@@ -27,4 +29,8 @@ class login(View):
         elif badPassword:
             return render(request, "login.html", {})
         else:
-            pass
+            return redirect("/homepage/")
+
+class Homepage(View):
+    def get(self, request):
+        return render(request, "homepage.html", {})
