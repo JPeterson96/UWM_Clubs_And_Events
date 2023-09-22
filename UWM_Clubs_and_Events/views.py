@@ -1,6 +1,7 @@
 from django.views import View
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import User
+
 
 class login(View):
     def get(self, request):
@@ -27,4 +28,9 @@ class login(View):
         elif badPassword:
             return render(request, "login.html", {})
         else:
-            pass
+            return redirect("homepage.html")
+
+
+class Homepage(View):
+    def get(self, request):
+        return render(request, "homepage.html", {})
