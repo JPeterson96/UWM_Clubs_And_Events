@@ -19,7 +19,7 @@ class login(View):
             noSuchUser = True
         if email == '' and password == '':
             return render(request, "login.html", {"message": "Nothing entered"})
-        elif user == '':
+        elif email == '':
             return render(request, "login.html", {})
         elif password == '':
             return render(request, "login.html", {})
