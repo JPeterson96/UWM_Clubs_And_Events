@@ -1,12 +1,24 @@
+# name - string
+# email - string
+# password - string
+# role - int[]
+# interests - string[]
+# orgs - string[]
+# major - string[]
+# friends - user[]
+
 def User(self):
     name = ""
     email = ""
     password = ""
-    role = 0
+    role = []
     interests = []
     orgs = []
-    major = ""
+    major = []
     friends = []
+
+    def __init__(self, name, email, password):
+        User(name, email, password, [], [], [], [], [])
 
     def __init__(self, name, email, password, role, interests, org_tags, major, friends):
         self.name = name
