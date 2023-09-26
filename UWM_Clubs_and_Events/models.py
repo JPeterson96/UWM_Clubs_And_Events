@@ -31,7 +31,7 @@ class Events(models.Model):
 # Org/Club:  name-str, point_of_contact-str/email, membersCount-int, description-str, staff-User(staff to anchor), majors-?
 class Organizations(models.Model):
     name = models.CharField(max_length=20)
-    point_of_contact = models.ForeignKey(User)
+#    point_of_contact = models.ForeignKey(User)
     membersCount = models.IntegerField()
     description = models.CharField(max_length=200)
 
@@ -40,8 +40,8 @@ class Organizations(models.Model):
 
 
 class MembersIn(models.Model):
-    user = models.ForeignKey(User)
-    name = models.ForeignKey(Organizations)
+   # user = models.ForeignKey(User)
+    #name = models.ForeignKey(Organizations)
 
     def __str__(self):
         return self.user + "/" + self.name
