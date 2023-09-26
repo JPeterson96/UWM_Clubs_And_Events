@@ -1,10 +1,8 @@
 from django.test import TestCase
-from django.test import Client
 from classes import user
 
 class test_getters(TestCase):
     def setUp(self):
-        self.client = Client()
         self.friendList = [user()]
         self.user = user("name", "email@uwm.edu", "password123", [3857], ["interests"], ["orgs"], ["majors"], self.friendList)
     
@@ -34,7 +32,6 @@ class test_getters(TestCase):
 
 class test_setters(TestCase):
     def setUp(self):
-        self.client = Client()
         self.user = user()
 
     def test_setName(self):

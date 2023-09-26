@@ -1,11 +1,9 @@
 from django.test import TestCase
-from django.test import Client
 from classes import organization
 from classes import user
 
 class test_getters(TestCase):
     def setUp(self):
-        self.client = Client()
         self.org = organization("name", "Point of contact", 1, "description", 0, ["interest"])
         self.userList = [user()]
         self.club =  organization("name2", "Poc", 10, "description2", 1, ["interest2"], self.userList)
@@ -34,7 +32,6 @@ class test_getters(TestCase):
 
 class test_setters(TestCase):
     def setUp(self):
-        self.client = Client()
         self.org = organization()
 
     def test_setName(self):
