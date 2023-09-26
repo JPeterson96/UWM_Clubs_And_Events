@@ -1,12 +1,14 @@
 from django.test import TestCase
 from django.test import Client
+from classes import organization
+from classes import user
 
 class test_getters(TestCase):
     def setUp(self):
         self.client = Client()
-        self.org = Organization("name", "Point of contact", 1, "description", 0, ["interest"])
-        self.userList = [User()]
-        self.club =  Organization("name2", "Poc", 10, "description2", 1, ["interest2"], self.userList)
+        self.org = organization("name", "Point of contact", 1, "description", 0, ["interest"])
+        self.userList = [user()]
+        self.club =  organization("name2", "Poc", 10, "description2", 1, ["interest2"], self.userList)
 
     def test_getName(self):
         self.assertEqual(self.org.getName(), "name")
@@ -33,7 +35,7 @@ class test_getters(TestCase):
 class test_setters(TestCase):
     def setUp(self):
         self.client = Client()
-        self.org = Organization()
+        self.org = organization()
 
     def test_setName(self):
         self.org.setName("name")

@@ -1,11 +1,12 @@
 from django.test import TestCase
 from django.test import Client
+from classes import user
 
 class test_getters(TestCase):
     def setUp(self):
         self.client = Client()
-        self.friendList = [User()]
-        self.user = User("name", "email@uwm.edu", "password123", [3857], ["interests"], ["orgs"], ["majors"], self.friendList)
+        self.friendList = [user()]
+        self.user = user("name", "email@uwm.edu", "password123", [3857], ["interests"], ["orgs"], ["majors"], self.friendList)
     
     def test_getName(self):
         self.assertEqual(self.user.getName(), "name")
@@ -34,7 +35,7 @@ class test_getters(TestCase):
 class test_setters(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User()
+        self.user = user()
 
     def test_setName(self):
         self.user.setName("name")
@@ -65,6 +66,6 @@ class test_setters(TestCase):
         self.assertEqual(self.user.getMajors(), ["majors"])
 
     def test_setFriends(self):
-        self.user2 = User()
-        self.user.setFriends([self.user2])
-        self.assertEqual(self.user.getFriends(), [self.user2])
+        self.userList2 = [user()]
+        self.user.setFriends(self.userList2)
+        self.assertEqual(self.user.getFriends(), self.userList2)
