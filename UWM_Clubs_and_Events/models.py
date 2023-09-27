@@ -7,9 +7,20 @@ from django.db import models
 
 # name-str, email-str, password-str, role-?, interests/tags-?, orgs-?, majors-?, friends-?
 class User(models.Model):
-    email = models.EmailField(max_length=30)  # add email validator?
-    password = models.CharField(max_length=30)
+    email = models.EmailField(max_length=30, unique=True)  # add email validator?
+    password = models.CharField(max_length=30, unique=True)
     name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+
+# Org/Club:  name-str, point_of_contact-str/email, membersCount-int, description-str, staff-User(staff to anchor), majors-?
+class Organizations(models.Model):
+    name = models.CharField(max_length=20, unique=True)
+    point_of_contact = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
+    membersCount = models.IntegerField()
+    description = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
@@ -18,9 +29,9 @@ class User(models.Model):
 # Events:  name-str, organization-str, location-str, date-str/Date/Time, description-str, type-str, views-int
 class Events(models.Model):
     name = models.CharField(max_length=30)
-    organization = models.CharField(max_length=30)
+    organization = models.CharField(max_length=30)  # foreign key this?
     location = models.CharField(max_length=30)
-    time = models.DateTimeField()
+    time = models.DateTimeField()  # look into these 2 fields some more
     description = models.TextField()
 
     # image here/file path for image?  where do we store/upload
@@ -28,20 +39,9 @@ class Events(models.Model):
         return self.name + "/" + self.organization
 
 
-# Org/Club:  name-str, point_of_contact-str/email, membersCount-int, description-str, staff-User(staff to anchor), majors-?
-class Organizations(models.Model):
-    name = models.CharField(max_length=20)
-#    point_of_contact = models.ForeignKey(User)
-    membersCount = models.IntegerField()
-    description = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-
 class MembersIn(models.Model):
-   # user = models.ForeignKey(User)
-    #name = models.ForeignKey(Organizations)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
+    name = models.ForeignKey(Organizations, on_delete=models.CASCADE, to_field='name')
 
     def __str__(self):
         return self.user + "/" + self.name
@@ -49,7 +49,7 @@ class MembersIn(models.Model):
 
 class Majors(models.Model):
     # consider using choices here for these?
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True)
     department = models.CharField(max_length=20)
 
     def __str__(self):
@@ -57,12 +57,16 @@ class Majors(models.Model):
 
 
 class Interests(models.Model):
-    type = models.CharField(max_length=15)
+    tag = models.CharField(max_length=20, unique=True)
 
     def __str__(self):
-        return self.name
+        return self.tag
+
 
 # check how cascade actually works
-# class UserInterests(models.Model):
-#    user = models.ForeignKey(User, on_delete=models.CASCADE)
-#    type = models.ForeignKey(Interests, on delete=models.CASCADE)
+class UserInterests(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
+    type = models.ForeignKey(Interests, on_delete=models.CASCADE, to_field='tag')
+
+    def __str__(self):
+        return self.user.email + "/" + self.type
