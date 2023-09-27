@@ -9,7 +9,7 @@
 # type - string
 # views - int
 
-def event(self):
+class Event(object):
     event = ""
     name = ""
     org = ""

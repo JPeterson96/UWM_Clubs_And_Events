@@ -1,9 +1,9 @@
 from django.test import TestCase
-from classes.event import event
+from classes.event import Event
 
 class test_getters(TestCase):
     def setUp(self):
-        self.event = event("name", "org","location","date","time","description", "event type", 1)
+        self.event = Event("name", "org","location","date","time","description", "event type", 1)
 
     def test_getName(self):
         self.assertEqual(self.event.getName(), "name")
@@ -32,7 +32,7 @@ class test_getters(TestCase):
 
 class test_setters(TestCase):
     def setUp(self):
-        self.event = event()
+        self.event = Event()
 
     def test_setName(self):
         self.event.setName("name")
