@@ -1,7 +1,8 @@
-from django.test import TestCase
+#from django.test import TestCase
 from classes.event import Event
+import unittest
 
-class test_getters(TestCase):
+class test_getters(unittest.TestCase):
     def setUp(self):
         self.event = Event("name", "org","location","date","time","description", "event type", 1)
 
@@ -30,7 +31,7 @@ class test_getters(TestCase):
         self.assertEqual(self.event.getViews(), 1)
 
 
-class test_setters(TestCase):
+class test_setters(unittest.TestCase):
     def setUp(self):
         self.event = Event()
 
