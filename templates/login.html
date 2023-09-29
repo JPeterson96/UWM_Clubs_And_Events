@@ -1,17 +1,120 @@
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
 
-<html>
+
+    <style>
+        header{
+    background-color: white;
+    height: 40px;
+    padding: 40px;
+    }
+
+    .page{
+        width: 100%;
+        background: url('https://www.visitmilwaukee.org/remote.jpg.ashx?mode=crop&width=1920&height=1080&scale=both&urlb64=aHR0cDovL2Fzc2V0cy5zaW1wbGV2aWV3aW5jLmNvbS9zaW1wbGV2aWV3L2ltYWdlL3VwbG9hZC9jX2ZpdCx3XzE5MjAsaF8xMDgwL2NybS9taWx3YXVrZWUvVVdNaWx3YXVrZWUtMTI0MC00ZjdmOTA5MDUwNTZhMzZfNGY3ZjkyOTYtNTA1Ni1hMzZmLTIzMmE5ZGE3OGYwNzAxMWMuanBn&hmac=tNyU_eKVXp4');
+        background-position:center;
+        height: 1000px;
+        align-: center;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    head{
+        font-size: 40px;
+    }
+
+    #box{
+        font-size: 15px;
+        background-color: white;
+        color: Black;
+        padding: 70px;
+        text-align: center;
+        margin: auto;
+        margin-top: 80px;
+        margin-bottom: 80px;
+        width: 20%;
+        height: 40%
+
+    }
+
+    #log{
+        border: none;
+        border-bottom: 1px solid black;
+        outline: none;
+        background: transparent;
+        width: 330px;
+
+    }
+    table{
+    margin-left:-20px;
+    margin-top:30px;
+    font-size: 35px;
+
+    }
+
+
+
+    h1{
+        font-weight: 400;
+        margin-top: -30px;
+        margin-right: 300px;
+        margin-left:-20px;
+    }
+
+    label{
+        text-align: center;
+    }
+
+
+    #button{
+        margin-top: 100px;
+        transition: all 0.4s ease;
+        font-size: 15px;
+        padding: 10px;
+        width: 210px;
+        color: white;
+        background-color: #e5bb4c;
+        border-color: Black;/* top | right | bottom | left */
+        border-width:1px 1px 1px 1px;}
+
+     #button:hover{
+    cursor: pointer;
+    background-color: #0066CC;
+    }
+
+
+    </style>
+
+
+</head>
+
+    <div class = "page">
+    <header>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/University_of_Wisconsin%E2%80%93Milwaukee_logo.svg/1280px-University_of_Wisconsin%E2%80%93Milwaukee_logo.svg.png" width="200" height="70" >
+
+      </header>
+
     <head>
-        <link href="{% static 'login.css' %}" rel="stylesheet" type="text/css">
-    </head>
-    <body>
-        <h1>Login Screen Placeholder</h1>
-        <form action="/" method="post">
+        <meta charset="UTF-8">
+        <title></title>
+      </head>
+
+
+    <div id = "box">
+        <h1>Login</h1>
+          <form action="/" method="post">
             {% csrf_token %}
-            <input type="text" name="username" placeholder="Username">
-            <input type="password" name="password" placeholder="Password">
-            <input type="submit" value="Login">
-            <p> {{ message }}</p>
+              <table>
+                <tr><td><input type="text" name="name" id = "log" placeholder="Username"></td></tr>
+                <tr><td><input type="password" name="password" id = "log" placeholder="Password"></td></tr>
+            </table>
+            <input type="submit" id = "button">
         </form>
-    </body>
-</html>
+        <br>
+        <div class="alert alert-danger">
+           {{ message }}
+        </div>
+    </div>
+  </div>
