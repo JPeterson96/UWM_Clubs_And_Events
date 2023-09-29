@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-class test_createOrg(TestCase):
+class TestCreateOrg(TestCase):
 
     def test_createOrg(self):
         self.made = createOrg(self, name = "CS Smart Club", point_of_contact = "poc", description = "description")
@@ -10,7 +10,7 @@ class test_createOrg(TestCase):
         self.assertEqual(self.org.point_of_contact, "poc")
         self.assertEqual(self.org.description, "description")
 
-class test_invalid_input(TestCase):
+class TestInvalidInput(TestCase):
 
     def test_emptyName(self):
         self.made = createOrg(self, name = "", point_of_contact = "poc", description = "description")
