@@ -1,4 +1,5 @@
 from django.test import TestCase
+from classes import event
 
 class TestCreateEvent(TestCase):
 

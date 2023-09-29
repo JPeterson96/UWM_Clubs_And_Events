@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.test import Client
+from UWM_Clubs_and_Events.models import User
 
 class TestCreateValidUser(TestCase):
     def setUp(self):

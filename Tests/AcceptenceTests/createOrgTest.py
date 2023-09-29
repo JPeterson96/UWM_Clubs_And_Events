@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.test import Client
+from UWM_Clubs_and_Events.models import Organization as Org
 
 class TestCreateValidOrg(TestCase):
     def setUp(self):

@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.test import Client
+from UWM_Clubs_and_Events.models import Event
 
 class TestCreateValidEvent(TestCase):
     def setUp(self):
