@@ -34,3 +34,8 @@ class login(View):
 class Homepage(View):
     def get(self, request):
         return render(request, "homepage.html", {})
+
+
+class CreateAccount(View):
+    def get(self, request):
+        return render(request, "createaccount.html", {})
