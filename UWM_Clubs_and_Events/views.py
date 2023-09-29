@@ -19,14 +19,14 @@ class login(View):
             noSuchUser = True
         if email == '' and password == '':
             return render(request, "login.html", {"message": "Nothing entered"})
-        elif user == '':
-            return render(request, "login.html", {})
+        elif email == '':
+            return render(request, "login.html", {"message": "No email"})
         elif password == '':
-            return render(request, "login.html", {})
+            return render(request, "login.html", {"message": "no password"})
         elif noSuchUser:
-            return render(request, "login.html", {})
+            return render(request, "login.html", {"message": "no user in database"})
         elif badPassword:
-            return render(request, "login.html", {})
+            return render(request, "login.html", {"message": "no user with this password"})
         else:
             return redirect("homepage.html")
 
