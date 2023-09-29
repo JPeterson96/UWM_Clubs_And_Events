@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-class test_createEvent(TestCase):
+class TestCreateEvent(TestCase):
 
     def test_createEvent(self):
         self.made = createEvent(self, name = "Club meeting", org = "CS Smart Club", location = "location", date = "date", 
@@ -16,7 +16,7 @@ class test_createEvent(TestCase):
         self.assertEqual(self.event.description, "description")
         self.assertEqual(self.event.type, "type")
 
-class test_invalid_input(TestCase):
+class TestInvalidInput(TestCase):
 
     def test_emptyName(self):
         self.made = createEvent(self, name = "", org = "CS Smart Club", location = "location", date = "date", 
