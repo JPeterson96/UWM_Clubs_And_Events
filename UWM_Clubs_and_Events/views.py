@@ -1,6 +1,6 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from .models import User
+from .models import User, UserInterest, Interest
 
 
 class login(View):

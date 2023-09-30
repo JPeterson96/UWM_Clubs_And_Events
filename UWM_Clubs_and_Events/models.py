@@ -10,7 +10,7 @@ class User(models.Model):
     email = models.EmailField(max_length=30, unique=True)  # add email validator?
     password = models.CharField(max_length=30, unique=True)
     name = models.CharField(max_length=30)
-    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")))
+    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")),default=0)
 
     def __str__(self):
         return self.name
@@ -32,7 +32,7 @@ class Event(models.Model):
     name = models.CharField(max_length=30, unique=True)
     organization = models.CharField(max_length=30)  # foreign key this?
     location = models.CharField(max_length=30)
-    #this uses a YYYY-MM-DD for the date, and HH:MM:SS for the time
+    # this uses a YYYY-MM-DD for the date, and HH:MM:SS for the time
     time = models.DateTimeField()  # look into these 2 fields some more
     description = models.TextField()
 
@@ -49,13 +49,14 @@ class Event(models.Model):
 #         return self.user + "/" + self.name
 #
 #
-# class Majors(models.Model):
-#     # consider using choices here for these?
-#     name = models.CharField(max_length=20, unique=True)
-#     department = models.CharField(max_length=20)
-#
-#     def __str__(self):
-#         return self.name + "/" + self.department
+class Majors(models.Model):
+    # consider using choices here for these?
+    name = models.CharField(max_length=20, unique=True)
+    department = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name + "/" + self.department
+
 
 
 class Interest(models.Model):

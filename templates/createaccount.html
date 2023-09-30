@@ -1,16 +1,13 @@
 {% load static %}
-{% extends "base.html" %}
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Create Account</title>
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"/>
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
-    <link href="{% static 'style.css' %}" rel="stylesheet" type="text/css"/>
+
+    <link href="{% static 'login.css' %}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <h1>Create Account</h1>
@@ -35,38 +32,35 @@
                 <td><input type="text" name="email"/></td>
             </tr>
             <tr>
+                <td>Major</td>
+                <td><input type="text" name="Major"/></td>
+            </tr>
+            <tr>
                 <td>Password</td>
                 <td><input type="text" name="password"/></td>
             </tr>
-            #add section for org
-            #add section for their majors
-            # add section for their friends
-            #add section for their interest this is where we ill have a table the type information to a search bar and hardcoded values
-            #come out
 
-            <tr>
-                <td>Phone Number</td>
-                <td><input type="text" name="number"/></td>
-            </tr>
-            </tr>
-            <tr>
-                <td>Position</td>
-                <td>
-                    <select placeholder="All Roles" name="position">
-                        <option>Role</option>
-                    </select>
-                </td>
-            </tr>
+
+
+    <!-- Table to display interests -->
+    <tbody id="interests-table">
+                <th>Interests</th>
+                <input type="text" name="search_query" placeholder="Search interests">
+                <input type="submit" value="Search">
+    </tbody>
+
+        <tbody>
+            {% for interest in interests %}
+                <tr>
+                    <td>{{ interest.tag }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
         </table>
         <input class="goldbutton" type="submit"/>
         <table>
-  <tr>
-    <input type="text" placeholder=" Search...." name="search">
-  </tr>
-  <tr>
-      <td> </td>
 
-  </tr>
 </table>
     </form>
 </div>
