@@ -53,11 +53,11 @@ class CreateAccount(View):
             major = request.POST.get("major")
             interest = request.POST.get("interest_search")
             #initialize user
-            newUser = User(name=firstName,lastName=password, email=email
+            User.objects.create(name=firstName, lastName=password, email=email
                            , password=password, major=major, interest=interest)
             #adds every tage fo interest to user
             for tags in interest:
-                UserInterest(user=newUser.email, type=tags)
+                UserInterest(user=email, type=tags)
         except:
             #this will check fi the email has extact same name (not case sensitive )
             if(User.objects.filter(email__iexact=email)):
