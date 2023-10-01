@@ -33,30 +33,41 @@
             </tr>
             <tr>
                 <td>Major</td>
-                <td><input type="text" name="Major"/></td>
+                <td><input type="text" name="major"/></td>
+
             </tr>
             <tr>
                 <td>Password</td>
                 <td><input type="text" name="password"/></td>
             </tr>
 
-
-
     <!-- Table to display interests -->
-    <tbody id="interests-table">
-                <th>Interests</th>
-                <input type="text" name="search_query" placeholder="Search interests">
-                <input type="submit" value="Search">
-    </tbody>
-
-        <tbody>
-            {% for interest in interests %}
-                <tr>
-                    <td>{{ interest.tag }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-
+       <tr>
+                <td colspan="2">
+                    <!-- Search bar -->
+                    <input type="text" name="search_bar" placeholder="Search interests">
+                    <input type="submit" value="Search">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <!-- Table to display interests -->
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Interests</th>
+                            </tr>
+                        </thead>
+                        <tbody id="interests-table">
+                            {% for interest in interests %}
+                                <tr>
+                                    <td>{{ interest.tag }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
         </table>
         <input class="goldbutton" type="submit"/>
         <table>

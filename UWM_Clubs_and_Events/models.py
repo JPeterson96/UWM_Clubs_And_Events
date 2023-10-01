@@ -49,7 +49,7 @@ class Event(models.Model):
 #         return self.user + "/" + self.name
 #
 #
-class Majors(models.Model):
+class Major(models.Model):
     # consider using choices here for these?
     name = models.CharField(max_length=20, unique=True)
     department = models.CharField(max_length=20)
