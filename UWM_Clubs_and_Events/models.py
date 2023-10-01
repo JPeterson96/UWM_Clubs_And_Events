@@ -60,8 +60,10 @@ class Major(models.Model):
 
 class UserMajor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
-    major = models.ForeignKey(Major, on_delete=models.CASCADE, to_fields='name')
+    major = models.ForeignKey(Major, on_delete=models.CASCADE, to_field='name')
 
+    def __str__(self):
+        return self.user + "/" + self.major
 
 class Interest(models.Model):
     tag = models.CharField(max_length=20, unique=True)

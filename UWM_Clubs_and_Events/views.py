@@ -1,3 +1,4 @@
+
 from django.views import View
 from django.shortcuts import render, redirect
 from .models import User, UserInterest, Interest, Major
@@ -38,29 +39,25 @@ class Homepage(View):
 
 class CreateAccount(View):
     def get(self, request):
-        userint = request.GET.get(substring ="sear_bar")
-        interests = Interest.objects.filter()
-        majors = Major.objects.all()
-        return render(request, "createaccount.html", {"interests": interests, "major": majors})
+        value = request.GET.get('interest_search', '')
+        intRes = Interest.objects.filter(tag__icontains=value)
+        interests = list(intRes.values_list('tag', flat=True))
+        return render(request, "createaccount.html", {"interests": interests})
 
     def post(self, request):
         try:
-
-            firstName=request.POST['firstname']
-            lastName = request.POST['lastname']
-            email = firstName=request.POST['email']
-            password = request.POST['password']
-            major = request.POST['major']
-            interest = request.POST['interest_search']
+            firstName=request.POST.get("firstname")
+            lastName = request.POST.get("lastname")
+            email = firstName=request.POST.get("email")
+            password = request.POST.get("password")
+            major = request.POST.get("major")
+            interest = request.POST.get("interest_search")
             #initialize user
             newUser = User(name=firstName,lastName=password, email=email
                            , password=password, major=major, interest=interest)
             #adds every tage fo interest to user
             for tags in interest:
                 UserInterest(user=newUser.email, type=tags)
-
-
-
         except:
             #this will check fi the email has extact same name (not case sensitive )
             if(User.objects.filter(email__iexact=email)):
@@ -73,7 +70,7 @@ class CreateAccount(View):
                 return render(request, "createaccount.html", {"message": "No email"})
             elif password == '':
                 return render(request, "createaccount.html", {"message": "no password"})
-
+        return render(request, "login.html", {"message": "user account successfully created"})
 
 
 
