@@ -51,12 +51,18 @@ class CreateAccount(View):
             email = firstName=request.POST['email']
             password = request.POST['password']
             major = request.POST['major']
-            interest = request.kwargs['search_bar']
+            interest = request.POST['interest_search']
+            #initialize user
             newUser = User(name=firstName,lastName=password, email=email
                            , password=password, major=major, interest=interest)
+            #adds every tage fo interest to user
+            for tags in interest:
+                UserInterest(user=newUser.email, type=tags)
+
 
 
         except:
+            #this will check fi the email has extact same name (not case sensitive )
             if(User.objects.filter(email__iexact=email)):
                 return render(request, "createaccount.html", {"message": "user with email exists "})
             elif firstName == '':

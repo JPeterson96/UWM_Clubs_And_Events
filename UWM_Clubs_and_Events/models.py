@@ -10,7 +10,7 @@ class User(models.Model):
     email = models.EmailField(max_length=30, unique=True)  # add email validator?
     password = models.CharField(max_length=30, unique=True)
     name = models.CharField(max_length=30)
-    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")),default=0)
+    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")), default=0)
 
     def __str__(self):
         return self.name
@@ -57,6 +57,10 @@ class Major(models.Model):
     def __str__(self):
         return self.name + "/" + self.department
 
+
+class UserMajor(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
+    major = models.ForeignKey(Major, on_delete=models.CASCADE, to_fields='name')
 
 
 class Interest(models.Model):
