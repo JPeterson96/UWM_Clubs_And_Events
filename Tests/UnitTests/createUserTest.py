@@ -1,6 +1,7 @@
 from django.test import TestCase
+from classes import user
 
-class test_createUser(TestCase):
+class TestCreateUser(TestCase):
 
     def test_createUser(self):
         self.made = createUser(self, name = "Ilya", email = "kravtso5@uwm.edu", password = "123")
@@ -10,7 +11,7 @@ class test_createUser(TestCase):
         self.assertEqual(self.user.name , "Ilya")
         self.assertEqual(self.user.password , "123")
 
-class test_invalid_input(TestCase):
+class TestInvalidInput(TestCase):
 
     def test_emptyName(self):
         self.made = test_createUser(self, name = "", email = "kravtso5@uwm.edu", password = "123")
