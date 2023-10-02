@@ -10,15 +10,17 @@
 from UWM_Clubs_and_Events.models import User
 
 class User_Util():
-    def create_user(self, name, email, password, role):
+    def create_user(name, email, password, role):
         try:
-            user = User(name=name, email=email, password=password, role=role)
+            # User.objects.create(name, email, password, role)
+            user = User(email=email, password=password, name=name, role=role)
             user.save()
-            return user
-        except:
-            return None
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
-    def get_user(self, email):
+    def get_user(email):
         try:
             return User.objects.get(email=email)
         except:

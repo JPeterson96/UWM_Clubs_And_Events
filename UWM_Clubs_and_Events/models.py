@@ -10,7 +10,7 @@ class User(models.Model):
     email = models.EmailField(max_length=30, unique=True)  # add email validator?
     password = models.CharField(max_length=30, unique=True)
     name = models.CharField(max_length=30)
-    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")))
+    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")), default=0)
 
     def __str__(self):
         return self.name
