@@ -10,6 +10,14 @@
 from UWM_Clubs_and_Events.models import User
 
 class User_Util():
+    def create_user(self, name, email, password, role):
+        try:
+            user = User(name=name, email=email, password=password, role=role)
+            user.save()
+            return user
+        except:
+            return None
+
     def get_user(self, email):
         try:
             return User.objects.get(email=email)

@@ -12,6 +12,14 @@
 from UWM_Clubs_and_Events.models import Event
 
 class Event_Util():
+    def create_event(self, name, org, location, date, time, description, background_image, type, views):
+        try:
+            event = Event(name=name, organization=org, location=location, date=date, time=time, description=description, background_image=background_image, type=type, views=views)
+            event.save()
+            return event
+        except:
+            return None
+
     def get_event(id):
         try:
             return Event.objects.get(id=id)

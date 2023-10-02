@@ -8,6 +8,14 @@
 from UWM_Clubs_and_Events.models import Organization
 
 class Organization_Util():
+    def create_organization(self, name, point_of_contact, members, description, role, interests):
+        try:
+            org = Organization(name=name, point_of_contact=point_of_contact, members=members, description=description, role=role, interests=interests)
+            org.save()
+            return org
+        except:
+            return None
+
     def get_org(self, name):
         try:
             return Organization.objects.get(name=name)
