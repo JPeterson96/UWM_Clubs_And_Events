@@ -9,7 +9,7 @@ class TestCreateValidEvent(TestCase):
     def test_createOrg(self):
         self.resp = self.client.post("/createevent/", {"name": "Club meeting", "org": "CS Smart Club", 
                                      "location": "EMS", "date": "2024/01/01", "time": "4:30:00",
-                                     "description": }, follow=True)
+                                     "description": "description"}, follow=True)
         self.assertEqual("Success: New Event has been created", self.resp.context["msg"],
                          "Failed creation. One or more fields invalid")
 
