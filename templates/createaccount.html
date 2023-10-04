@@ -1,6 +1,5 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,21 +33,13 @@
             <tr>
                 <td>Major</td>
                 <td><input type="text" name="major"/></td>
-
             </tr>
             <tr>
                 <td>Password</td>
                 <td><input type="text" name="password"/></td>
             </tr>
 
-    <!-- Table to display interests -->
-       <tr>
-                <td colspan="2">
-                    <!-- Search bar -->
-                    <input type="text" name="interest_search" placeholder="Search interests">
-                    <input type="submit" value="Search">
-                </td>
-            </tr>
+            <!-- Table to display interests -->
             <tr>
                 <td colspan="2">
                     <!-- Table to display interests -->
@@ -58,21 +49,30 @@
                                 <th>Interests</th>
                             </tr>
                         </thead>
-                        <tbody id="interests-table">
-                            {% for interest in interests %}
-                                <tr>
-                                    <td>{{ interest.tag }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
+                        <div class="search-container">
+                            <input type="text" id="search-input" placeholder="Search for interests">
+                            <div class="dropdown-content">
+                                <table>
+                                    <tbody id="interests-table">
+                                        {% for interest in interests %}
+                                            <tr>
+                                                <td>
+                                                    <label>
+                                                        <input type="checkbox" name="selected_interests" value="{{ interest.tag }}">
+                                                        {{ interest.tag }}
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </table>
                 </td>
             </tr>
         </table>
         <input class="goldbutton" type="submit"/>
-        <table>
-
-</table>
     </form>
 </div>
 </body>

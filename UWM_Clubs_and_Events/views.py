@@ -1,7 +1,8 @@
-
+from django.views.generic import ListView
 from django.views import View
 from django.shortcuts import render, redirect
 from .models import User, UserInterest, Interest, Major
+from django.db.models import Q
 
 
 class login(View):
@@ -39,28 +40,39 @@ class Homepage(View):
 
 class CreateAccount(View):
     def get(self, request):
-        value = request.GET.get('interest_search', '')
-        intRes = Interest.objects.filter(tag__icontains=value)
-        interests = list(intRes.values_list('tag', flat=True))
-        return render(request, "createaccount.html", {"interests": interests})
+
+        filter_value = request.GET.get('search-input"', '').lower()
+
+        filtered_interests = Interest.objects.filter(tag__icontains=filter_value)
+        print(filtered_interests)
+
+
+        return render(request, "createaccount.html", {"interests": filtered_interests})
 
     def post(self, request):
         try:
-            firstName=request.POST.get("firstname")
+            firstName = request.POST.get("firstname")
             lastName = request.POST.get("lastname")
-            email = firstName=request.POST.get("email")
+            email = firstName = request.POST.get("email")
             password = request.POST.get("password")
-            major = request.POST.get("major")
-            interest = request.POST.get("interest_search")
-            #initialize user
-            User.objects.create(name=firstName, lastName=password, email=email
-                           , password=password, major=major, interest=interest)
-            #adds every tage fo interest to user
-            for tags in interest:
-                UserInterest(user=email, type=tags)
+            major = request.POST.getlist("major")
+            interests = request.POST.get("selected_interests")
+            values = request.POST.get("interest_search")
+            print(firstName, lastName, email, password, major, interests)
+            for v in values:
+                interests.append(v)
+
+            # initialize user
+            newuser=User.objects.create(name=firstName, lastName=password, email=email
+                                , password=password, major=major, interest=interests)
+            newuser.save()
+            # adds every tage fo interest to user
+            for tags in interests:
+                res =UserInterest.objects.create(user=newuser, type=tags)
+                res.save()
         except:
-            #this will check fi the email has extact same name (not case sensitive )
-            if(User.objects.filter(email__iexact=email)):
+            # this will check fi the email has extact same name (not case sensitive )
+            if (User.objects.filter(email__iexact=email)):
                 return render(request, "createaccount.html", {"message": "user with email exists "})
             elif firstName == '':
                 return render(request, "createaccount.html", {"message": "No name inputted"})
@@ -71,8 +83,3 @@ class CreateAccount(View):
             elif password == '':
                 return render(request, "createaccount.html", {"message": "no password"})
         return render(request, "login.html", {"message": "user account successfully created"})
-
-
-
-
-
