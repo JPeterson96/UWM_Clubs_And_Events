@@ -26,25 +26,25 @@ class User_Util():
         except:
             return None
         
-    def get_all_users(self):
+    def get_all_users():
         try:
             return User.objects.all()
         except:
             return None
     
-    def get_user_by_name(self, name):
+    def get_user_by_name(name):
         try:
-            return User.objects.get(name=name)
+            return User.objects.filter(name=name)
         except:
             return None
         
-    def get_users_by_major(self, major):
+    def get_users_by_major(major):
         try:
             return User.objects.filter(major=major)
         except:
             return None
         
-    def get_users_by_interest(self, interest):
+    def get_users_by_interest(interest):
         try:
             return User.objects.filter(interests=interest)
         except:

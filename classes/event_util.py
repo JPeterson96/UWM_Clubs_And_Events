@@ -16,9 +16,10 @@ class Event_Util():
         try:
             event = Event(name=name, organization=org, location=location, time=time, description=description)
             event.save()
-            return event
-        except:
-            return None
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
     def get_event(id):
         try:
@@ -40,6 +41,6 @@ class Event_Util():
         
     def get_event_by_name(name):
         try:
-            return Event.objects.contains(name=name)
+            return Event.objects.filter(name=name)
         except:
             return None
