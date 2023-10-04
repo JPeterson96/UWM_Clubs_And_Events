@@ -1,10 +1,10 @@
-# event - string
 # name - string
 # org - string
 # location - string
-# date - string
 # time - string
 # description - string
+
+# below is not set up yet
 # background-image - image
 # type - string
 # views - int
@@ -12,9 +12,9 @@
 from UWM_Clubs_and_Events.models import Event
 
 class Event_Util():
-    def create_event(self, name, org, location, date, time, description, background_image, type, views):
+    def create_event(name, org, location, time, description):
         try:
-            event = Event(name=name, organization=org, location=location, date=date, time=time, description=description, background_image=background_image, type=type, views=views)
+            event = Event(name=name, organization=org, location=location, time=time, description=description)
             event.save()
             return event
         except:
@@ -40,6 +40,6 @@ class Event_Util():
         
     def get_event_by_name(name):
         try:
-            return Event.objects.filter(name=name)
+            return Event.objects.contains(name=name)
         except:
             return None
