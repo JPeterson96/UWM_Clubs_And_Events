@@ -52,7 +52,7 @@ class Event(models.Model):
 class Major(models.Model):
     # consider using choices here for these?
     name = models.CharField(max_length=20, unique=True)
-    department = models.CharField(max_length=20)
+    department = models.CharField(max_length=20, null=True)
 
     def __str__(self):
         return self.name + "/" + self.department
@@ -64,6 +64,7 @@ class UserMajor(models.Model):
 
     def __str__(self):
         return self.user + "/" + self.major
+
 
 class Interest(models.Model):
     tag = models.CharField(max_length=20, unique=True)

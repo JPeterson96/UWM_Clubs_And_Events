@@ -31,14 +31,31 @@
                 <td><input type="text" name="email"/></td>
             </tr>
             <tr>
-                <td>Major</td>
-                <td><input type="text" name="major"/></td>
-            </tr>
-            <tr>
                 <td>Password</td>
                 <td><input type="text" name="password"/></td>
             </tr>
-
+                  <td colspan="2">
+                <!-- Table to display majors -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Major</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select name="majorlist" id="major-drop">
+                                    {% for major in majors %}
+                                        <option value="{{ major.name }}">{{ major.department }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
             <!-- Table to display interests -->
             <tr>
                 <td colspan="2">
