@@ -1,0 +1,38 @@
+/* Style the container */
+.search-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Style the input field */
+#search-input {
+    width: 100%;
+    padding: 10px;
+}
+
+/* Style the dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+}
+
+/* Style the dropdown items */
+.dropdown-content label {
+    display: block;
+    padding: 5px;
+}
+
+/* Highlight selected items */
+.dropdown-content label input:checked {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Show the dropdown when input is focused */
+#search-input:focus + .dropdown-content {
+    display: block;
+}
