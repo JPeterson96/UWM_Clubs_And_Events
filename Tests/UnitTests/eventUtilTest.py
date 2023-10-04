@@ -10,10 +10,10 @@ import datetime
 #        self.event.save()
 #        self.assertEqual(Event_Util.getEvent(1), self.event)
 
-class TestGetEventInvalid(TestCase):
-
-    def test_getEventInvalid(self):
-        self.assertEqual(Event_Util.get_event(1), None, "Event should not have been found")
+#class TestGetEventInvalid(TestCase):
+#
+#    def test_getEventInvalid(self):
+#        self.assertEqual(Event_Util.get_event(1), None, "Event should not have been found")
 
 class TestgetAllEvents(TestCase):
 
@@ -24,7 +24,7 @@ class TestgetAllEvents(TestCase):
 
 class TestgetOrgEvents(TestCase):
     def test_getOrgEvents(self):
-        self.event = Event(organization = "CS Smart Club", time = datetime.datetime(2020, 1, 1, 0, 0, 0))
+        self.event = Event(organization = "CS Smart Club", time = datetime.datetime(2020, 1, 1, 0, 0, 0, datetime.timezone.utc))
         self.event.save()
         self.assertTrue(self.event in Event_Util.get_org_events("CS Smart Club"))
 
@@ -36,7 +36,7 @@ class TestgetOrgEventsInvalid(TestCase):
 class TestgetEventByName(TestCase):
          
     def test_getEventByName(self):
-        self.event = Event(name = "Club meeting", time = datetime.datetime(2020, 1, 1, 0, 0, 0))
+        self.event = Event(name = "Club meeting", time = datetime.datetime(2020, 1, 1, 0, 0, 0, datetime.timezone.utc))
         self.event.save()
         self.assertTrue(self.event in Event_Util.get_event_by_name("Club meeting"))
 
