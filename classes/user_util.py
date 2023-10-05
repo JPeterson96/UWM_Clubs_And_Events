@@ -7,14 +7,41 @@
 # major - string[]
 # friends - user[]
 
-from UWM_Clubs_and_Events.models import User
+from UWM_Clubs_and_Events.models import User, UserInterest, Interest
+import re
 
 class User_Util():
     def create_user(name, email, password, role):
+        pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+
         try:
             # User.objects.create(name, email, password, role)
+            if email is None or re.match(pattern, email) is None or email == "":
+                raise ValueError("email does not exists or is not a proper email")
+            elif  User_Util.get_user(email) is not None:
+                raise ValueError("user with email exists ")
+            if name == "":
+                raise ValueError("name is blank ")
+            if password == "":
+                raise ValueError("cannot have a blank password")
             user = User(email=email, password=password, name=name, role=role)
             user.save()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def set_user_interest(email, interest):
+        try:
+            if email =="":
+                return ValueError("email cannot be empty")
+            if interest == "":
+                return ValueError("interest cannot be empty")
+            print(type(interest))
+            user = User_Util.get_user(email=email)
+            relInterest = Interest.objects.get(tag__exact=interest)
+            userinterest = UserInterest.objects.create(user=user, type=relInterest)
+            userinterest.save()
             return True
         except Exception as e:
             print(e)

@@ -8,9 +8,9 @@ from django.db import models
 # name-str, email-str, password-str, role-?, interests/tags-?, orgs-?, majors-?, friends-?
 class User(models.Model):
     email = models.EmailField(max_length=30, unique=True)  # add email validator?
-    password = models.CharField(max_length=30, unique=True)
+    password = models.CharField(max_length=30)
     name = models.CharField(max_length=30)
-    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")))
+    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")), default=0)
 
     def __str__(self):
         return self.name
@@ -49,13 +49,13 @@ class Event(models.Model):
 #         return self.user + "/" + self.name
 #
 #
-# class Majors(models.Model):
-#     # consider using choices here for these?
-#     name = models.CharField(max_length=20, unique=True)
-#     department = models.CharField(max_length=20)
-#
-#     def __str__(self):
-#         return self.name + "/" + self.department
+class Major(models.Model):
+    # consider using choices here for these?
+    name = models.CharField(max_length=20, unique=True)
+    department = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name + "/" + self.department
 
 
 class Interest(models.Model):
@@ -80,3 +80,6 @@ class EventTag(models.Model):
 
     def __str__(self):
         return self.event.name + "/" + self.interest.tag
+class UserMajor(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
+    major = models.ForeignKey(Major, on_delete=models.CASCADE, to_field='name')
