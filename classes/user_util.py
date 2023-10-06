@@ -61,7 +61,7 @@ class User_Util():
     
     def get_user_by_name(name):
         try:
-            return User.objects.get(name=name)
+            return User.objects.filter(name=name)
         except:
             return None
         
