@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -28,10 +32,10 @@
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a href="#learn" class="nav-link text-dark">Create Account</a>
+                        <a href="{% url 'createaccount' %}" class="nav-link text-dark">Create Account</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#questions" class="nav-link text-dark">Public Event Calender</a>
+                        <a href="#questions" class="nav-link text-dark">Public Events</a>
                     </li>
                 </ul>
             </div>
@@ -41,15 +45,16 @@
 
     <!--Login form-->
     <div class="text-center">
-      <form style="max-width: 480px; margin : auto;">
-        {% load static %}
-        <img src="{% static 'img/UWM.png' %}" height="400" width="400" alt="Logo">
+      <form style="max-width: 480px; margin : auto;" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <!-- {% load static %} -->
+        <img src="{% static 'UWM_logo.png' %}" height="400" width="400" alt="Logo">
         <!--<img class="mt-4" src="img/UWM.png" height="300" alt="">-->
         <h1 class="h3 mb-3 font-weight-normal text-center">Please Sign In</h1>
         <label for="emailAddress" class="sr-only"></label>
-        <input type="email" id="id_email" class="form-control" placeholder="Email" required autofocus>
+        <input type="email" name="email" id="id_email" class="form-control" placeholder="Email" required autofocus>
         <label for="password" class="sr-only"></label>
-        <input type="password" id="id_password" placeholder="Password" class="form-control">
+        <input type="password" name="password" id="id_password" placeholder="Password" class="form-control">
         <div class="checkbox">
           <label>
             <input type="checkbox" value="Remember me"> Remember Me</label>
@@ -61,9 +66,13 @@
         </div>
 
       </form>
-      <a href="{% url "createaccount" %}">
-        <button class="btn btn-outline-lg btn-warning">Create Account</button>
-    </div>
+      <!-- <a href="{% url 'createaccount' %}">
+        <button class="btn btn-outline-lg btn-warning">Create Account</button> -->
+      {% if error_message %}
+        {{ error_message }}
+      {% endif %}
+      </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   </body>
 </html>
+{% endblock %}

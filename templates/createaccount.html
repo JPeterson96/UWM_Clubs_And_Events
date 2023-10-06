@@ -10,9 +10,6 @@
 </head>
 <body>
 <h1>Create Account</h1>
-<a href="{% url "login" %}">
-    <button class="backbutton">Back</button>
-</a>
 <div class="center">
     {{ message }}
     <form action="{% url 'createaccount' %}" method="post">
@@ -92,6 +89,9 @@
         </table>
         <input name="submit-search" class="goldbutton" type="submit"/>
     </form>
+    <a href="{% url 'login' %}">
+        <button class="backbutton">Back</button>
+    </a>
 </div>
 </body>
 </html>
