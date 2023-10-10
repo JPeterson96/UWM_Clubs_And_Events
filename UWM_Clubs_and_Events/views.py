@@ -24,7 +24,7 @@ class login(View):
             return render(request, "login.html", {"error_message": "No email"})
         elif password == '':
             return render(request, "login.html", {"error_message": "no password"})
-        
+
         # user = authenticate(request, email=email, password=password)
 
         # if user is not None:
@@ -67,10 +67,7 @@ class CreateAccount(View):
 
             # this is returning the email not the user object?
             check_user = user_util.User_Util.get_user(email=email)
-            print(check_user.email)
 
-
-            print(interests)
             # adds every tage fo interest to user
             for tags in interests:
                 value = user_util.User_Util.set_user_interest(email=check_user.email, interest=tags)
@@ -89,5 +86,4 @@ class CreateAccount(View):
                 return render(request, "createaccount.html", {"message": "No email"})
             elif password == '':
                 return render(request, "createaccount.html", {"message": "no password"})
-        return render(request, "login.html", {"message": "user account successfully created"})
-    
+        return render(request, "login.html", {"error_message": "user account successfully created"})

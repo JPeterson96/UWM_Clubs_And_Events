@@ -7,9 +7,39 @@
     <title>Create Account</title>
 
     <link href="{% static 'login.css' %}" rel="stylesheet" type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+$(document).ready(function() {
+    // Get the interests elements
+    var interests = document.querySelectorAll('input[name="selected_interests"]');
+
+    // Get the search input element
+    var searchInput = document.getElementById('search-input');
+
+
+    searchInput.addEventListener('input', function() {
+        var searchValue = searchInput.value.toLowerCase();
+
+\
+        interests.forEach(function(interest) {
+            var interestTag = interest.value.toLowerCase();
+            var parentRow = interest.closest('tr');
+
+            if (interestTag.includes(searchValue)) {
+                parentRow.style.display = '';
+            } else {
+                parentRow.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 </head>
 <body>
 <h1>Create Account</h1>
+    <a href="{% url 'login' %}">
+        <button class="backbutton">Back</button>
+    </a>
 <div class="center">
     {{ message }}
     <form action="{% url 'createaccount' %}" method="post">
@@ -63,7 +93,6 @@
                                 <th>Interests</th>
                             </tr>
                         </thead>
-
                         <div class="search-container">
                             <input type="text" id="search-input" placeholder="Search for interests">
                             <div class="dropdown-content">
@@ -89,9 +118,6 @@
         </table>
         <input name="submit-search" class="goldbutton" type="submit"/>
     </form>
-    <a href="{% url 'login' %}">
-        <button class="backbutton">Back</button>
-    </a>
 </div>
 </body>
 </html>

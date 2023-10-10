@@ -53,7 +53,7 @@ class User_Util():
         except:
             return None
         
-    def get_all_users():
+    def get_all_users(self):
         try:
             return User.objects.all()
         except:
