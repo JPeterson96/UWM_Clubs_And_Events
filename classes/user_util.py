@@ -7,7 +7,7 @@
 # major - string[]
 # friends - user[]
 
-from UWM_Clubs_and_Events.models import User, UserInterest, Interest
+from UWM_Clubs_and_Events.models import User, UserInterest, Interest, UserMajor, Major
 import re
 
 class User_Util():
@@ -17,19 +17,19 @@ class User_Util():
         try:
             # User.objects.create(name, email, password, role)
             if email is None or re.match(pattern, email) is None or email == "":
-                raise ValueError("email does not exists or is not a proper email")
+                return ValueError("email does not exists or is not a proper email")
             elif  User_Util.get_user(email) is not None:
-                raise ValueError("user with email exists ")
+                return ValueError("user with email exists ")
             if name == "":
-                raise ValueError("name is blank ")
+                return ValueError("name is blank ")
             if password == "":
-                raise ValueError("cannot have a blank password")
+                return ValueError("cannot have a blank password")
             user = User(email=email, password=password, name=name, role=role)
             user.save()
+            print("returning true?")
             return True
         except Exception as e:
-            print(e)
-            return False
+            raise ValueError(e)
 
     def set_user_interest(email, interest):
         try:
@@ -44,8 +44,22 @@ class User_Util():
             userinterest.save()
             return True
         except Exception as e:
-            print(e)
-            return False
+            raise ValueError(e)
+
+    def set_user_major(email, major):
+        try:
+            if email =="":
+                return ValueError("email cannot be empty")
+            if major == "":
+                return ValueError("interest cannot be empty")
+            print(type(major))
+            user = User_Util.get_user(email=email)
+            resMajor = Major.objects.get(name__iexact=major)
+            user_major= UserMajor.objects.create(user=user, type=resMajor)
+            user_major.save()
+            return True
+        except Exception as e:
+            raise ValueError(e)
 
     def get_user(email):
         try:

@@ -20,7 +20,6 @@ $(document).ready(function() {
     searchInput.addEventListener('input', function() {
         var searchValue = searchInput.value.toLowerCase();
 
-\
         interests.forEach(function(interest) {
             var interestTag = interest.value.toLowerCase();
             var parentRow = interest.closest('tr');
@@ -62,7 +61,6 @@ $(document).ready(function() {
                 <td><input type="text" name="password"/></td>
             </tr>
                   <td colspan="2">
-                <!-- Table to display majors -->
                 <table>
                     <thead>
                         <tr>
@@ -72,11 +70,12 @@ $(document).ready(function() {
                     <tbody>
                         <tr>
                             <td>
-                                <select name="majorlist" id="major-drop">
-                                    {% for major in majors %}
-                                        <option value="{{ major.name }}">{{ major.department }}</option>
-                                    {% endfor %}
-                                </select>
+                                <select name="majorlist" id="major-drop" multiple>
+                            {% for major in majors %}
+                                <option value="{{ major.department }}">{{ major.name }}</option>
+                            {% endfor %}
+                            </select>
+
                             </td>
                         </tr>
                     </tbody>
