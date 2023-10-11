@@ -37,4 +37,8 @@ class UnsuccessfulLogin(TestCase):
     def test_noPassword(self):
         resp = self.client.post("/", {"email": "kravtso5@uwm.edu", "password": ""})
         self.assertEqual(resp.status_code, 200, "Login should have failed, no password")
+
+    def test_noEmailAndPassword(self):
+        resp = self.client.post("/", {"email": "", "password": ""})
+        self.assertEqual(resp.status_code, 200, "Login should have failed, no email and password")
     
