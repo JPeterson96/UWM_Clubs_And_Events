@@ -13,7 +13,6 @@ import re
 class User_Util():
     def create_user(name, email, password, role):
         pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-        no_space = r'^\S*$'
 
         try:
             # User.objects.create(name, email, password, role)
