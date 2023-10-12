@@ -32,7 +32,7 @@ class Event(models.Model):
     name = models.CharField(max_length=30, unique=True)
     organization = models.CharField(max_length=30)  # foreign key this?
     location = models.CharField(max_length=30)
-    #this uses a YYYY-MM-DD for the date, and HH:MM:SS for the time
+    # this uses a YYYY-MM-DD for the date, and HH:MM:SS for the time
     time = models.DateTimeField()  # look into these 2 fields some more
     description = models.TextField()
 
@@ -80,6 +80,8 @@ class EventTag(models.Model):
 
     def __str__(self):
         return self.event.name + "/" + self.interest.tag
+
+
 class UserMajor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
     major = models.ForeignKey(Major, on_delete=models.CASCADE, to_field='name')
