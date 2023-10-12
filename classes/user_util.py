@@ -13,17 +13,18 @@ import re
 class User_Util():
     def create_user(name, email, password, role):
         pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+        no_space = r'^\S*$'
 
         try:
             # User.objects.create(name, email, password, role)
-            if email is None or re.match(pattern, email) is None or email == "":
+            if name == "" or ' ' in name:
+                return ValueError("name is blank or cannot blank ")
+            if email is None or re.match(pattern, email) is None or email == "" or ' ' in email:
                 return ValueError("email does not exists or is not a proper email")
-            elif User_Util.get_user(email) is not None:
+            if User_Util.get_user(email) is not None:
                 return ValueError("user with email exists ")
-            if name == "":
-                return ValueError("name is blank ")
-            if password == "":
-                return ValueError("cannot have a blank password")
+            if password == "" or re.match(no_space,password) is not None or ' ' in password:
+                return ValueError("password format incorrect")
             user = User(email=email, password=password, name=name, role=role)
             user.save()
             print("returning true?")
