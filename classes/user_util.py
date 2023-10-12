@@ -16,13 +16,13 @@ class User_Util():
 
         try:
             # User.objects.create(name, email, password, role)
-            if name == "" or ' ' in name:
+            if name == "":
                 return ValueError("name is blank or cannot blank ")
             if email is None or re.match(pattern, email) is None or email == "" or ' ' in email:
                 return ValueError("email does not exists or is not a proper email")
             if User_Util.get_user(email) is not None:
                 return ValueError("user with email exists ")
-            if password == "" or re.match(no_space,password) is not None or ' ' in password:
+            if password == "" or ' ' in password:
                 return ValueError("password format incorrect")
             user = User(email=email, password=password, name=name, role=role)
             user.save()
