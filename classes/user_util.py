@@ -35,8 +35,6 @@ class User_Util():
         try:
             if email =="":
                 return ValueError("email cannot be empty")
-            if interest == "":
-                return ValueError("interest cannot be empty")
             user = User_Util.get_user(email=email)
             relInterest = Interest.objects.get(tag__exact=interest)
             userinterest = UserInterest.objects.create(user=user, type=relInterest)
@@ -49,9 +47,6 @@ class User_Util():
         try:
             if email =="":
                 return ValueError("email cannot be empty")
-            if majorname == "":
-                return ValueError("interest cannot be empty")
-            print(majorname)
             user = User_Util.get_user(email=email)
             resMajor = Major.objects.get(name__iexact=majorname)
             user_major= UserMajor.objects.create(user=user, major=resMajor)
