@@ -18,7 +18,7 @@ class User_Util():
             # User.objects.create(name, email, password, role)
             if email is None or re.match(pattern, email) is None or email == "":
                 return ValueError("email does not exists or is not a proper email")
-            elif  User_Util.get_user(email) is not None:
+            elif User_Util.get_user(email) is not None:
                 return ValueError("user with email exists ")
             if name == "":
                 return ValueError("name is blank ")
@@ -37,7 +37,6 @@ class User_Util():
                 return ValueError("email cannot be empty")
             if interest == "":
                 return ValueError("interest cannot be empty")
-            print(type(interest))
             user = User_Util.get_user(email=email)
             relInterest = Interest.objects.get(tag__exact=interest)
             userinterest = UserInterest.objects.create(user=user, type=relInterest)
@@ -46,16 +45,16 @@ class User_Util():
         except Exception as e:
             raise ValueError(e)
 
-    def set_user_major(email, major):
+    def set_user_major(email, majorname):
         try:
             if email =="":
                 return ValueError("email cannot be empty")
-            if major == "":
+            if majorname == "":
                 return ValueError("interest cannot be empty")
-            print(type(major))
+            print(majorname)
             user = User_Util.get_user(email=email)
-            resMajor = Major.objects.get(name__iexact=major)
-            user_major= UserMajor.objects.create(user=user, type=resMajor)
+            resMajor = Major.objects.get(name__iexact=majorname)
+            user_major= UserMajor.objects.create(user=user, major=resMajor)
             user_major.save()
             return True
         except Exception as e:

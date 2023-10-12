@@ -59,22 +59,22 @@ class CreateAccount(View):
         lastName = request.POST.get("lastname")
         email = firstName = request.POST.get("email")
         password = request.POST.get("password")
-        major = request.POST.getlist("actualmajor")
+        major = request.POST.getlist("majorlist")
         interests = request.POST.getlist("selected_interests")
 
-        # this will check fi the email has extact same name (not case sensitive )
-        if firstName == '':
-            return render(request, "createaccount.html",
-                          {"message": "No name inputted", "interests": search, "majors": allmajors})
-        elif lastName == '':
-            return render(request, "createaccount.html",
-                          {"message": "No last name inputted", "interests": search, "majors": allmajors})
-        elif email == '':
-            return render(request, "createaccount.html",
-                          {"message": "No email", "interests": search, "majors": allmajors})
-        elif password == '':
-            return render(request, "createaccount.html",
-                          {"message": "no password", "interests": search, "majors": allmajors})
+        # # this will check fi the email has extact same name (not case sensitive )
+        # if firstName == '':
+        #     return render(request, "createaccount.html",
+        #                   {"message": "No name inputted", "interests": search, "majors": allmajors})
+        # elif lastName == '':
+        #     return render(request, "createaccount.html",
+        #                   {"message": "No last name inputted", "interests": search, "majors": allmajors})
+        # elif email == '':
+        #     return render(request, "createaccount.html",
+        #                   {"message": "No email", "interests": search, "majors": allmajors})
+        # elif password == '':
+        #     return render(request, "createaccount.html",
+        #                   {"message": "no password", "interests": search, "majors": allmajors})
 
         res = user_util.User_Util.create_user(name= request.POST.get("firstname")+" " + request.POST.get("lastname"), email= request.POST.get("email"), password=request.POST.get("password"),
                                                   role=0)
@@ -93,8 +93,9 @@ class CreateAccount(View):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
         for maj in major:
-            add_major = user_util.User_Util.set_user_major(email=check_user.email, major=maj)
             print(maj)
+            add_major = user_util.User_Util.set_user_major(email=check_user.email, majorname=maj)
+
             if isinstance(add_major, ValueError):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
         return render(request, "login.html", {"error_message": "user account successfully created"})
