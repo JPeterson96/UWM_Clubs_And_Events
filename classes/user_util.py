@@ -7,7 +7,7 @@
 # major - string[]
 # friends - user[]
 
-from UWM_Clubs_and_Events.models import User, UserInterest, Interest
+from UWM_Clubs_and_Events.models import User, UserInterest, Interest, UserMajor, Major
 import re
 
 class User_Util():
@@ -16,36 +16,44 @@ class User_Util():
 
         try:
             # User.objects.create(name, email, password, role)
-            if email is None or re.match(pattern, email) is None or email == "":
-                raise ValueError("email does not exists or is not a proper email")
-            elif  User_Util.get_user(email) is not None:
-                raise ValueError("user with email exists ")
             if name == "":
-                raise ValueError("name is blank ")
-            if password == "":
-                raise ValueError("cannot have a blank password")
+                return ValueError("name is blank or cannot blank ")
+            if email is None or re.match(pattern, email) is None or email == "" or ' ' in email:
+                return ValueError("email does not exists or is not a proper email")
+            if User_Util.get_user(email) is not None:
+                return ValueError("user with email exists ")
+            if password == "" or ' ' in password:
+                return ValueError("password format incorrect")
             user = User(email=email, password=password, name=name, role=role)
             user.save()
+            print("returning true?")
             return True
         except Exception as e:
-            print(e)
-            return False
+            raise ValueError(e)
 
     def set_user_interest(email, interest):
         try:
             if email =="":
                 return ValueError("email cannot be empty")
-            if interest == "":
-                return ValueError("interest cannot be empty")
-            print(type(interest))
             user = User_Util.get_user(email=email)
             relInterest = Interest.objects.get(tag__exact=interest)
             userinterest = UserInterest.objects.create(user=user, type=relInterest)
             userinterest.save()
             return True
         except Exception as e:
-            print(e)
-            return False
+            raise ValueError(e)
+
+    def set_user_major(email, majorname):
+        try:
+            if email =="":
+                return ValueError("email cannot be empty")
+            user = User_Util.get_user(email=email)
+            resMajor = Major.objects.get(name__iexact=majorname)
+            user_major= UserMajor.objects.create(user=user, major=resMajor)
+            user_major.save()
+            return True
+        except Exception as e:
+            raise ValueError(e)
 
     def get_user(email):
         try:
@@ -53,7 +61,7 @@ class User_Util():
         except:
             return None
         
-    def get_all_users():
+    def get_all_users(self):
         try:
             return User.objects.all()
         except:

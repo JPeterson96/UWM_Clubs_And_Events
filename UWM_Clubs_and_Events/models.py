@@ -38,7 +38,9 @@ class Event(models.Model):
     organization = models.CharField(max_length=30)  # foreign key this?
     location = models.CharField(max_length=30)
     # this uses a YYYY-MM-DD for the date, and HH:MM:SS for the time
+
     time_happening = models.DateTimeField()  # look into these 2 fields some more
+
     description = models.TextField()
     time_published = models.DateTimeField(default=datetime.now())
 

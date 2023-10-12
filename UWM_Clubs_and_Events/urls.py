@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', login.as_view(), name='login'),
     path("login.html", login.as_view()),
-    path('homepage.html', Homepage.as_view(), name='homepage'),
+    path('homepage/', Homepage.as_view(), name='homepage'),
     path('createAccount/', CreateAccount.as_view(), name='createaccount')
 ]
