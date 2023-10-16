@@ -1,7 +1,8 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from UWM_Clubs_and_Events.models import User, Major, Interest, Event
+from UWM_Clubs_and_Events.models import User, Major, Interest, Event, UserMajor, MembersIn
 from classes import user_util
+
 
 class login(View):
     def get(self, request):
@@ -38,6 +39,7 @@ class Homepage(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "homepage.html", {"Events": events, "user": current_user})
 
+
 class CreateAccount(View):
 
     def get(self, request):
@@ -67,11 +69,11 @@ class CreateAccount(View):
             # this is returning the email not the user object?
         check_user = user_util.User_Util.get_user(email=email)
 
-            # adds every tage fo interest to user
+        # adds every tage fo interest to user
 
         for tags in interests:
             value = user_util.User_Util.set_user_interest(email=check_user.email, interest=tags)
-                #should not get here
+            # should not get here
             if isinstance(value, ValueError):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
@@ -82,3 +84,11 @@ class CreateAccount(View):
             if isinstance(add_major, ValueError):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
         return render(request, "login.html", {"success_message": "user account successfully created"})
+
+
+class ViewAccount(View):
+    def get(self, request):
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
+        userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
+        return render(request, "viewaccount.html",{"User": current_user,"MemsInOrg": userInOrgs ,"usermajors":userMaj})
