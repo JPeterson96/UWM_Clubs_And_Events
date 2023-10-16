@@ -4,6 +4,10 @@ from UWM_Clubs_and_Events.models import User, Major, Interest, Event, UserMajor,
 from classes import user_util
 
 
+# Stuff for code
+# Need to do graduation date in the eddit account,
+# do it in the view account and eddit account,
+# do the html page and the views for it as well
 class login(View):
     def get(self, request):
         return render(request, 'login.html', {"name": "login"})
@@ -58,11 +62,12 @@ class CreateAccount(View):
         password = request.POST.get("password")
         major = request.POST.getlist("majorlist")
         interests = request.POST.getlist("selected_interests")
+        startdate = request.POST.get("startdate")
+        graddate = request.POST.get("graddate")
+        print(startdate, graddate)
 
-        # res = user_util.User_Util.create_user(name= request.POST.get("firstname")+" " + request.POST.get("lastname"), email= request.POST.get("email"), password=request.POST.get("password"),
-        #                                           role=0)
         res = user_util.User_Util.create_user(name=firstName + " " + lastName, email=email, password=password,
-                                              role=0)
+                                              role=0, startdate=startdate, graddate=graddate)
         if isinstance(res, ValueError):
             return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
@@ -91,4 +96,13 @@ class ViewAccount(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
-        return render(request, "viewaccount.html",{"User": current_user,"MemsInOrg": userInOrgs ,"usermajors":userMaj})
+        return render(request, "viewaccount.html",
+                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj})
+
+
+class EditAccount(View):
+    def get(self, request):
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
+        userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
+        return render(request, "editaccount.html.html",{"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj})

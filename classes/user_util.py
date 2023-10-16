@@ -11,7 +11,7 @@ from UWM_Clubs_and_Events.models import User, UserInterest, Interest, UserMajor,
 import re
 
 class User_Util():
-    def create_user(name, email, password, role):
+    def create_user(name, email, password, role, startdate, graddate):
         pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
 
         try:
@@ -24,7 +24,7 @@ class User_Util():
                 return ValueError("user with email exists ")
             if password == "" or ' ' in password:
                 return ValueError("password format incorrect")
-            user = User(email=email, password=password, name=name, role=role)
+            user = User(email=email, password=password, name=name, role=role, gradStartDate=startdate, gradEndDate=graddate)
             user.save()
             print("returning true?")
             return True

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from UWM_Clubs_and_Events.views import login, Homepage, CreateAccount,ViewAccount
+from UWM_Clubs_and_Events.views import login, Homepage, CreateAccount,ViewAccount, EditAccount
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,6 +23,7 @@ urlpatterns = [
     path("login.html", login.as_view()),
     path('homepage/', Homepage.as_view(), name='homepage'),
     path('createAccount/', CreateAccount.as_view(), name='createaccount'),
-    path('viewaccount/', ViewAccount.as_view(), name='viewaccount')
+    path('viewaccount/', ViewAccount.as_view(), name='viewaccount'),
+    path('edditaccount/', EditAccount.as_view(), name='editaccount')
 
 ]
