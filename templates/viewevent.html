@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<html>
+    <head>
+        <title>{{ Event.name }}</title>
+    </head>
+    <body>
+        <h1>{{ Event.name }}</h1>
+        <p>{{ Event.org }}</p>
+        <p>{{ Event.time_happening }}</p>
+        <p>{{ Event.description }}</p>
+        <a href="{% url 'homepage' %}">Back to home</a>
+    </body>
+</html>
+{% endblock %}

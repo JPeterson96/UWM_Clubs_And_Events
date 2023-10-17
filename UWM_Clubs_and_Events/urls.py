@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from UWM_Clubs_and_Events.views import login, Homepage, CreateAccount
+from UWM_Clubs_and_Events.views import login, Homepage, CreateAccount, Logout, ViewEvent
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', login.as_view(), name='login'),
+    path('login/', Logout.as_view(), name='logout'),
     path("login.html", login.as_view()),
     path('homepage/', Homepage.as_view(), name='homepage'),
-    path('createAccount/', CreateAccount.as_view(), name='createaccount')
+    path('createAccount/', CreateAccount.as_view(), name='createaccount'),
+    path('viewevent<str:name>/', ViewEvent.as_view(), name='viewevent')
 ]
