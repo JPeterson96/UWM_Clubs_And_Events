@@ -24,6 +24,6 @@ urlpatterns = [
     path('homepage/', Homepage.as_view(), name='homepage'),
     path('createAccount/', CreateAccount.as_view(), name='createaccount'),
     path('viewaccount/', ViewAccount.as_view(), name='viewaccount'),
-    path('edditaccount/', EditAccount.as_view(), name='editaccount')
+    path('viewaccount/editaccount', EditAccount.as_view(), name='editaccount')
 
 ]

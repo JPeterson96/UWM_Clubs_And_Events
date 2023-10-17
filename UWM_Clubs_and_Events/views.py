@@ -64,7 +64,6 @@ class CreateAccount(View):
         interests = request.POST.getlist("selected_interests")
         startdate = request.POST.get("startdate")
         graddate = request.POST.get("graddate")
-        print(startdate, graddate)
 
         res = user_util.User_Util.create_user(name=firstName + " " + lastName, email=email, password=password,
                                               role=0, startdate=startdate, graddate=graddate)
@@ -105,4 +104,20 @@ class EditAccount(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
-        return render(request, "editaccount.html.html",{"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj})
+        return render(request, "editaccount.html",
+                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "majors": Major.objects.all(), "startdate": User.gradStartDate, "graddaye": User.gradEndDate})
+
+    def post(self, request):
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        firstName = request.POST.get("firstname")
+        lastName = request.POST.get("lastname")
+        password = request.POST.get("password")
+        major = request.POST.getlist("majorlist")
+        interests = request.POST.getlist("selected_interests")
+        startdate = request.POST.get("startdate")
+        graddate = request.POST.get("graddate")
+
+        res=user_util.User_Util.edit_user(firstName+" "+lastName, current_user.email,password, current_user.role,startdate,graddate)
+        if isinstance(res, ValueError):
+            return render(request, "editaccount.html", {"message": res})
+        return render(request, "viewaccount.html", {"message": "account edit successful", "User": current_user})

@@ -1,10 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Edit Account</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .rounded-input {
+            border-radius: 20px; /* Adjust the border radius as needed */
+        }
+    </style>
 </head>
 <body>
+  <!--Nav bar-->
+    <nav class="navbar navbar-expand-lg bg-warning navbar-dark py-3">
+        <div class="container-fluid">
+            <a href="{% url 'viewaccount' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navmenu"
+            >
+            <span class = "navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="navbar-nav">
+                </ul>
+            </div>
+        </div>
+    </nav>
+<div style="padding: 2%;">
+    <h1>Edit Account</h1>
+    {{ message }}
+    <form action="{% url 'editaccount' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="firstname">First Name</label>
+            <input type="text" class="form-control rounded-input" name="firstname" id="firstname", placeholder="{{ User.name}}">
+        </div>
+        <div class="form-group">
+            <label for="lastname">Last Name</label>
+            <input type="text" class="form-control rounded-input" name="lastname" id="lastname">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="text" class="form-control rounded-input" name="password" id="password">
+        </div>
+          <th>Your Majors</th>
+                </td>
+            <table>
 
+                {% for umaj in usermajors %}
+                    <tr>
+                        <td>{{ umaj.major.name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        <div class="form-group">
+            <label for="major">Major</label>
+            {% for major in majors %}
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="majorlist" value="{{ major.name }}" id="major_{{ major.name }}">
+                <label class="form-check-label" for="major_{{ major.name }}">
+                    {{ major.name }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="search-input">Interests</label>
+            <input type="text" class="form-control rounded-input" id="search-input" placeholder="Search for interests">
+        </div>
+        <div class="form-check">
+            <table>
+                <tbody id="interests-table">
+                    {% for interest in interests %}
+                    <tr>
+                        <td>
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" name="selected_interests" value="{{ interest.tag }}">
+                                {{ interest.tag }}
+                            </label>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    <div class="form-group">
+            <label for="startdate">start date</label>
+            <input type="date" name="startdate" class="form-control rounded-input" placeholder="{{User.gradStartDate}}">
+        </div>
+    <div class="form-group">
+            <label for="graddate">grad date</label>
+            <input type="date" name = "graddate" class="form-control rounded-input" placeholder="{{User.gradEndDate}}">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 </body>
 </html>
+{% endblock %}

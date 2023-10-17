@@ -26,10 +26,27 @@ class User_Util():
                 return ValueError("password format incorrect")
             user = User(email=email, password=password, name=name, role=role, gradStartDate=startdate, gradEndDate=graddate)
             user.save()
-            print("returning true?")
             return True
         except Exception as e:
             raise ValueError(e)
+
+    def edit_user(name, email, password, role, startdate, graddate):
+        curr_user= User_Util.get_user(email=email)
+        print(name, email, password, startdate, graddate)
+        if name is not None:
+            curr_user.name=name
+        if password is not None and ' ' in password:
+            return ValueError("password format incorrect")
+        if startdate is not None:
+            curr_user.gradStartDate=startdate
+        if graddate is not None:
+            curr_user.gradEndDate=graddate
+        curr_user.password=password
+        curr_user.save()
+
+
+
+
 
     def set_user_interest(email, interest):
         try:
