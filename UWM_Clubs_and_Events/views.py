@@ -1,13 +1,11 @@
 from django.views import View
 from django.shortcuts import render, redirect
+from django.contrib.auth import logout
+from UWM_Clubs_and_Events.models import User, Major, Interest, Event
 from UWM_Clubs_and_Events.models import User, Major, Interest, Event, UserMajor, MembersIn
 from classes import user_util
+from django.core.paginator import Paginator
 
-
-# Stuff for code
-# Need to do graduation date in the eddit account,
-# do it in the view account and eddit account,
-# do the html page and the views for it as well
 class login(View):
     def get(self, request):
         return render(request, 'login.html', {"name": "login"})
@@ -39,10 +37,13 @@ class login(View):
 
 class Homepage(View):
     def get(self, request):
-        events = list(Event.objects.all())
+        all_events = Event.objects.all()
+        paginator = Paginator(all_events, 5)  # 5 events per page
+
+        page_number = request.GET.get('page')
+        events = paginator.get_page(page_number)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "homepage.html", {"Events": events, "user": current_user})
-
 
 class CreateAccount(View):
 
@@ -121,3 +122,20 @@ class EditAccount(View):
         if isinstance(res, ValueError):
             return render(request, "editaccount.html", {"message": res})
         return render(request, "viewaccount.html", {"message": "account edit successful", "User": current_user})
+
+class Logout(View):
+    def get(self, request):
+        try:
+            logout(request)
+        except KeyError:
+            pass
+        return redirect("login")
+
+class ViewEvent(View):
+    def get(self, request, name):
+        try:
+            event = Event.objects.get(name=name)
+            return render(request, "viewevent.html", {"Event": event})
+        except:
+            return render(request, "homepage.html", {"error_message": "Event does not exist"})
+
