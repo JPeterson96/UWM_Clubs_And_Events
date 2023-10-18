@@ -28,7 +28,7 @@
     <div style="padding: 2%;">
         <form action="{% url 'viewaccount' %}" method="post">
             {% csrf_token %}
-
+            {{ message }}
             <table>
                 <tr>
                     <td>Name </td>

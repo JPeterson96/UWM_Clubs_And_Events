@@ -27,7 +27,7 @@ urlpatterns = [
     path('createAccount/', CreateAccount.as_view(), name='createaccount'),
     path('viewevent<str:name>/', ViewEvent.as_view(), name='viewevent'),
     path('createAccount/', CreateAccount.as_view(), name='createaccount'),
-    path('viewaccount/', ViewAccount.as_view(), name='viewaccount'),
+    path('homepage/viewaccount/', ViewAccount.as_view(), name='viewaccount'),
     path('viewaccount/editaccount', EditAccount.as_view(), name='editaccount')
 
 ]

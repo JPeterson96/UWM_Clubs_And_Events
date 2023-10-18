@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
@@ -5,6 +6,7 @@ from UWM_Clubs_and_Events.models import User, Major, Interest, Event
 from UWM_Clubs_and_Events.models import User, Major, Interest, Event, UserMajor, MembersIn
 from classes import user_util
 from django.core.paginator import Paginator
+
 
 class login(View):
     def get(self, request):
@@ -44,6 +46,7 @@ class Homepage(View):
         events = paginator.get_page(page_number)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "homepage.html", {"Events": events, "user": current_user})
+
 
 class CreateAccount(View):
 
@@ -102,26 +105,54 @@ class ViewAccount(View):
 
 class EditAccount(View):
     def get(self, request):
+        search = Interest.objects.all()
+        allmajors = Major.objects.all()
+
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
         return render(request, "editaccount.html",
-                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "majors": Major.objects.all(), "startdate": User.gradStartDate, "graddaye": User.gradEndDate})
+                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj,
+                       "majors": Major.objects.all(), "startdate": User.gradStartDate, "graddaye": User.gradEndDate})
 
     def post(self, request):
+        search = Interest.objects.all()
+        allmajors = Major.objects.all()
+
         current_user = user_util.User_Util.get_user(email=request.session['user'])
+        userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
+        userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
+
         firstName = request.POST.get("firstname")
         lastName = request.POST.get("lastname")
         password = request.POST.get("password")
-        major = request.POST.getlist("majorlist")
-        interests = request.POST.getlist("selected_interests")
+        majorstoremove = request.POST.getlist("majorremoval")
+        addedmajor = request.POST.getlist("majorlist")
+        # interests = request.POST.getlist("selected_interests")
         startdate = request.POST.get("startdate")
         graddate = request.POST.get("graddate")
+        print(firstName, lastName)
+        # delete major associated with user
+        print(firstName + "" + lastName is not '')
+        if majorstoremove:
+            for remmaj in majorstoremove:
+                print(remmaj)
+                print(remmaj, "hello ? ")
+                actMaj = Major.objects.get(name=remmaj)
+                print(actMaj)
+                UserMajor.objects.filter(Q(user=current_user, major=actMaj)).delete()
 
-        res=user_util.User_Util.edit_user(firstName+" "+lastName, current_user.email,password, current_user.role,startdate,graddate)
+        for newmaj in addedmajor:
+            user_util.User_Util.set_user_major(current_user.email, newmaj)
+
+        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email, password, current_user.role,
+                                            startdate, graddate)
         if isinstance(res, ValueError):
             return render(request, "editaccount.html", {"message": res})
-        return render(request, "viewaccount.html", {"message": "account edit successful", "User": current_user})
+        return render(request, "viewaccount.html",
+                      {"message": "user sucessfully edited", "User": current_user, "MemsInOrg": userInOrgs,
+                       "usermajors": userMaj})
+
 
 class Logout(View):
     def get(self, request):
@@ -131,6 +162,7 @@ class Logout(View):
             pass
         return redirect("login")
 
+
 class ViewEvent(View):
     def get(self, request, name):
         try:
@@ -138,4 +170,3 @@ class ViewEvent(View):
             return render(request, "viewevent.html", {"Event": event})
         except:
             return render(request, "homepage.html", {"error_message": "Event does not exist"})
-
