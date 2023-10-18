@@ -14,6 +14,8 @@ class User(models.Model):
     password = models.CharField(max_length=30)
     name = models.CharField(max_length=30)
     role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Organization")), default=0)
+    gradStartDate= models.DateField(null=True)
+    gradEndDate = models.DateField(null=True)
 
     # graduation date
     def __str__(self):
