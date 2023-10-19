@@ -13,11 +13,11 @@
             border-radius: 20px; /* Adjust the border radius as needed */
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             // Get the interests elements
-            var interests = document.querySelectorAll('input[name="selected_interests"]');
+            var interests = document.querySelectorAll('input[name="interesttoadd"]');
 
             // Get the search input element
             var searchInput = document.getElementById('search-input');
@@ -66,22 +66,19 @@
         {% csrf_token %}
         <div class="form-group">
             <label for="firstname">First Name</label>
-            <input type="text" class="form-control rounded-input" name="firstname" id="firstname", placeholder="firstname">
+            <input type="text" class="form-control rounded-input" name="firstname" id="firstname" value="{{ firstname }}">
         </div>
         <div class="form-group">
             <label for="lastname">Last Name</label>
-            <input type="text" class="form-control rounded-input" name="lastname" id="lastname">
+            <input type="text" class="form-control rounded-input" name="lastname" id="{{ lastname }}" value="{{ lastname }}">
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="text" class="form-control rounded-input" name="password" id="password">
-        </div>
-          <th>Your Majors</th>
+          <th>Your Majors (check the ones you want to remove)</th>
           </td>
              <table>
                 {% for umaj in usermajors %}
                      <tr>
                          <td>
+
                         <input type="checkbox" name="majorremoval" value="{{ umaj.major.name }}">
                          </td>
                         <td>{{ umaj.major.name }}</td>
@@ -100,6 +97,23 @@
             </div>
             {% endfor %}
         </div>
+
+
+
+          <th>Your Interests (check the ones you want to remove)</th>
+          </td>
+             <table>
+                {% for intm in userinterest %}
+                     <tr>
+                         <td>
+
+                        <input type="checkbox" name="interestremoval" value="{{ intm.type.tag }}">
+                         </td>
+                        <td>{{  intm.type.tag }}</td>
+                    </tr>
+                {% endfor %}
+             </table>
+    </td>
         <div class="form-group">
             <label for="search-input">Interests</label>
             <input type="text" class="form-control rounded-input" id="search-input" placeholder="Search for interests">
@@ -111,7 +125,7 @@
                     <tr>
                         <td>
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" name="selected_interests" value="{{ interest.tag }}">
+                                <input type="checkbox" class="form-check-input" name="interesttoadd" value="{{ interest.tag }}">
                                 {{ interest.tag }}
                             </label>
                         </td>
@@ -121,11 +135,11 @@
             </table>
         </div>
     <div class="form-group">
-            <label for="startdate">start date</label>
+            <label for="startdate">start date: {{ User.gradStartDate }}</label>
             <input type="date" name="startdate" class="form-control rounded-input" placeholder="{{User.gradStartDate}}">
         </div>
     <div class="form-group">
-            <label for="graddate">grad date</label>
+            <label for="graddate">grad date: {{ User.gradEndDate }}</label>
             <input type="date" name = "graddate" class="form-control rounded-input" placeholder="{{User.gradEndDate}}">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
