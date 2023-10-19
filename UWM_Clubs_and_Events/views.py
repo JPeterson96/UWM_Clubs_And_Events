@@ -99,15 +99,17 @@ class ViewAccount(View):
         userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
         userInt = UserInterest.objects.filter(user__email=current_user.email)
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
 
         return render(request, "viewaccount.html",
-                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userInt})
+                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userInt, "user": current_user})
 
 
 class EditAccount(View):
     def get(self, request):
         allints = Interest.objects.all()
         allmajors = Major.objects.all()
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
@@ -120,7 +122,7 @@ class EditAccount(View):
                       {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userint,
                        "interests": allints, "firstname": temp_name[0], "lastname": temp_name[1],
                        "majors": Major.objects.all(),
-                       "startdate": User.gradStartDate, "graddate": User.gradEndDate})
+                       "startdate": User.gradStartDate, "graddate": User.gradEndDate, "user": current_user})
 
     def post(self, request):
         search = Interest.objects.all()
@@ -185,16 +187,18 @@ class Logout(View):
 
 class ViewEvent(View):
     def get(self, request, name):
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
         try:
             event = Event.objects.get(name=name)
-            return render(request, "viewevent.html", {"Event": event})
+            return render(request, "viewevent.html", {"Event": event, "user": current_user})
         except:
             return render(request, "homepage.html", {"error_message": "Event does not exist"})
 
 
 class CreateOrganization(View):
     def get(self, request):
-        return render(request, 'createorganization.html')
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        return render(request, 'createorganization.html', {"user": current_user})
 
     def post(self, request):
         orgname = request.POST.get('name')
@@ -219,7 +223,8 @@ class CreateEvent(View):
     def get(self, request):
         tags = Interest.objects.all()
         orgs = Organization.objects.all()
-        return render(request, "createevent.html",{"tags": tags, "orgs": orgs})
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        return render(request, "createevent.html",{"tags": tags, "orgs": orgs, "user": current_user})
 
     def post(self, request):
         name = request.POST.get('name')

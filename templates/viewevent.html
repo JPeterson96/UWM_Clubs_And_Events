@@ -7,11 +7,39 @@
         <title>{{ Event.name }}</title>
     </head>
     <body>
+                     <!--Nav bar-->
+    <nav class="navbar navbar-expand-lg bg-warning navbar-dark py-3">
+        <div class="container-fluid">
+            <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navmenu"
+            >
+            <span class = "navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown d-flex align-items-center">
+                        <span class="me-2">👤</span>
+                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user }}</a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
+                            <li><a class="dropdown-item" href="#Settings">Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div style="padding: 2%;">
         <h1>{{ Event.name }}</h1>
         <p>{{ Event.org }}</p>
         <p>{{ Event.time_happening }}</p>
         <p>{{ Event.description }}</p>
         <a href="{% url 'homepage' %}">Back to home</a>
+    </div>
     </body>
 </html>
 {% endblock %}

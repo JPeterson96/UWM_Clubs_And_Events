@@ -57,6 +57,18 @@
                 <ul class="navbar-nav">
                 </ul>
             </div>
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown d-flex align-items-center">
+                        <span class="me-2">👤</span>
+                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user }}</a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
+                            <li><a class="dropdown-item" href="#Settings">Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 <div style="padding: 2%;">
@@ -143,6 +155,7 @@
             <input type="date" name = "graddate" class="form-control rounded-input" placeholder="{{User.gradEndDate}}">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <button><a href="{% url 'viewaccount' %}"> Cancel </a></button>
     </form>
 </div>
 </body>

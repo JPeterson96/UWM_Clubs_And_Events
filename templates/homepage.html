@@ -22,17 +22,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        {%  if user.role == 1 %}
-                        <a href="{%  url 'createorganization' %}" class="nav-link text-dark">Create Organization</a>
-                        {% endif %}
-                    </li>
-                    <li class="nav-item">
-                        <a href="#button2" class="nav-link text-dark">Button 2</a>
-                    </li>
-                    <!-- <li class="nav-item">
-                        <a href="#userAccount" class="nav-link text-dark" style="text-align: right;"> {{ user }} </a>
-                    </li> -->
+                    {%  if user.role == 1 %}
+                        <li class="nav-item">
+                            <a href="{%  url 'createorganization' %}" class="nav-link text-dark">Create Organization</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'createevent' %}" class="nav-link text-dark">Create Event</a>
+                        </li>
+                    {% endif %}
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown d-flex align-items-center">

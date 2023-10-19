@@ -16,10 +16,22 @@
             <span class = "navbar-toggler-icon"></span>
             </button>
              <button class="nav-item">
-                        <a href={% url 'editaccount' %} class="nav-link text-dark">Edit Account</a>
+                        <a href="{% url 'editaccount' %}" class="nav-link text-dark">Edit Account</a>
              </button>
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown d-flex align-items-center">
+                        <span class="me-2">👤</span>
+                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user }}</a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
+                            <li><a class="dropdown-item" href="#Settings">Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </li>
                 </ul>
             </div>
         </div>
