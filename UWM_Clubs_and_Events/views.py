@@ -2,8 +2,7 @@ from django.db.models import Q
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from UWM_Clubs_and_Events.models import User, Major, Interest, Event
-from UWM_Clubs_and_Events.models import User, Major, Interest, Event, UserMajor, MembersIn
+from UWM_Clubs_and_Events.models import *
 from classes import user_util
 from django.core.paginator import Paginator
 
@@ -170,3 +169,26 @@ class ViewEvent(View):
             return render(request, "viewevent.html", {"Event": event})
         except:
             return render(request, "homepage.html", {"error_message": "Event does not exist"})
+
+
+class CreateOrganization(View):
+    def get(self, request):
+        return render(request, 'createorganization.html')
+
+    def post(self, request):
+        orgname = request.POST.get('name')
+        contact = request.POST.get('point_of_contact')
+        print(contact)
+        try:
+            contactuser = User.objects.get(email=contact)
+        except:
+            return render(request, "createorganization.html", {"error_message": "User does not exist"})
+        membersCount = request.POST.get('member_count')
+        description = request.POST.get('description')
+
+        newOrg = Organization.objects.create(name=orgname, point_of_contact=contactuser, membersCount=membersCount,
+                                             description=description)
+        newOrg.save()
+
+        # return render(request, "homepage.html", {"success_message": "Organization Successfully created"})
+        return redirect("homepage")
