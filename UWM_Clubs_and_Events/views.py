@@ -169,7 +169,7 @@ class EditAccount(View):
             return render(request, "editaccount.html", {"message": res})
 
         userint = UserInterest.objects.filter(user__email=current_user.email)
-
+        current_user=user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "viewaccount.html",
                       {"message": "user sucessfully edited", "User": current_user, "MemsInOrg": userInOrgs,
                        "usermajors": userMaj, "userinterest": userint})
