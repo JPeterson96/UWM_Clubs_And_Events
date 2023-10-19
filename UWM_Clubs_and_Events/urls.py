@@ -29,5 +29,6 @@ urlpatterns = [
     path('homepage/viewaccount/', ViewAccount.as_view(), name='viewaccount'),
     path('viewaccount/editaccount', EditAccount.as_view(), name='editaccount'),
     path('createOrganization/', CreateOrganization.as_view(), name='createorganization'),
+    path('createEvent/', CreateEvent.as_view(), name='createevent'),
 
 ]

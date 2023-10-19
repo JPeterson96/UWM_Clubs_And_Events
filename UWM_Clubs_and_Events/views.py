@@ -213,3 +213,33 @@ class CreateOrganization(View):
 
         # return render(request, "homepage.html", {"success_message": "Organization Successfully created"})
         return redirect("homepage")
+
+
+class CreateEvent(View):
+    def get(self, request):
+        tags = Interest.objects.all()
+        orgs = Organization.objects.all()
+        return render(request, "createevent.html",{"tags": tags, "orgs": orgs})
+
+    def post(self, request):
+        name = request.POST.get('name')
+        organization = request.POST.get('organization')
+        location = request.POST.get('location')
+        time_happening = request.POST.get('time-happening')
+        description = request.POST.get('description')
+        time_published = datetime.now()
+
+        event = Event.objects.create(name=name, organization=organization, location=location,
+                                     time_happening=time_happening, description=description, time_published=time_published)
+        event.save()
+
+        #line 67
+        # interests = request.POST.getlist("selected_interests")
+        # for tag in interests:
+        #     eventTag = EventTag.objects.create(event=event, interest=tag)
+        #     eventTag.save()
+        #     # should not get here
+        #     if isinstance(eventTag, ValueError):
+        #         return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
+
+        return redirect("homepage")

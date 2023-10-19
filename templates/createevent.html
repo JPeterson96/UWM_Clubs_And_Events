@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Event</title>
+</head>
+<body>
+<form method="post" method="{% url 'createevent' %}">
+    {% csrf_token %}
+
+    <div class="container">
+        <div class="elements">
+            <label for="name">Event Name: </label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div class="elements">
+            <label for="organization">Organization Hosting: </label>
+            <input type="text" id="name" name="organization">
+        </div>
+        <div class="elements">
+            <label for="location">Location: </label>
+            <input type="text" id="location" name="location">
+        </div>
+        <div class="elements">
+            <label for="time-happening">When is this event? </label>
+            <input type="datetime-local" id="time-happening" name="time-happening">
+        </div>
+        <div class="elements">
+            <label for="description">Event Description: </label>
+            <input type="text" id="description" name="description">
+        </div>
+    </div>
+    <div style="padding:2%">
+        <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
+    </div>
+</form>
+</body>
+</html>
