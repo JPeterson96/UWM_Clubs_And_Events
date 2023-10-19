@@ -135,11 +135,11 @@
             </table>
         </div>
     <div class="form-group">
-            <label for="startdate">start date</label>
+            <label for="startdate">start date: {{ User.gradStartDate }}</label>
             <input type="date" name="startdate" class="form-control rounded-input" placeholder="{{User.gradStartDate}}">
         </div>
     <div class="form-group">
-            <label for="graddate">grad date</label>
+            <label for="graddate">grad date: {{ User.gradEndDate }}</label>
             <input type="date" name = "graddate" class="form-control rounded-input" placeholder="{{User.gradEndDate}}">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
