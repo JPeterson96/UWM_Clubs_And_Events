@@ -32,19 +32,18 @@ class User_Util():
         except Exception as e:
             raise ValueError(e)
 
-    def edit_user(name, email, password, role, startdate, graddate):
+    def edit_user(name, email, role, startdate, graddate):
         curr_user = User_Util.get_user(email=email)
 
-        if name == "":
+        if name != "":
             curr_user.name = name
-        if password is None or ' ' in password:
-            return ValueError("password format incorrect")
+        # if password is None or ' ' in password:
+        #     return ValueError("password format incorrect")
         if startdate is not '':
             print(" this is the start", startdate)
             curr_user.gradStartDate = startdate
         if graddate is not '':
             curr_user.gradEndDate = graddate
-        curr_user.password = password
         curr_user.save()
 
     def set_user_interest(email, interest):

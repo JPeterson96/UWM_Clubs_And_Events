@@ -62,6 +62,18 @@
                     </tr>
                 {% endfor %}
             </table>
+        <td>
+              <th>users interests</th>
+              </td>
+             <table>
+                {% for intm in userinterest %}
+                     <tr>
+                         <td>
+                        <td>{{ intm.type.tag }}</td>
+                    </tr>
+                {% endfor %}
+             </table>
+    </td>
             <table>
                 <tr>
                     <th>Organizations</th>

@@ -3,7 +3,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from UWM_Clubs_and_Events.models import User, Major, Interest, Event
-from UWM_Clubs_and_Events.models import User, Major, Interest, Event, UserMajor, MembersIn
+from UWM_Clubs_and_Events.models import User, Major, Interest, Event, UserMajor, MembersIn, UserInterest
 from classes import user_util
 from django.core.paginator import Paginator
 
@@ -99,21 +99,29 @@ class ViewAccount(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
+        userInt = UserInterest.objects.filter(user__email=current_user.email)
+
         return render(request, "viewaccount.html",
-                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj})
+                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userInt})
 
 
 class EditAccount(View):
     def get(self, request):
-        search = Interest.objects.all()
+        allints = Interest.objects.all()
         allmajors = Major.objects.all()
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userMaj = UserMajor.objects.filter(user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
+        userint = UserInterest.objects.filter(user__email=current_user.email)
+
+        temp_name = current_user.name.split()
+
         return render(request, "editaccount.html",
-                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj,
-                       "majors": Major.objects.all(), "startdate": User.gradStartDate, "graddaye": User.gradEndDate})
+                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userint,
+                       "interests": allints, "firstname": temp_name[0], "lastname": temp_name[1],
+                       "majors": Major.objects.all(),
+                       "startdate": User.gradStartDate, "graddate": User.gradEndDate})
 
     def post(self, request):
         search = Interest.objects.all()
@@ -125,15 +133,14 @@ class EditAccount(View):
 
         firstName = request.POST.get("firstname")
         lastName = request.POST.get("lastname")
-        password = request.POST.get("password")
         majorstoremove = request.POST.getlist("majorremoval")
         addedmajor = request.POST.getlist("majorlist")
-        # interests = request.POST.getlist("selected_interests")
+        interestremove = request.POST.getlist("interestremoval")
+        addint = request.POST.getlist("interesttoadd")
         startdate = request.POST.get("startdate")
         graddate = request.POST.get("graddate")
-        print(firstName, lastName)
         # delete major associated with user
-        print(firstName + "" + lastName is not '')
+
         if majorstoremove:
             for remmaj in majorstoremove:
                 print(remmaj)
@@ -145,13 +152,27 @@ class EditAccount(View):
         for newmaj in addedmajor:
             user_util.User_Util.set_user_major(current_user.email, newmaj)
 
-        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email, password, current_user.role,
+        ##now add and remove intereests
+        if interestremove:
+            for remint in interestremove:
+                interest = Interest.objects.get(tag=remint)
+                UserInterest.objects.filter(Q(user=current_user, type=interest)).delete()
+
+        if addint:
+            # now dd if any in the list
+            for intadd in addint:
+                user_util.User_Util.set_user_interest(current_user.email, intadd)
+
+        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email, current_user.role,
                                             startdate, graddate)
         if isinstance(res, ValueError):
             return render(request, "editaccount.html", {"message": res})
+
+        userint = UserInterest.objects.filter(user__email=current_user.email)
+
         return render(request, "viewaccount.html",
                       {"message": "user sucessfully edited", "User": current_user, "MemsInOrg": userInOrgs,
-                       "usermajors": userMaj})
+                       "usermajors": userMaj, "userinterest": userint})
 
 
 class Logout(View):
