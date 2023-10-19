@@ -3,3 +3,5 @@ db.sqlite3
 myenv
 __pycache__/
 .DS_Store
+.idea
+UWM_Clubs_and_Events/__pycache__/
