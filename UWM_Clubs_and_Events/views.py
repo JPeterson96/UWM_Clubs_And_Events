@@ -2,8 +2,7 @@ from django.db.models import Q
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from UWM_Clubs_and_Events.models import User, Major, Interest, Event
-from UWM_Clubs_and_Events.models import User, Major, Interest, Event, UserMajor, MembersIn, UserInterest
+from UWM_Clubs_and_Events.models import *
 from classes import user_util
 from django.core.paginator import Paginator
 
