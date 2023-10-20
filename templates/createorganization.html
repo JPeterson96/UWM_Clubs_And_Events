@@ -15,7 +15,7 @@
 </head>
 <body>
         <!--Nav bar-->
-    <nav class="navbar navbar-expand-lg bg-warning navbar-dark py-3">
+    <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
             <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
             <button
@@ -40,38 +40,40 @@
             </div>
         </div>
     </nav>
-    <h1>Create Organization</h1>
-    <form method="post" action="{% url 'createorganization' %}">
-        {%  csrf_token %}
+    <div style="padding-top: 80px;">
+        <h1>Create Organization</h1>
+        <form method="post" action="{% url 'createorganization' %}">
+            {%  csrf_token %}
 
-        <div class="form-group">
-            <label for="name">Organization Name: </label>
-            <input type="text" class="form-control rounded-input" id= "name" name="name">
-        </div>
-        <div class="form-group">
-            <label for="point_of_contact">Organization's Point of Contact: </label>
-            <input type="email" class="form-control rounded-input" id="point_of_contact" name="point_of_contact">
-        </div>
-        <div class="form-group">
-            <label for="member_count">Number of Members: </label>
-            <input type="number" class="form-control rounder-input" id="member_count" name="member_count" min="1">
-        </div>
-        <div class="form-group">
-            <label for="description">Description: </label>
-            <input type="text" class="form-control rounded-input" id="description" name="description">
-        </div>
-        <div style="padding:2%">
-            <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
-        </div>
-{#        <a class="btn btn-primary" href="{%  url 'homepage' %}" role="button" style="float: left">Home Page</a>#}
-        <!---<a href="{% url 'homepage' %}">Main Page</a></br> --->
-    </form>
-    <p style="padding:1%; color:red"> <em>
-        {% if error_message %}
-            {{ error_message }}
-        {% endif %}
-    </em>
-    </p>
+            <div class="form-group">
+                <label for="name">Organization Name: </label>
+                <input type="text" class="form-control rounded-input" id= "name" name="name">
+            </div>
+            <div class="form-group">
+                <label for="point_of_contact">Organization's Point of Contact: </label>
+                <input type="email" class="form-control rounded-input" id="point_of_contact" name="point_of_contact">
+            </div>
+            <div class="form-group">
+                <label for="member_count">Number of Members: </label>
+                <input type="number" class="form-control rounder-input" id="member_count" name="member_count" min="1">
+            </div>
+            <div class="form-group">
+                <label for="description">Description: </label>
+                <input type="text" class="form-control rounded-input" id="description" name="description">
+            </div>
+            <div style="padding:2%">
+                <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
+            </div>
+    {#        <a class="btn btn-primary" href="{%  url 'homepage' %}" role="button" style="float: left">Home Page</a>#}
+            <!---<a href="{% url 'homepage' %}">Main Page</a></br> --->
+        </form>
+        <p style="padding:1%; color:red"> <em>
+            {% if error_message %}
+                {{ error_message }}
+            {% endif %}
+        </em>
+        </p>
+    </div>
 </body>
 </html>
 {% endblock %}
