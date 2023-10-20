@@ -9,7 +9,7 @@
     </head>
     <body>
              <!--Nav bar-->
-    <nav class="navbar navbar-expand-lg bg-warning navbar-dark py-3">
+    <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
             <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
             <button
@@ -44,7 +44,7 @@
             </div>
         </div>
     </nav>
-    <div class="container mt-4">
+    <div class="container mt-4" style="padding-top: 70px;">
         {% for i in Events %}
         <div class="card mb-3">
             <div class="row no-gutters">

@@ -8,7 +8,7 @@
     </head>
     <body>
                      <!--Nav bar-->
-    <nav class="navbar navbar-expand-lg bg-warning navbar-dark py-3">
+    <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
             <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
             <button
@@ -33,7 +33,7 @@
             </div>
         </div>
     </nav>
-    <div style="padding: 2%;">
+    <div style="padding: 2%; padding-top: 80px;">
         <h1>{{ Event.name }}</h1>
         <p>{{ Event.org }}</p>
         <p>{{ Event.time_happening }}</p>
