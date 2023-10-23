@@ -104,7 +104,7 @@ class ViewAccount(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
 
         return render(request, "viewaccount.html",
-                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userInt})
+                      {"user": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userInt})
 
 
 class EditAccount(View):
