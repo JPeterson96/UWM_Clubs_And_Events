@@ -7,7 +7,7 @@
 # major - string[]
 # friends - user[]
 
-from UWM_Clubs_and_Events.models import User, StudentInterest, Interest, StudentMajor, Major
+from UWM_Clubs_and_Events.models import *
 import re
 
 
@@ -25,20 +25,20 @@ class User_Util():
                 return ValueError("user with email exists ")
             if password == "" or ' ' in password:
                 return ValueError("password format incorrect")
-            user = User(email=email, password=password, name=name, role=role, gradStartDate=startdate,
-                        gradEndDate=graddate)
+            user = User(email=email, password=password, name=name, role=role)
+            student = Student(user=user, enrollment_date=startdate, graduation_date=graddate)
+            
             user.save()
+            student.save()
             return True
         except Exception as e:
             raise ValueError(e)
 
-    def edit_user(name, email, role, startdate, graddate):
+    def edit_user(name, email, startdate, graddate):
         curr_user = User_Util.get_user(email=email)
 
         if name != "":
             curr_user.name = name
-        # if password is None or ' ' in password:
-        #     return ValueError("password format incorrect")
         if startdate is not '':
             print(" this is the start", startdate)
             curr_user.gradStartDate = startdate
@@ -46,23 +46,23 @@ class User_Util():
             curr_user.gradEndDate = graddate
         curr_user.save()
 
-    def set_user_interest(email, interest):
+    def set_student_interest(email, interest):
         try:
             if email == "":
                 return ValueError("email cannot be empty")
-            user = User_Util.get_user(email=email)
+            student = User_Util.get_student(email=email)
             relInterest = Interest.objects.get(tag__exact=interest)
-            userinterest = StudentInterest.objects.create(user=user, type=relInterest)
+            userinterest = StudentInterest.objects.create(student=student, type=relInterest)
             userinterest.save()
             return True
         except Exception as e:
             raise ValueError(e)
 
-    def set_user_major(email, majorname):
+    def set_student_major(email, majorname):
         try:
             if email == "":
                 return ValueError("email cannot be empty")
-            user = User_Util.get_user(email=email)
+            user = User_Util.get_student(email=email)
             resMajor = Major.objects.get(name__iexact=majorname)
             user_major = StudentMajor.objects.create(user=user, major=resMajor)
             user_major.save()
@@ -76,10 +76,22 @@ class User_Util():
             return User.objects.get(email=email)
         except:
             return None
+        
+    def get_student(email):
+        try:
+            return Student.objects.get(email=email)
+        except:
+            return None
 
     def get_all_users(self):
         try:
             return User.objects.all()
+        except:
+            return None
+        
+    def get_all_students(self):
+        try:
+            return User.objects.filter(role=1)
         except:
             return None
 
@@ -89,14 +101,14 @@ class User_Util():
         except:
             return None
 
-    def get_users_by_major(major):
+    def get_students_by_major(major):
         try:
-            return User.objects.filter(major=major)
+            return Student.objects.filter(major=major)
         except:
             return None
 
-    def get_users_by_interest(interest):
+    def get_students_by_interest(interest):
         try:
-            return User.objects.filter(interests=interest)
+            return Student.objects.filter(interests=interest)
         except:
             return None
