@@ -7,7 +7,7 @@
 # major - string[]
 # friends - user[]
 
-from UWM_Clubs_and_Events.models import User, UserInterest, Interest, UserMajor, Major
+from UWM_Clubs_and_Events.models import User, StudentInterest, Interest, StudentMajor, Major
 import re
 
 
@@ -52,7 +52,7 @@ class User_Util():
                 return ValueError("email cannot be empty")
             user = User_Util.get_user(email=email)
             relInterest = Interest.objects.get(tag__exact=interest)
-            userinterest = UserInterest.objects.create(user=user, type=relInterest)
+            userinterest = StudentInterest.objects.create(user=user, type=relInterest)
             userinterest.save()
             return True
         except Exception as e:
@@ -64,7 +64,7 @@ class User_Util():
                 return ValueError("email cannot be empty")
             user = User_Util.get_user(email=email)
             resMajor = Major.objects.get(name__iexact=majorname)
-            user_major = UserMajor.objects.create(user=user, major=resMajor)
+            user_major = StudentMajor.objects.create(user=user, major=resMajor)
             user_major.save()
             print("added")
             return True
