@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 
 class login(View):
     def get(self, request):
+        logout(request)
         return render(request, 'login.html', {"name": "login"})
 
     def post(self, request):
@@ -79,14 +80,14 @@ class CreateAccount(View):
         # adds every tage fo interest to user
 
         for tags in interests:
-            value = user_util.User_Util.set_user_interest(email=check_user.email, interest=tags)
+            value = user_util.User_Util.set_student_interest(email=check_user.email, interest=tags)
             # should not get here
             if isinstance(value, ValueError):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
         for maj in major:
             print(maj)
-            add_major = user_util.User_Util.set_user_major(email=check_user.email, majorname=maj)
+            add_major = user_util.User_Util.set_student_major(email=check_user.email, majorname=maj)
 
             if isinstance(add_major, ValueError):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
@@ -95,14 +96,15 @@ class CreateAccount(View):
 
 class ViewAccount(View):
     def get(self, request):
-        current_user = user_util.User_Util.get_user(email=request.session['user'])
-        userMaj = StudentMajor.objects.filter(user__email__exact=current_user.email) ##student__user__email ??
-        userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
-        userInt = StudentInterest.objects.filter(user__email=current_user.email)
+        # current_user = user_util.User_Util.get_student(email=request.session['user'])
+        email = request.session['user']
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=email) ##student__user__email ??
+        userInOrgs = MembersIn.objects.filter(user__email__exact=email)
+        userInt = StudentInterest.objects.filter(student__user__email__exact=email)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
 
         return render(request, "viewaccount.html",
-                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userInt, "user": current_user})
+                      {"user": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userInt})
 
 
 class EditAccount(View):
