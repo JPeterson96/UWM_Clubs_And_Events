@@ -114,9 +114,9 @@ class EditAccount(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        userMaj = StudentMajor.objects.filter(user__email__exact=current_user.email) ##student__user__email
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email) ##student__user__email
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
-        userint = StudentInterest.objects.filter(user__email=current_user.email)
+        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
 
         temp_name = current_user.name.split()
 
@@ -124,7 +124,7 @@ class EditAccount(View):
                       {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userint,
                        "interests": allints, "firstname": temp_name[0], "lastname": temp_name[1],
                        "majors": Major.objects.all(),
-                       "startdate": User.gradStartDate, "graddate": User.gradEndDate, "user": current_user})
+                       "startdate": Student.enrollment_date, "graddate": Student.graduation_date, "user": current_user})
 
     def post(self, request):
         search = Interest.objects.all()
