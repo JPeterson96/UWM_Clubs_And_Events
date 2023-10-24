@@ -131,7 +131,7 @@ class EditAccount(View):
         allmajors = Major.objects.all()
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        userMaj = StudentMajor.objects.filter(user__email__exact=current_user.email)
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
 
         firstName = request.POST.get("firstname")
@@ -166,12 +166,12 @@ class EditAccount(View):
             for intadd in addint:
                 user_util.User_Util.set_user_interest(current_user.email, intadd)
 
-        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email, current_user.role,
+        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,
                                             startdate, graddate)
         if isinstance(res, ValueError):
             return render(request, "editaccount.html", {"message": res})
 
-        userint = StudentInterest.objects.filter(user__email=current_user.email)
+        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
         current_user=user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "viewaccount.html",
                       {"message": "user sucessfully edited", "User": current_user, "MemsInOrg": userInOrgs,
