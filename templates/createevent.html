@@ -43,9 +43,15 @@
                     <label for="name">Event Name: </label>
                     <input type="text" id="name" name="name">
                 </div>
-                <div class="elements">
-                    <label for="organization">Organization Hosting: </label>
-                    <input type="text" id="name" name="organization">
+                <!-- displays organizations to host event -->
+                <div class="form-group mb-2">
+                    <label for="org">Organizations </label>
+                    <select name="org" id="org">
+                        <option value="">--- Select an Organization ---</option>
+                        {% for i in orgs %}
+                            <option value="{{ i.name }}">{{ i.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="elements">
                     <label for="location">Location: </label>
