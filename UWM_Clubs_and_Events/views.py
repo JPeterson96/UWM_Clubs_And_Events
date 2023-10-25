@@ -49,7 +49,6 @@ class Homepage(View):
 
 
 class CreateAccount(View):
-
     def get(self, request):
         search = request.GET.get('search-input', '')
         filtered_interests = Interest.objects.filter(tag__icontains=search)
@@ -131,7 +130,7 @@ class EditAccount(View):
         allmajors = Major.objects.all()
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        userMaj = StudentMajor.objects.filter(user__email__exact=current_user.email)
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
 
         firstName = request.POST.get("firstname")
@@ -166,12 +165,12 @@ class EditAccount(View):
             for intadd in addint:
                 user_util.User_Util.set_user_interest(current_user.email, intadd)
 
-        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email, current_user.role,
+        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,
                                             startdate, graddate)
         if isinstance(res, ValueError):
             return render(request, "editaccount.html", {"message": res})
 
-        userint = StudentInterest.objects.filter(user__email=current_user.email)
+        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
         current_user=user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "viewaccount.html",
                       {"message": "user sucessfully edited", "User": current_user, "MemsInOrg": userInOrgs,
@@ -200,21 +199,29 @@ class ViewEvent(View):
 class CreateOrganization(View):
     def get(self, request):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        return render(request, 'createorganization.html', {"user": current_user})
+        # future TODO: filter further to only get users from certain organization
+        point_of_contacts = User.objects.filter(role__exact=2)
+        return render(request, 'createorganization.html', {"user": current_user, "point_of_contacts": point_of_contacts})
 
     def post(self, request):
         orgname = request.POST.get('name')
-        contact = request.POST.get('point_of_contact')
-        print(contact)
+        contact_id = request.POST.get('point_of_contact')
+        print(contact_id)
         try:
-            contactuser = User.objects.get(email=contact)
-        except:
+            contactuser = User.objects.get(id=contact_id)
+        except User.DoesNotExist:
             return render(request, "createorganization.html", {"error_message": "User does not exist"})
         membersCount = request.POST.get('member_count')
         description = request.POST.get('description')
 
-        newOrg = Organization.objects.create(name=orgname, point_of_contact=contactuser, membersCount=membersCount,
-                                             description=description)
+        newOrg = Organization.objects.create(
+            user=contactuser,
+            name=orgname,
+            point_of_contact=contactuser.email,
+            membersCount=membersCount,
+            description=description
+        )
+
         newOrg.save()
 
         # return render(request, "homepage.html", {"success_message": "Organization Successfully created"})
