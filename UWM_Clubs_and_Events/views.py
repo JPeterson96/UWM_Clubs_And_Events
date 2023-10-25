@@ -231,19 +231,25 @@ class CreateOrganization(View):
 class CreateEvent(View):
     def get(self, request):
         tags = Interest.objects.all()
-        orgs = Organization.objects.all()
         current_user = user_util.User_Util.get_user(email=request.session['user'])
+        orgs = Organization.objects.filter(user__email__exact=current_user.email)
         return render(request, "createevent.html",{"tags": tags, "orgs": orgs, "user": current_user})
 
     def post(self, request):
         name = request.POST.get('name')
-        organization = request.POST.get('organization')
+        org_name = request.POST.get('org')
         location = request.POST.get('location')
         time_happening = request.POST.get('time-happening')
         description = request.POST.get('description')
         time_published = datetime.now()
 
-        event = Event.objects.create(name=name, organization=organization, location=location,
+        try:
+            selected_org = Organization.objects.get(name=org_name)
+        except Organization.DoesNotExist:
+            return render(request, "your_template_name.html", {"error_message": "Selected organization does not exist"})
+
+
+        event = Event.objects.create(name=name, organization=selected_org, location=location,
                                      time_happening=time_happening, description=description, time_published=time_published)
         event.save()
 
