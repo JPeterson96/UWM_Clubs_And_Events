@@ -46,6 +46,22 @@ class Homepage(View):
         events = paginator.get_page(page_number)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "homepage.html", {"Events": events, "user": current_user})
+    
+class FilteredHomepage(View):
+    def get(self, request, tag):
+        all_events = {}
+
+        for i in tag:
+            events = Event.objects.filter(eventtag__interest__tag__exact=i)
+            all_events.join(events)
+        
+        paginator = Paginator(all_events, 5)
+        page_number = request.GET.get('page')
+        events = paginator.get_page(page_number)
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+
+        return render(request, "homepage.html", {"Events": all_events, "user": current_user})
+        
 
 
 class CreateAccount(View):
@@ -68,25 +84,32 @@ class CreateAccount(View):
         startdate = request.POST.get("startdate")
         graddate = request.POST.get("graddate")
 
-        res = user_util.User_Util.create_user(name=firstName + " " + lastName, email=email, password=password,
-                                              role=0, startdate=startdate, graddate=graddate)
+        try:
+            res = user_util.User_Util.create_user(name=firstName + " " + lastName, email=email, password=password,
+                                                role=0, startdate=startdate, graddate=graddate)
+        except Exception as e:
+            return render(request, "createaccount.html", {"error_message": e})
+        
         if isinstance(res, ValueError):
             return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
             # this is returning the email not the user object?
-        check_user = user_util.User_Util.get_user(email=email)
+        # check_user = user_util.User_Util.get_user(email=email)
 
         # adds every tage fo interest to user
 
         for tags in interests:
-            value = user_util.User_Util.set_student_interest(email=check_user.email, interest=tags)
+            try:
+                value = user_util.User_Util.set_student_interest(email=email, interest=tags)
+            except Student.DoesNotExist:
+                return render(request, "createaccount.html", {"error_message": "Student does not exist"})
             # should not get here
             if isinstance(value, ValueError):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
         for maj in major:
             print(maj)
-            add_major = user_util.User_Util.set_student_major(email=check_user.email, majorname=maj)
+            add_major = user_util.User_Util.set_student_major(email=email, majorname=maj)
 
             if isinstance(add_major, ValueError):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})

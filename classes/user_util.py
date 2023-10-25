@@ -25,11 +25,16 @@ class User_Util():
                 return ValueError("user with email exists ")
             if password == "" or ' ' in password:
                 return ValueError("password format incorrect")
-            user = User(email=email, password=password, name=name, role=role)
-            student = Student(user=user, enrollment_date=startdate, graduation_date=graddate)
+            
+            try:
+                user = User.objects.create(email=email, password=password, name=name, role=role)
+                student = Student.objects.create(user=user, enrollment_date=startdate, graduation_date=graddate)
+            except Exception as e:
+                raise ValueError(e)
             
             user.save()
             student.save()
+
             return True
         except Exception as e:
             raise ValueError(e)
@@ -50,8 +55,15 @@ class User_Util():
         try:
             if email == "":
                 return ValueError("email cannot be empty")
-            student = User_Util.get_student(email=email)
-            relInterest = Interest.objects.get(tag__exact=interest)
+            try:
+                student = User_Util.get_student(email=email)
+            except Exception as e:
+                raise ValueError(e)
+            try:
+                relInterest = Interest.objects.get(tag__exact=interest)
+            except Exception as e:
+                raise ValueError(e)
+            
             userinterest = StudentInterest.objects.create(student=student, type=relInterest)
             userinterest.save()
             return True
@@ -62,9 +74,9 @@ class User_Util():
         try:
             if email == "":
                 return ValueError("email cannot be empty")
-            user = User_Util.get_student(email=email)
+            student = User_Util.get_student(email=email)
             resMajor = Major.objects.get(name__iexact=majorname)
-            user_major = StudentMajor.objects.create(user=user, major=resMajor)
+            user_major = StudentMajor.objects.create(student=student, major=resMajor)
             user_major.save()
             print("added")
             return True
@@ -79,7 +91,8 @@ class User_Util():
         
     def get_student(email):
         try:
-            return Student.objects.get(email=email)
+            user = User_Util.get_user(email=email)
+            return Student.objects.get(user=user)
         except:
             return None
 
