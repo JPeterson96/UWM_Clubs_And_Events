@@ -223,7 +223,7 @@ class CreateOrganization(View):
     def get(self, request):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         # future TODO: filter further to only get users from certain organization
-        point_of_contacts = User.objects.filter(role__exact=2)
+        point_of_contacts = User.objects.filter(role__exact=3)
         return render(request, 'createorganization.html', {"user": current_user, "point_of_contacts": point_of_contacts})
 
     def post(self, request):
@@ -265,6 +265,7 @@ class CreateEvent(View):
         time_happening = request.POST.get('time-happening')
         description = request.POST.get('description')
         time_published = datetime.now()
+        photo = request.FILES.get('photo')
 
         try:
             selected_org = Organization.objects.get(name=org_name)
@@ -273,7 +274,7 @@ class CreateEvent(View):
 
 
         event = Event.objects.create(name=name, organization=selected_org, location=location,
-                                     time_happening=time_happening, description=description, time_published=time_published)
+                                     time_happening=time_happening, description=description, time_published=time_published, image=photo)
         event.save()
 
         #line 67

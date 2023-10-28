@@ -35,7 +35,7 @@
         </div>
     </nav>
     <div style="padding: 2%; padding-top: 80px;">
-        <form method="post" method="{% url 'createevent' %}">
+        <form method="post" action="{% url 'createevent' %}" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="container">
@@ -64,6 +64,10 @@
                 <div class="elements">
                     <label for="description">Event Description: </label>
                     <input type="text" id="description" name="description">
+                </div>
+                <div class="elements">
+                    <label for="photo"> Upload an image: </label>
+                    <input type="file" id="photo" name="photo">
                 </div>
             </div>
             <div style="padding:2%">
