@@ -12,7 +12,7 @@ from django.db import models
 class User(models.Model):
     email = models.EmailField(max_length=30, unique=True)  # add email validator?
     password = models.CharField(max_length=30)
-    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Student Club Contact"), (2, "Point of Contact")), default=0)
+    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Student Club Contact"), (2, "Organization"), (3, "Point of Contact")), default=0)
     name = models.CharField(max_length=30)
 
     def __str__(self):
@@ -47,15 +47,19 @@ class Event(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, to_field='name')
     location = models.CharField(max_length=30)
     # this uses a YYYY-MM-DD for the date, and HH:MM:SS for the time
-
     time_happening = models.DateTimeField()  # look into these 2 fields some more
-
     description = models.TextField()
     time_published = models.DateTimeField(default=datetime.now())
+    # if a user doesn't upload an image there will be a default image
+    image = models.ImageField(upload_to='static/event_photos', default='static/event_photos/default.jpeg')
 
     # image here/file path for image?  where do we store/upload
     def __str__(self):
         return self.name + "/" + self.organization.name
+    
+    def delete(self, *args, **kwargs):
+        self.image.delete(save=False)
+        super(Event, self).delete(*args, **kwargs)
 
 
 class MembersIn(models.Model):
@@ -81,8 +85,13 @@ class Interest(models.Model):
     def __str__(self):
         return self.tag
 
+class UserInterest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.ForeignKey(Interest, on_delete=models.CASCADE, to_field='tag')
 
-# check how cascade actually works
+    def __str__(self):
+        return self.user.email + "/" + self.type.tag
+
 class StudentInterest(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     type = models.ForeignKey(Interest, on_delete=models.CASCADE, to_field='tag')

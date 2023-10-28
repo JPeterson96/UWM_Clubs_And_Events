@@ -223,7 +223,7 @@ class CreateOrganization(View):
     def get(self, request):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         # future TODO: filter further to only get users from certain organization
-        point_of_contacts = User.objects.filter(role__exact=2)
+        point_of_contacts = User.objects.filter(role__exact=3)
         return render(request, 'createorganization.html', {"user": current_user, "point_of_contacts": point_of_contacts})
 
     def post(self, request):
