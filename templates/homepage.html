@@ -49,9 +49,13 @@
         <div class="card mb-3">
             <div class="row no-gutters">
                 <div class="col-md-4" style="width: 20%;">
-                    <image src="{{ i.image.url }}" class="card-img" alt="{{i.name}}" style="width: 100%; height:100%"></image>
+                    {% if i.image %}
+                        <image src="{{ i.image.url }}" class="card-img" alt="{{i.name}}" style="width: 100%; height:130px; object-fit: cover;"></image>
+                    {% else %}
+                        <image src="{% static 'uwmLogo.jpg' %}" class="card-img" alt="{{i.name}}" style="width: 100%; height:130px; object-fit: cover;"></image>
+                    {% endif %}
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8 ">
                     <div class="card-body">
                         <h5 class="card-title"><a href="{% url 'viewevent' i.name %}">{{ i.name }}</a></h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ i.org }}</h6>

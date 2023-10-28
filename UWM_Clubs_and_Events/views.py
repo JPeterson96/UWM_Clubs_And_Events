@@ -265,6 +265,7 @@ class CreateEvent(View):
         time_happening = request.POST.get('time-happening')
         description = request.POST.get('description')
         time_published = datetime.now()
+        photo = request.FILES.get('photo')
 
         try:
             selected_org = Organization.objects.get(name=org_name)
@@ -273,7 +274,7 @@ class CreateEvent(View):
 
 
         event = Event.objects.create(name=name, organization=selected_org, location=location,
-                                     time_happening=time_happening, description=description, time_published=time_published)
+                                     time_happening=time_happening, description=description, time_published=time_published, image=photo)
         event.save()
 
         #line 67
