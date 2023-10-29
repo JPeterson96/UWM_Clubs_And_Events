@@ -127,8 +127,8 @@ class ViewAccount(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
 
         return render(request, "viewaccount.html",
-                          {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
-                           "userinterest": userInt})
+                      {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
+                       "userinterest": userInt})
 
 
 class EditAccount(View):
@@ -136,22 +136,25 @@ class EditAccount(View):
         allints = Interest.objects.all()
         allmajors = Major.objects.all()
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        student = user_util.User_Util.get_student(current_user.email)
-        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
-        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
-
         temp_name = current_user.name.split()
 
-
-        # Convert datetime object to mm/dd/yyyy format
-        formatted_enroll= student.enrollment_date.strftime("%Y-%m-%d")
-        formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
+        student = user_util.User_Util.get_student(current_user.email)
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
+        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
+        if student:
+            formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
+            formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
+        else:
+            formatted_enroll=None
+            formatted_graddate = None
 
         return render(request, "editaccount.html",
-                      {"User": current_user, "Stu": student,"MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userint,
+                      {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
+                       "userinterest": userint,
                        "interests": allints, "firstname": temp_name[0], "lastname": temp_name[1],
-                       "majors": Major.objects.all(), "enrollment_date": formatted_enroll, "graduation_date": formatted_graddate})
+                       "majors": Major.objects.all(), "enrollment_date": formatted_enroll,
+                       "graduation_date": formatted_graddate})
 
     def post(self, request):
         search = Interest.objects.all()
@@ -200,7 +203,8 @@ class EditAccount(View):
 
         student = user_util.User_Util.get_student(email=current_user.email)
         return render(request, "viewaccount.html",
-                      {"message": "user sucessfully edited", "User": current_user, "Stu": student,"MemsInOrg": userInOrgs,
+                      {"message": "user sucessfully edited", "User": current_user, "Stu": student,
+                       "MemsInOrg": userInOrgs,
                        "usermajors": userMaj, "userinterest": userint})
 
 
