@@ -7,97 +7,123 @@
 <head>
     <meta charset="UTF-8">
     <title>View Account</title>
+    <!-- Add Bootstrap CDN or link Bootstrap CSS here -->
 </head>
 <body>
- <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
-        <div class="container-fluid">
-            <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
-            <span class = "navbar-toggler-icon"></span>
+
+<nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
+       <div class="container-fluid">
+           <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
+           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+           <span class = "navbar-toggler-icon"></span>
+           </button>
+            <button class="nav-item">
+                       <a href="{% url 'editaccount' %}" class="nav-link text-dark">Edit Account</a>
             </button>
-             <button class="nav-item">
-                        <a href="{% url 'editaccount' %}" class="nav-link text-dark">Edit Account</a>
-             </button>
-            <div class="collapse navbar-collapse" id="navmenu">
-                <ul class="navbar-nav">
-                </ul>
-            </div>
-            <div class="collapse navbar-collapse" id="navmenu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown d-flex align-items-center">
-                        <span class="me-2">👤</span>
-                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.name }}</a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
-                            <li><a class="dropdown-item" href="#Settings">Settings</a></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                    </li>
-                </ul>
+           <div class="collapse navbar-collapse" id="navmenu">
+               <ul class="navbar-nav">
+               </ul>
+           </div>
+           <div class="collapse navbar-collapse" id="navmenu">
+               <ul class="navbar-nav ms-auto">
+                   <li class="nav-item dropdown d-flex align-items-center">
+                       <span class="me-2">👤</span>
+                       <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ User.name }}</a>
+                       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                           <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
+                           <li><a class="dropdown-item" href="#Settings">Settings</a></li>
+                           <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                       </ul>
+                   </li>
+               </ul>
+           </div>
+       </div>
+   </nav>
+<div style="padding: 2%; padding-top: 80px;">
+    <form action="{% url 'viewaccount' %}" method="post">
+        {% csrf_token %}
+        {{ message }}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">User Information</h5>
+                <table class="table">
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ User.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{ User.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Role</td>
+                        <td>{{ User.role }}</td>
+                    </tr>
+                </table>
             </div>
         </div>
-    </nav>
 
-    <div style="padding: 2%; padding-top: 80px;">
-        <form action="{% url 'viewaccount' %}" method="post">
-            {% csrf_token %}
-            {{ message }}
-            <table>
-                <tr>
-                    <td>Name </td>
-                    <td>{{ User.name }}</td>
-                </tr>
-                <tr>
-                    <td>Email</td>
-                    <td>{{ User.email }}</td>
-                </tr>
-                <tr>
-                    <td>StartGard</td>
-                    <td>{{ User.gradStartDate }}</td>
-                </tr>
-                <tr>
-                    <td>End Graduation Date</td>
-                    <td>{{ User.gradEndDate }}</td>
-                </tr>
-                <tr>
-                    <td>Role</td>
-                    <td>{{ User.role }}</td>
-                </tr>
-            </table>
-           <td>
-                    <th>Majors</th>
-                </td>
-            <table>
+        {% if User.role == 0 %}
+        <!-- Card for Graduation Dates -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Graduation Dates</h5>
+                <table class="table">
+                    <tr>
+                        <td>Start Graduation Date</td>
+                        <td>{{ Stu.enrollment_date }}</td>
+                    </tr>
+                    <tr>
+                        <td>End Graduation Date</td>
+                        <td>{{ Stu.graduation_date }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
-                {% for umaj in usermajors %}
-                    <tr>
-                        <td>{{ umaj.major.name }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        <td>
-              <th>users interests</th>
-              </td>
-             <table>
-                {% for intm in userinterest %}
-                     <tr>
-                         <td>
-                        <td>{{ intm.type.tag }}</td>
-                    </tr>
-                {% endfor %}
-             </table>
-    </td>
-            <table>
-                <tr>
-                    <th>Organizations</th>
-                </tr>
-                {% for o in MemsInOrg %}
-                    <tr>
-                        <td>{{ o.organization.name }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </form>
-    </div>
+        <!-- Card for Majors -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Student Majors</h5>
+                <table class="table">
+                    {% for umaj in usermajors %}
+                        <tr>
+                            <td>{{ umaj.major.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Student Interests</h5>
+                <table class="table">
+                    {% for intm in userinterest %}
+                        <tr>
+                            <td>{{ intm.type.tag }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Card for Organizations -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">User Organizations</h5>
+                <table class="table">
+                    {% for o in MemsInOrg %}
+                        <tr>
+                            <td>{{ o.organization.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
 </body>
 </html>
 {% endblock %}
