@@ -142,6 +142,7 @@ class EditAccount(View):
         student = user_util.User_Util.get_student(current_user.email)
         userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
+
         if student:
             formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
             formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
