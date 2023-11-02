@@ -3,7 +3,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from UWM_Clubs_and_Events.models import *
-from classes import user_util
+from classes import user_util, event_util
 from django.core.paginator import Paginator
 
 
@@ -48,19 +48,24 @@ class Homepage(View):
         return render(request, "homepage.html", {"Events": events, "user": current_user})
     
 class FilteredHomepage(View):
-    def get(self, request, tag):
-        all_events = {}
+    def get(self, request):
+        all_events = []
 
-        for i in tag:
-            events = Event.objects.filter(eventtag__interest__tag__exact=i)
-            all_events.join(events)
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        all_events = event_util.Event_Util.filter_events(
+            user=current_user, 
+            by_date=0, 
+            date_order=0, 
+            by_org_name=0, 
+            by_event_name=1, 
+            clear=False, 
+            interests=None)
         
         paginator = Paginator(all_events, 5)
         page_number = request.GET.get('page')
         events = paginator.get_page(page_number)
-        current_user = user_util.User_Util.get_user(email=request.session['user'])
 
-        return render(request, "homepage.html", {"Events": all_events, "user": current_user})
+        return render(request, "homepage.html", {"Events": events, "user": current_user})
         
 
 
@@ -140,7 +145,7 @@ class EditAccount(View):
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
 
-        temp_name = current_user.name.split()
+        temp_name = current_user.name.split(" ", 1)
 
         return render(request, "editaccount.html",
                       {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userint,
