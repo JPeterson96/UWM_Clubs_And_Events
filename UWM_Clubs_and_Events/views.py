@@ -3,7 +3,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from UWM_Clubs_and_Events.models import *
-from classes import user_util
+from classes import user_util, event_util
 from django.core.paginator import Paginator
 
 
@@ -46,22 +46,27 @@ class Homepage(View):
         events = paginator.get_page(page_number)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "homepage.html", {"Events": events, "user": current_user})
-
-
+    
 class FilteredHomepage(View):
-    def get(self, request, tag):
-        all_events = {}
+    def get(self, request):
+        all_events = []
 
-        for i in tag:
-            events = Event.objects.filter(eventtag__interest__tag__exact=i)
-            all_events.join(events)
-
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        all_events = event_util.Event_Util.filter_events(
+            user=current_user,
+            by_date=0,
+            date_order=0,
+            by_org_name=0,
+            by_event_name=1,
+            clear=False,
+            interests=None)
+        
         paginator = Paginator(all_events, 5)
         page_number = request.GET.get('page')
         events = paginator.get_page(page_number)
-        current_user = user_util.User_Util.get_user(email=request.session['user'])
 
-        return render(request, "homepage.html", {"Events": all_events, "user": current_user})
+        return render(request, "homepage.html", {"Events": events, "user": current_user})
+        
 
 
 class CreateAccount(View):
@@ -83,7 +88,6 @@ class CreateAccount(View):
         interests = request.POST.getlist("selected_interests")
         startdate = request.POST.get("startdate")
         graddate = request.POST.get("graddate")
-        print("this is there start date ", startdate)
 
         try:
             res = user_util.User_Util.create_user(name=firstName + " " + lastName, email=email, password=password,
@@ -142,7 +146,7 @@ class EditAccount(View):
         student = user_util.User_Util.get_student(current_user.email)
         userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
-
+        temp_name = current_user.name.split(" ", 1)
         if student:
             formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
             formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
