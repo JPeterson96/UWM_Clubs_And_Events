@@ -12,6 +12,7 @@ from UWM_Clubs_and_Events.models import Event
 from datetime import datetime, timedelta
 from django.db.models import Q
 
+
 class Event_Util():
     def create_event(name, org, location, time, description):
         try:
@@ -21,7 +22,7 @@ class Event_Util():
         except Exception as e:
             print(e)
             return False
-        
+
     # user - User object
     # by_date - small int (0 = not applied, 1 = today, 2 = tomorrow, 3 = this week, 4 = this month, 5 = this year)
     # date_order - small int (0 = not applied, 1 = ascending, 2 = descending)
@@ -47,21 +48,24 @@ class Event_Util():
         # Filter by date
         if by_date != 0:
             today = datetime.today()
-            match by_date:
-                case 1:
-                    filtered_events = filtered_events.filter(time_happening__date=today)
 
-                case 2:
-                    filtered_events = filtered_events.filter(time_happening__date=today + timedelta(days=1))
+            if by_date == 1:
+                filtered_events = filtered_events.filter(time_happening__date=today)
 
-                case 3:
-                    filtered_events = filtered_events.filter(time_happening__date__range=[today, today + timedelta(days=7)])
+            elif by_date == 2:
+                filtered_events = filtered_events.filter(time_happening__date=today + timedelta(days=1))
 
-                case 4:
-                    filtered_events = filtered_events.filter(time_happening__date__range=[today, today + timedelta(days=30)])
+            elif by_date == 3:
+                filtered_events = filtered_events.filter(
+                    time_happening__date__range=[today, today + timedelta(days=7)])
 
-                case 5:
-                    filtered_events = filtered_events.filter(time_happening__date__range=[today, today + timedelta(days=365)])
+            elif by_date == 4:
+                filtered_events = filtered_events.filter(
+                    time_happening__date__range=[today, today + timedelta(days=30)])
+
+            elif by_date == 5:
+                filtered_events = filtered_events.filter(
+                    time_happening__date__range=[today, today + timedelta(days=365)])
 
         filters = []
         # Sort events
@@ -89,19 +93,19 @@ class Event_Util():
             return Event.objects.get(id=id)
         except:
             return None
-        
-    def get_all_events():
+
+    def get_all_events(self):
         try:
             return Event.objects.all()
         except:
             return None
-        
+
     def get_org_events(org):
         try:
             return Event.objects.filter(organization=org)
         except:
             return None
-        
+
     def get_event_by_name(name):
         try:
             return Event.objects.filter(name=name)

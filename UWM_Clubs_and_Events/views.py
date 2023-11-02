@@ -53,12 +53,12 @@ class FilteredHomepage(View):
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         all_events = event_util.Event_Util.filter_events(
-            user=current_user, 
-            by_date=0, 
-            date_order=0, 
-            by_org_name=0, 
-            by_event_name=1, 
-            clear=False, 
+            user=current_user,
+            by_date=0,
+            date_order=0,
+            by_org_name=0,
+            by_event_name=1,
+            clear=False,
             interests=None)
         
         paginator = Paginator(all_events, 5)
@@ -91,10 +91,10 @@ class CreateAccount(View):
 
         try:
             res = user_util.User_Util.create_user(name=firstName + " " + lastName, email=email, password=password,
-                                                role=0, startdate=startdate, graddate=graddate)
+                                                  role=0, startdate=startdate, graddate=graddate)
         except Exception as e:
             return render(request, "createaccount.html", {"error_message": e})
-        
+
         if isinstance(res, ValueError):
             return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
@@ -113,7 +113,6 @@ class CreateAccount(View):
                 return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
         for maj in major:
-            print(maj)
             add_major = user_util.User_Util.set_student_major(email=email, majorname=maj)
 
             if isinstance(add_major, ValueError):
@@ -123,15 +122,17 @@ class CreateAccount(View):
 
 class ViewAccount(View):
     def get(self, request):
-        # current_user = user_util.User_Util.get_student(email=request.session['user'])
         email = request.session['user']
-        userMaj = StudentMajor.objects.filter(student__user__email__exact=email) ##student__user__email ??
+
+        student = user_util.User_Util.get_student(email=email)
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=email)  ##student__user__email ??
         userInOrgs = MembersIn.objects.filter(user__email__exact=email)
         userInt = StudentInterest.objects.filter(student__user__email__exact=email)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
 
         return render(request, "viewaccount.html",
-                      {"user": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userInt})
+                      {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
+                       "userinterest": userInt})
 
 
 class EditAccount(View):
@@ -139,19 +140,26 @@ class EditAccount(View):
         allints = Interest.objects.all()
         allmajors = Major.objects.all()
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-
-        current_user = user_util.User_Util.get_user(email=request.session['user'])
-        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email) ##student__user__email
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
-        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
+        temp_name = current_user.name.split()
 
+        student = user_util.User_Util.get_student(current_user.email)
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
+        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
         temp_name = current_user.name.split(" ", 1)
+        if student:
+            formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
+            formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
+        else:
+            formatted_enroll=None
+            formatted_graddate = None
 
         return render(request, "editaccount.html",
-                      {"User": current_user, "MemsInOrg": userInOrgs, "usermajors": userMaj, "userinterest": userint,
+                      {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
+                       "userinterest": userint,
                        "interests": allints, "firstname": temp_name[0], "lastname": temp_name[1],
-                       "majors": Major.objects.all(),
-                       "startdate": Student.enrollment_date, "graddate": Student.graduation_date, "user": current_user})
+                       "majors": Major.objects.all(), "enrollment_date": formatted_enroll,
+                       "graduation_date": formatted_graddate})
 
     def post(self, request):
         search = Interest.objects.all()
@@ -173,10 +181,7 @@ class EditAccount(View):
 
         if majorstoremove:
             for remmaj in majorstoremove:
-                print(remmaj)
-                print(remmaj, "hello ? ")
                 actMaj = Major.objects.get(name=remmaj)
-                print(actMaj)
                 StudentMajor.objects.filter(Q(user=current_user, major=actMaj)).delete()
 
         for newmaj in addedmajor:
@@ -199,9 +204,12 @@ class EditAccount(View):
             return render(request, "editaccount.html", {"message": res})
 
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
-        current_user=user_util.User_Util.get_user(email=request.session['user'])
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+
+        student = user_util.User_Util.get_student(email=current_user.email)
         return render(request, "viewaccount.html",
-                      {"message": "user sucessfully edited", "User": current_user, "MemsInOrg": userInOrgs,
+                      {"message": "user sucessfully edited", "User": current_user, "Stu": student,
+                       "MemsInOrg": userInOrgs,
                        "usermajors": userMaj, "userinterest": userint})
 
 
@@ -229,7 +237,8 @@ class CreateOrganization(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         # future TODO: filter further to only get users from certain organization
         point_of_contacts = User.objects.filter(role__exact=3)
-        return render(request, 'createorganization.html', {"user": current_user, "point_of_contacts": point_of_contacts})
+        return render(request, 'createorganization.html',
+                      {"user": current_user, "point_of_contacts": point_of_contacts})
 
     def post(self, request):
         orgname = request.POST.get('name')
@@ -261,7 +270,7 @@ class CreateEvent(View):
         tags = Interest.objects.all()
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         orgs = Organization.objects.filter(user__email__exact=current_user.email)
-        return render(request, "createevent.html",{"tags": tags, "orgs": orgs, "user": current_user})
+        return render(request, "createevent.html", {"tags": tags, "orgs": orgs, "user": current_user})
 
     def post(self, request):
         name = request.POST.get('name')
@@ -277,12 +286,12 @@ class CreateEvent(View):
         except Organization.DoesNotExist:
             return render(request, "your_template_name.html", {"error_message": "Selected organization does not exist"})
 
-
         event = Event.objects.create(name=name, organization=selected_org, location=location,
-                                     time_happening=time_happening, description=description, time_published=time_published, image=photo)
+                                     time_happening=time_happening, description=description,
+                                     time_published=time_published, image=photo)
         event.save()
 
-        #line 67
+        # line 67
         # interests = request.POST.getlist("selected_interests")
         # for tag in interests:
         #     eventTag = EventTag.objects.create(event=event, interest=tag)

@@ -12,7 +12,8 @@ from django.db import models
 class User(models.Model):
     email = models.EmailField(max_length=30, unique=True)  # add email validator?
     password = models.CharField(max_length=30)
-    role = models.PositiveSmallIntegerField(choices=((0, "Student"), (1, "Student Club Contact"), (2, "Organization"), (3, "Point of Contact")), default=0)
+    role = models.PositiveSmallIntegerField(
+        choices=((0, "Student"), (1, "Student Club Contact"), (2, "Organization"), (3, "Point of Contact")), default=0)
     name = models.CharField(max_length=30)
 
     def __str__(self):
@@ -56,7 +57,7 @@ class Event(models.Model):
     # image here/file path for image?  where do we store/upload
     def __str__(self):
         return self.name + "/" + self.organization.name
-    
+
     def delete(self, *args, **kwargs):
         self.image.delete(save=False)
         super(Event, self).delete(*args, **kwargs)
@@ -85,12 +86,14 @@ class Interest(models.Model):
     def __str__(self):
         return self.tag
 
+
 class UserInterest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.ForeignKey(Interest, on_delete=models.CASCADE, to_field='tag')
 
     def __str__(self):
         return self.user.email + "/" + self.type.tag
+
 
 class StudentInterest(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
