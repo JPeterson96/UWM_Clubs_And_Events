@@ -7,7 +7,6 @@
 <head>
     <meta charset="UTF-8">
     <title>View Account</title>
-    <!-- Add Bootstrap CDN or link Bootstrap CSS here -->
 </head>
 <body>
 
@@ -62,9 +61,7 @@
                 </table>
             </div>
         </div>
-
         {% if User.role == 0 %}
-        <!-- Card for Graduation Dates -->
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title">Graduation Dates</h5>
@@ -80,8 +77,6 @@
                 </table>
             </div>
         </div>
-
-        <!-- Card for Majors -->
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title">Student Majors</h5>
@@ -107,8 +102,6 @@
             </div>
         </div>
         {% endif %}
-
-        <!-- Card for Organizations -->
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title">User Organizations</h5>
