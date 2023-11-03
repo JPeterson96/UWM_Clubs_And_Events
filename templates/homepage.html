@@ -22,10 +22,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
-                    {%  if user.role > 1 %}
+                    {% if user.role == 3 %}
                         <li class="nav-item">
                             <a href="{%  url 'createorganization' %}" class="nav-link text-dark">Create Organization</a>
                         </li>
+                    {% endif %}
+                    {%  if user.role > 1 %}
+
                         <li class="nav-item">
                             <a href="{% url 'createevent' %}" class="nav-link text-dark">Create Event</a>
                         </li>

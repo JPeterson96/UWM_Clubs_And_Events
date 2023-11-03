@@ -30,9 +30,11 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <button class="nav-item">
-                <a href="" class="nav-link text-dark">Edit Event</a>
-            </button>
+            {% if user.name == Event.organization.name %}
+                <button class="nav-item">
+                    <a href="{% url 'editevent' Event.name %}" class="nav-link text-dark">Edit Event</a>
+                </button>
+            {% endif %}
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
                 </ul>
