@@ -46,7 +46,8 @@ class Homepage(View):
         events = paginator.get_page(page_number)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "homepage.html", {"Events": events, "user": current_user})
-    
+
+
 class FilteredHomepage(View):
     def get(self, request):
         all_events = []
@@ -60,13 +61,12 @@ class FilteredHomepage(View):
             by_event_name=1,
             clear=False,
             interests=None)
-        
+
         paginator = Paginator(all_events, 5)
         page_number = request.GET.get('page')
         events = paginator.get_page(page_number)
 
         return render(request, "homepage.html", {"Events": events, "user": current_user})
-        
 
 
 class CreateAccount(View):
@@ -141,23 +141,27 @@ class EditAccount(View):
         allmajors = Major.objects.all()
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
-        temp_name = current_user.name.split()
+
 
         student = user_util.User_Util.get_student(current_user.email)
         userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
         temp_name = current_user.name.split(" ", 1)
+        if temp_name.__len__() == 1:
+            last_name=''
+        else:
+            last_name=temp_name[1]
         if student:
             formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
             formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
         else:
-            formatted_enroll=None
+            formatted_enroll = None
             formatted_graddate = None
 
         return render(request, "editaccount.html",
                       {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
                        "userinterest": userint,
-                       "interests": allints, "firstname": temp_name[0], "lastname": temp_name[1],
+                       "interests": allints, "firstname": temp_name[0], "lastname": last_name,
                        "majors": Major.objects.all(), "enrollment_date": formatted_enroll,
                        "graduation_date": formatted_graddate})
 
@@ -264,6 +268,7 @@ class CreateOrganization(View):
         # return render(request, "homepage.html", {"success_message": "Organization Successfully created"})
         return redirect("homepage")
 
+
 class EditOrganization(View):
     def get(self, request):
         cur_user = user_util.User_Util.get_user(request.session['user'])
@@ -283,7 +288,8 @@ class EditOrganization(View):
 
         cur_user.save()
         org.save()
-        return render(request, 'editorganization.html', {'user': cur_user, 'organization': org, 'message': 'Organization information changed successfully!'})
+        return render(request, 'editorganization.html', {'user': cur_user, 'organization': org,
+                                                         'message': 'Organization information changed successfully!'})
 
 
 class CreateEvent(View):
@@ -322,3 +328,29 @@ class CreateEvent(View):
         #         return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
         return redirect("homepage")
+
+
+class EditEvent(View):
+    def get(self, request, name):
+        current_user = user_util.User_Util.get_user(request.session['user'])
+
+        try:
+            event = Event.objects.get(name=name)
+            time = event.time_happening.strftime("%Y-%m-%dT%H:%M")
+            request.session['oldname'] = event.name
+            return render(request, "editevent.html", {"event": event, 'time': time})
+        except:
+            return render(request, "homepage.html", {"error_message": "Event does not exist"})
+
+    def post(self, request, name):
+        event = Event.objects.get(name=name)
+        event.name = request.POST.get('name')
+        event.location = request.POST.get('location')
+        print(request.POST.get('time_happening'))
+        event.time_happening = request.POST.get('time_happening')
+        event.description = request.POST.get('description')
+        event.image=request.FILES.get('image')
+
+        event.save()
+
+        return render(request, "editevent.html", {'message': 'Event Information Changed Successfully!', 'event': event, 'time': event.time_happening})

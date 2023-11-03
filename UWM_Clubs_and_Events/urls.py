@@ -34,6 +34,7 @@ urlpatterns = [
     path('createOrganization/', CreateOrganization.as_view(), name='createorganization'),
     path('createEvent/', CreateEvent.as_view(), name='createevent'),
     path('editOrganization/', EditOrganization.as_view(), name='editorganization'),
+    path('editEvent<str:name>/', EditEvent.as_view(), name='editevent'),
 ] 
 
 if settings.DEBUG:
