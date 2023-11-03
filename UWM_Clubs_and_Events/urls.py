@@ -33,6 +33,7 @@ urlpatterns = [
     path('viewaccount/editaccount', EditAccount.as_view(), name='editaccount'),
     path('createOrganization/', CreateOrganization.as_view(), name='createorganization'),
     path('createEvent/', CreateEvent.as_view(), name='createevent'),
+    path('editOrganization/', EditOrganization.as_view(), name='editorganization'),
 ] 
 
 if settings.DEBUG:

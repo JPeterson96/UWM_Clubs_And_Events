@@ -264,6 +264,27 @@ class CreateOrganization(View):
         # return render(request, "homepage.html", {"success_message": "Organization Successfully created"})
         return redirect("homepage")
 
+class EditOrganization(View):
+    def get(self, request):
+        cur_user = user_util.User_Util.get_user(request.session['user'])
+        org = Organization.objects.get(user=cur_user)
+        return render(request, 'editorganization.html', {'user': cur_user, 'organization': org})
+
+    def post(self, request):
+        cur_user = user_util.User_Util.get_user(request.session['user'])
+        org = Organization.objects.get(user=cur_user)
+        cur_user.password = request.POST.get('password')
+        cur_user.name = request.POST.get('name')
+
+        org.name = request.POST.get('name')
+        org.point_of_contact = request.POST.get('point_of_contact')
+        org.membersCount = request.POST.get('membersCount')
+        org.description = request.POST.get('description')
+
+        cur_user.save()
+        org.save()
+        return render(request, 'editorganization.html', {'user': cur_user, 'organization': org, 'message': 'Organization information changed successfully!'})
+
 
 class CreateEvent(View):
     def get(self, request):
