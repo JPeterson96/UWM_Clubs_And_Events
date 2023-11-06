@@ -24,13 +24,16 @@ class Event_Util():
             return False
 
     # user - User object
+    # sort_type - small int (0 = not applied, 1 = date, 2 = org_name, 3 = event_name)
+    # order - small int (0 = not applied, 1 = ascending, 2 = descending)
     # by_date - small int (0 = not applied, 1 = today, 2 = tomorrow, 3 = this week, 4 = this month, 5 = this year)
-    # date_order - small int (0 = not applied, 1 = ascending, 2 = descending)
-    # by_org_name - small int (0 = not applied, 1 = ascending, 2 = descending)
-    # by_event_name - small int (0 = not applied, 1 = ascending, 2 = descending)
     # clear - boolean
     # interests - list of Interest tags
-    def filter_events(user, by_date, date_order, by_org_name, by_event_name, clear, interests):
+    def filter_events(user, sort_type, order, by_date, clear, interests):
+        print("filtering")
+        print("sort_type: " + str(sort_type))
+        print("order: " + str(order))
+        print("by_date: " + str(by_date))
         if clear:
             return list(Event.objects.all())
 
@@ -46,45 +49,50 @@ class Event_Util():
             filtered_events = Event.objects.all()
 
         # Filter by date
-        if by_date != 0:
-            today = datetime.today()
+        if sort_type == 1:
+            if by_date != 0:
+                today = datetime.today()
 
-            if by_date == 1:
-                filtered_events = filtered_events.filter(time_happening__date=today)
+                if by_date == 1:
+                    filtered_events = filtered_events.filter(time_happening__date=today)
 
-            elif by_date == 2:
-                filtered_events = filtered_events.filter(time_happening__date=today + timedelta(days=1))
+                elif by_date == 2:
+                    filtered_events = filtered_events.filter(time_happening__date=today + timedelta(days=1))
 
-            elif by_date == 3:
-                filtered_events = filtered_events.filter(
-                    time_happening__date__range=[today, today + timedelta(days=7)])
+                elif by_date == 3:
+                    filtered_events = filtered_events.filter(
+                        time_happening__date__range=[today, today + timedelta(days=7)])
 
-            elif by_date == 4:
-                filtered_events = filtered_events.filter(
-                    time_happening__date__range=[today, today + timedelta(days=30)])
+                elif by_date == 4:
+                    filtered_events = filtered_events.filter(
+                        time_happening__date__range=[today, today + timedelta(days=30)])
 
-            elif by_date == 5:
-                filtered_events = filtered_events.filter(
-                    time_happening__date__range=[today, today + timedelta(days=365)])
+                elif by_date == 5:
+                    filtered_events = filtered_events.filter(
+                        time_happening__date__range=[today, today + timedelta(days=365)])
 
         filters = []
         # Sort events
-        if date_order == 1:
-            filters.append("time_happening")
-        elif date_order == 2:
-            filters.append("-time_happening")
+        if sort_type == 1:
+            if order == 1:
+                filters.append("time_happening")
+            elif order == 2:
+                filters.append("-time_happening")
 
-        if by_org_name == 1:
-            filters.append("organization__name")
-        elif by_org_name == 2:
-            filters.append("-organization__name")
+        if sort_type == 2:
+            if order == 1:
+                filters.append("organization__name")
+            elif order == 2:
+                filters.append("-organization__name")
 
-        if by_event_name == 1:
-            filters.append("name")
-        elif by_event_name == 2:
-            filters.append("-name")
+        if sort_type == 3:
+            if order == 1:
+                filters.append("name")
+            elif order == 2:
+                filters.append("-name")
 
         filtered_events = filtered_events.order_by(*filters)
+        print("filter finished")
 
         return filtered_events
 
