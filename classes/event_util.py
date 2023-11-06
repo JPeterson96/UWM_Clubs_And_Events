@@ -30,10 +30,6 @@ class Event_Util():
     # clear - boolean
     # interests - list of Interest tags
     def filter_events(user, sort_type, order, by_date, clear, interests):
-        print("filtering")
-        print("sort_type: " + str(sort_type))
-        print("order: " + str(order))
-        print("by_date: " + str(by_date))
         if clear:
             return list(Event.objects.all())
 
@@ -92,7 +88,6 @@ class Event_Util():
                 filters.append("-name")
 
         filtered_events = filtered_events.order_by(*filters)
-        print("filter finished")
 
         return filtered_events
 
