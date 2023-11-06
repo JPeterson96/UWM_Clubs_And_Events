@@ -273,7 +273,8 @@ class EditOrganization(View):
     def get(self, request):
         cur_user = user_util.User_Util.get_user(request.session['user'])
         org = Organization.objects.get(user=cur_user)
-        return render(request, 'editorganization.html', {'user': cur_user, 'organization': org})
+        pocs = User.objects.filter(role=3)
+        return render(request, 'editorganization.html', {'user': cur_user, 'organization': org, 'contacts': pocs})
 
     def post(self, request):
         cur_user = user_util.User_Util.get_user(request.session['user'])
@@ -295,7 +296,9 @@ class CreateEvent(View):
         tags = Interest.objects.all()
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         orgs = Organization.objects.filter(user__email__exact=current_user.email)
-        return render(request, "createevent.html", {"tags": tags, "orgs": orgs, "user": current_user})
+        search = request.GET.get('search-input', '')
+        filtered_interests = Interest.objects.filter(tag__icontains=search)
+        return render(request, "createevent.html", {"interests": filtered_interests, "orgs": orgs, "user": current_user, })
 
     def post(self, request):
         name = request.POST.get('name')
@@ -305,6 +308,7 @@ class CreateEvent(View):
         description = request.POST.get('description')
         time_published = datetime.now()
         photo = request.FILES.get('photo')
+
 
         try:
             selected_org = Organization.objects.get(name=org_name)
@@ -316,14 +320,14 @@ class CreateEvent(View):
                                      time_published=time_published, image=photo)
         event.save()
 
-        # line 67
-        # interests = request.POST.getlist("selected_interests")
-        # for tag in interests:
-        #     eventTag = EventTag.objects.create(event=event, interest=tag)
-        #     eventTag.save()
-        #     # should not get here
-        #     if isinstance(eventTag, ValueError):
-        #         return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
+        interests = request.POST.getlist("selected_interests")
+        for tag in interests:
+            eventTag = EventTag.objects.create(event=event, interest=Interest.objects.get(tag=tag))
+            eventTag.save()
+            # should not get here
+            if isinstance(eventTag, ValueError):
+                search = Interest.objects.all()
+                return render(request, "createevent.html", {"error_message": 'Search Tag could not be applied', "interests": search})
 
         return render(request, "createevent.html", {'success_message': 'Event created successfully'})
 
