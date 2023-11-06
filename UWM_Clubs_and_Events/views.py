@@ -265,8 +265,8 @@ class CreateOrganization(View):
 
         newOrg.save()
 
-        # return render(request, "homepage.html", {"success_message": "Organization Successfully created"})
-        return redirect("homepage")
+        return render(request, "createorganization.html.html", {"success_message": "Organization Successfully created"})
+
 
 
 class EditOrganization(View):
@@ -279,9 +279,7 @@ class EditOrganization(View):
         cur_user = user_util.User_Util.get_user(request.session['user'])
         org = Organization.objects.get(user=cur_user)
         cur_user.password = request.POST.get('password')
-        cur_user.name = request.POST.get('name')
 
-        org.name = request.POST.get('name')
         org.point_of_contact = request.POST.get('point_of_contact')
         org.membersCount = request.POST.get('membersCount')
         org.description = request.POST.get('description')
@@ -311,7 +309,7 @@ class CreateEvent(View):
         try:
             selected_org = Organization.objects.get(name=org_name)
         except Organization.DoesNotExist:
-            return render(request, "your_template_name.html", {"error_message": "Selected organization does not exist"})
+            return render(request, "createevent.html", {"error_message": "Selected organization does not exist"})
 
         event = Event.objects.create(name=name, organization=selected_org, location=location,
                                      time_happening=time_happening, description=description,
@@ -327,7 +325,7 @@ class CreateEvent(View):
         #     if isinstance(eventTag, ValueError):
         #         return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
 
-        return redirect("homepage")
+        return render(request, "createevent.html", {'success_message': 'Event created successfully'})
 
 
 class EditEvent(View):

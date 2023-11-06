@@ -50,7 +50,7 @@ class Event(models.Model):
     # this uses a YYYY-MM-DD for the date, and HH:MM:SS for the time
     time_happening = models.DateTimeField()  # look into these 2 fields some more
     description = models.TextField()
-    time_published = models.DateTimeField(default=datetime.now())
+    time_published = models.DateTimeField(null=True)
     # if a user doesn't upload an image there will be a default image
     image = models.ImageField(upload_to='static/event_photos', default='static/event_photos/default.jpeg')
 
