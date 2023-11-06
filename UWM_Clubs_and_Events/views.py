@@ -279,9 +279,7 @@ class EditOrganization(View):
         cur_user = user_util.User_Util.get_user(request.session['user'])
         org = Organization.objects.get(user=cur_user)
         cur_user.password = request.POST.get('password')
-        cur_user.name = request.POST.get('name')
 
-        org.name = request.POST.get('name')
         org.point_of_contact = request.POST.get('point_of_contact')
         org.membersCount = request.POST.get('membersCount')
         org.description = request.POST.get('description')
