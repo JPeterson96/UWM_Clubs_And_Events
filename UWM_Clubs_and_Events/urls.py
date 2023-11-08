@@ -19,6 +19,7 @@ from UWM_Clubs_and_Events.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', login.as_view(), name='login'),
@@ -35,6 +36,8 @@ urlpatterns = [
     path('createEvent/', CreateEvent.as_view(), name='createevent'),
     path('editOrganization/', EditOrganization.as_view(), name='editorganization'),
     path('editEvent<str:name>/', EditEvent.as_view(), name='editevent'),
+    path('calendar.html/', CalendarView.as_view(), name='publicEvents')
+
 ] 
 
 if settings.DEBUG:
