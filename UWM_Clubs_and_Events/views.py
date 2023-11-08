@@ -46,6 +46,33 @@ class Homepage(View):
         events = paginator.get_page(page_number)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         return render(request, "homepage.html", {"Events": events, "user": current_user})
+    
+    def post(self, request):
+        sort = request.POST.get('sortType')
+        order = request.POST.get('sortOrder')
+        date = request.POST.get('dateRange')
+        # clear = request.POST.get('clear')
+        # interests = request.POST.getlist('interests')
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+
+        # convert to int
+        sort = int(sort)
+        order = int(order)
+        date = int(date)
+        
+        filtered_events = event_util.Event_Util.filter_events(
+            user=current_user,
+            sort_type=sort,
+            order=order,
+            by_date=date,
+            clear=False,
+            interests=None)
+        
+        paginator = Paginator(filtered_events, 5)
+        page_number = request.GET.get('page')
+        events = paginator.get_page(page_number)
+        
+        return render(request, "homepage.html", {"Events": events, "user": current_user})
 
 
 class FilteredHomepage(View):
@@ -55,10 +82,9 @@ class FilteredHomepage(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         all_events = event_util.Event_Util.filter_events(
             user=current_user,
-            by_date=0,
-            date_order=0,
-            by_org_name=0,
-            by_event_name=1,
+            sort_type=1,
+            order=1,
+            by_date=1,
             clear=False,
             interests=None)
 
@@ -308,6 +334,10 @@ class CreateEvent(View):
         description = request.POST.get('description')
         time_published = datetime.now()
         photo = request.FILES.get('photo')
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        orgs = Organization.objects.filter(user__email__exact=current_user.email)
+        search = request.GET.get('search-input', '')
+        filtered_interests = Interest.objects.filter(tag__icontains=search)
 
 
         try:
@@ -326,10 +356,10 @@ class CreateEvent(View):
             eventTag.save()
             # should not get here
             if isinstance(eventTag, ValueError):
-                search = Interest.objects.all()
-                return render(request, "createevent.html", {"error_message": 'Search Tag could not be applied', "interests": search})
+                check = Interest.objects.all()
+                return render(request, "createevent.html", {"error_message": 'Search Tag could not be applied', "interests": check})
 
-        return render(request, "createevent.html", {'success_message': 'Event created successfully'})
+        return render(request, "createevent.html", {'success_message': 'Event created successfully', "orgs": orgs, "user": current_user, "interests": filtered_interests})
 
 
 class EditEvent(View):

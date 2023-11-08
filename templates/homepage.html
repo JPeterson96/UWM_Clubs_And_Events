@@ -5,7 +5,32 @@
 <html>
     <head>
         <title>Homepage</title>
-        <!-- <link rel="stylesheet" href="{% static 'css/homepage.css' %}"> -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Get the interests elements
+                var interests = document.querySelectorAll('input[name="selected_interests"]');
+    
+                // Get the search input element
+                var searchInput = document.getElementById('search-input');
+    
+    
+                searchInput.addEventListener('input', function() {
+                    var searchValue = searchInput.value.toLowerCase();
+    
+                    interests.forEach(function(interest) {
+                        var interestTag = interest.value.toLowerCase();
+                        var parentRow = interest.closest('tr');
+    
+                        if (interestTag.includes(searchValue)) {
+                            parentRow.style.display = '';
+                        } else {
+                            parentRow.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        </script>
     </head>
     <body>
              <!--Nav bar-->
@@ -53,11 +78,74 @@
             </div>
         </div>
     </nav>
-    <div class="container mt-4" style="padding-top: 70px;">
+    <!-- Filter button -->
+    <div class="container mt-4" style="padding-top: 40px">
+        <div class="container mt-4">
+            <div class="d-flex justify-content-end mb-3">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        ☰ Filter
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <form method="post" action="{% url 'homepage' %}">
+                            {% csrf_token %}
+                            <li class="p-1">
+                                <select name="sortType" id="sortType">
+                                    <option value=0>--- Sort Type ---</option>
+                                    <option value=1> Date </option>
+                                    <option value=2> Org Name </option>
+                                    <option value=3> Event Name </option>
+                                </select>
+                            </li>
+                            <li class="p-1">
+                                <select name="sortOrder" id="sortOrder">
+                                    <option value=0>--- Sort Order ---</option>
+                                    <option value=1> A - Z </option>
+                                    <option value=2> Z - A </option>
+                                </select>
+                            </li>
+                            <li class="p-1">
+                                <select name="dateRange" id="dateRange">
+                                    <option value=0>--- Events Happening ---</option>
+                                    <option value=1> Today </option>
+                                    <option value=2> Tomorrow </option>
+                                    <option value=3> This Week </option>
+                                    <option value=4> This Month </option>
+                                    <option value=5> This Year </option>
+                                </select>
+                            </li>
+                            <li class="p-1">
+                                <p> Additional Interests: </p>
+                                <div class="form-check" style="overflow-y: auto; height: 150px;">
+                                    <table>
+                                        <tbody id="interests-table">
+                                            {% for interest in interests %}
+                                            <tr>
+                                                <td>
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input" name="selected_interests" value="{{ interest.tag }}">
+                                                        {{ interest.tag }}
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </li>
+                            <li>
+                                <button type="submit" class="btn btn-primary m-1"> Filter </button>
+                            </li>
+                        </form>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <!-- Event card -->
         {% for i in Events %}
         <div class="card mb-3">
             <div class="row no-gutters">
-                <div class="col-md-4" style="width: 20%;">
+                <div class="col-md-4" style="width: 20%; max-height: 130px;">
                     {% if i.image %}
                         <image src="{{ i.image.url }}" class="card-img" alt="{{i.name}}" style="width: 100%; height:130px; object-fit: cover;"></image>
                     {% else %}
@@ -66,10 +154,10 @@
                 </div>
                 <div class="col-md-8 ">
                     <div class="card-body">
-                        <h5 class="card-title"><a href="{% url 'viewevent' i.name %}">{{ i.name }}</a></h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ i.org }}</h6>
-                        <p class="card-text">{{ i.time_happening }}</p>
-                        <p class="card-text">{{ i.description }}</p>
+                        <h5 class="card-title mb-0"><a href="{% url 'viewevent' i.name %}">{{ i.name }}</a></h5>
+                        <p class="card-text mb-2">{{ i.time_happening }}</p>
+                        <h6 class="card-subtitle text-muted">{{ i.organization }}</h6>
+                        <p class="card-text text-truncate">{{ i.description }}</p>
                     </div>
                 </div>
             </div>
