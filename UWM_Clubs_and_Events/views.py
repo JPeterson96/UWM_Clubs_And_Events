@@ -356,3 +356,8 @@ class EditEvent(View):
         event.save()
 
         return render(request, "editevent.html", {'message': 'Event Information Changed Successfully!', 'event': event, 'time': event.time_happening})
+    
+class CalendarView(View):
+    def get(self, request):
+        return render(request, "calendar.html", {"name": 'publicEvents'})
+        
