@@ -36,7 +36,7 @@ urlpatterns = [
     path('createEvent/', CreateEvent.as_view(), name='createevent'),
     path('editOrganization/', EditOrganization.as_view(), name='editorganization'),
     path('editEvent<str:name>/', EditEvent.as_view(), name='editevent'),
-    path('calendar.html/', CalendarView.as_view(), name='publicEvents')
+    path('calendar/', CalendarView.as_view(), name='publicEvents')
 
 ] 
 
