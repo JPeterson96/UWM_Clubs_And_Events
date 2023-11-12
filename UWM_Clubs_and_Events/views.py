@@ -329,7 +329,7 @@ class CreateEvent(View):
     def post(self, request):
         name = request.POST.get('name')
         org_name = request.POST.get('org')
-        location = request.POST.get('location')
+        res =event_util.Event_Util.verify_event_loc(loc_addr = request.POST.get('loc_addr'), loc_city = request.POST.get('loc_city'), loc_state = request.POST.get('loc_state'), loc_zip = request.POST.get('loc_zip'))
         time_happening = request.POST.get('time-happening')
         description = request.POST.get('description')
         time_published = datetime.now()
