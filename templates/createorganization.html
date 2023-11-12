@@ -71,12 +71,16 @@
                 <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
             </div>
         </form>
+        <p style="padding:1%; color:green">
+            <em>
+                {% if success_message %}
+                    {{ success_message }}
+                {% endif %}
+            </em>
+        </p>
         <p style="padding:1%; color:red"> <em>
             {% if error_message %}
                 {{ error_message }}
-            {% endif %}
-            {% if success_message %}
-                {{ success_message }}
             {% endif %}
         </em>
         </p>
