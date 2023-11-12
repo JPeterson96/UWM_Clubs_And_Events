@@ -95,13 +95,13 @@ class Event_Util():
 
     def verify_event_loc(addr, city, state, zip):
         if addr is None:
-            return "address cannot be empty"
+            return ValueError("address cannot be empty")
         if city is None:
-            return "city cannot be empty"
+            return ValueError("city cannot be empty")
         if state is None:
-            return "state cannot be empty"
+            return ValueError("state cannot be empty")
         if zip is None:
-            return "zip cannot be empery "
+            return ValueError("zip cannot be empery")
         returntype = "locations"
         searchtype = "address"
         benchmark = "Public_AR_Current"
@@ -112,7 +112,13 @@ class Event_Util():
 
             res_data = result.json()
             res_address = res_data['result']['addressMatches'][0]['matchedAddress']
+            if res_address is None:
+                return ValueError("address inputted does not match")
 
+            # for now I will just change the event with input
+
+
+            #should display this address to user when checking
             print(res_address)
             return res_address
         except requests.exceptions.HTTPError as e:

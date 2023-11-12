@@ -88,6 +88,9 @@
                     </select>
                 </div>
                 <div class="elements">
+                    {% if location_err_msg %}
+                        {{ location_err_msg }}
+                    {% endif %}
                     <label for="location">Location: </label>
                     <input type="text" name="loc_addr" id="loc_addr" value="{{ event.loc_addr }}">
                     <input type="text" name="loc_city" id="loc_city" value="{{ event.loc_city }}">

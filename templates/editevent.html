@@ -44,6 +44,9 @@
             </div>
             <div>
                 <label for="name">Location:  </label>
+                {% if location_err_msg %}
+                        {{ location_err_msg }}
+                    {% endif %}
                 <input type="text" name="loc_addr" id="loc_addr" value="{{ event.loc_area }}">
                 <input type="text" name="loc_city" id="loc_city" value="{{ event.loc_city }}">
                     <select name="loc_state" id="loc_state" tabindex="8" class="states">
