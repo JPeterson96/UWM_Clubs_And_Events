@@ -51,7 +51,6 @@ class Homepage(View):
                 sort_type=request.session['filters'][0],
                 order=request.session['filters'][1],
                 by_date=request.session['filters'][2],
-                clear=False,
                 interests=None)
 
         paginator = Paginator(all_events, 5)  # 5 events per page
@@ -64,7 +63,7 @@ class Homepage(View):
         sort = request.POST.get('sortType')
         order = request.POST.get('sortOrder')
         date = request.POST.get('dateRange')
-        # clear = request.POST.get('clear')
+        clear = request.POST.get('clear')
         # interests = request.POST.getlist('interests')
         current_user = user_util.User_Util.get_user(email=request.session['user'])
 
@@ -78,14 +77,12 @@ class Homepage(View):
             sort_type=sort,
             order=order,
             by_date=date,
-            clear=False,
             interests=None)
         
         filters = []
         filters.append(sort)
         filters.append(order)
         filters.append(date)
-        # filters.append(clear)
         # filters.append(interests)
         request.session['filters'] = filters
 
@@ -96,17 +93,16 @@ class Homepage(View):
         return render(request, "homepage.html", {"Events": events, "user": current_user})
 
 
-class FilteredHomepage(View):
+class ClearFilters(View):
     def get(self, request):
-        all_events = []
+        del request.session['filters']
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         all_events = event_util.Event_Util.filter_events(
             user=current_user,
-            sort_type=1,
-            order=1,
-            by_date=1,
-            clear=False,
+            sort_type=0,
+            order=0,
+            by_date=0,
             interests=None)
 
         paginator = Paginator(all_events, 5)

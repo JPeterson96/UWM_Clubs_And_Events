@@ -88,9 +88,6 @@
                             <a href="{% url 'editorganization' %}" class="nav-link text-dark">Edit Organization</a>
                         </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <a href="{% url 'filteredhomepage' %}" class="nav-link text-dark">Filter test</a>
-                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown d-flex align-items-center">
@@ -163,6 +160,11 @@
                                 </li>
                                 <li>
                                     <button type="submit" class="btn btn-primary m-1"> Filter </button>
+                                    <button type="checkbox" id="clear" name="clear" value=1>
+                                        <a href="{% url 'clearfilters' %}"> 
+                                            Clear Filters
+                                        </a>
+                                    </button>
                                 </li>
                             </form>
                         </ul>
