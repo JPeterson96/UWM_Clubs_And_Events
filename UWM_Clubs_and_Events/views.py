@@ -326,28 +326,32 @@ class CreateEvent(View):
                       {"interests": filtered_interests, "orgs": orgs, "user": current_user, })
 
     def post(self, request):
+        tags = Interest.objects.all()
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        orgs = Organization.objects.filter(user__email__exact=current_user.email)
+        search = request.GET.get('search-input', '')
+        filtered_interests = Interest.objects.filter(tag__icontains=search)
+
         name = request.POST.get('name')
         org_name = request.POST.get('org')
-        loc = event_util.Event_Util.verify_event_loc(request.POST.get('loc_addr'), request.POST.get('loc_city'),
-                                                     request.POST.get('loc_state'), request.POST.get('loc_zip'))
 
         time_happening = request.POST.get('time-happening')
         description = request.POST.get('description')
         time_published = datetime.now()
+        loc_check = request.POST.get('SuggestedAdrress')
         photo = request.FILES.get('photo')
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         orgs = Organization.objects.filter(user__email__exact=current_user.email)
         search = request.GET.get('search-input', '')
         filtered_interests = Interest.objects.filter(tag__icontains=search)
-        if isinstance(loc, ValueError):
-            return render(request, "createevent.html",
-                          {"interests": filtered_interests, "orgs": orgs, "user": current_user,
-                           "location_err_msg": loc})
 
         try:
             selected_org = Organization.objects.get(name=org_name)
         except Organization.DoesNotExist:
-            return render(request, "createevent.html", {"error_message": "Selected organization does not exist"})
+            return render(request, "createevent.html", {"interests": filtered_interests, "orgs": orgs, "user": current_user,"error_message": "Selected organization does not exist"})
+
+        if loc_check is None or loc_check is '':
+            return CreateEvent.get(self,request)
 
         event = Event.objects.create(name=name, organization=selected_org, loc_addr=request.POST.get('loc_addr'),
                                      loc_city=request.POST.get('loc_city'),
@@ -387,13 +391,13 @@ class EditEvent(View):
     def post(self, request, name):
         event = Event.objects.get(name=name)
         event.name = request.POST.get('name')
-        loc = event_util.Event_Util.verify_event_loc(request.POST.get('loc_addr'),
-                                                     request.POST.get('loc_city'),
-                                                     request.POST.get('loc_state'),
-                                                     request.POST.get('loc_zip'))
-        if isinstance(loc, ValueError):
-            # does this work?
-            return EditEvent.get(self, request=request, name=event.name)
+        # loc = event_util.Event_Util.verify_event_loc(request.POST.get('loc_addr'),
+        #                                              request.POST.get('loc_city'),
+        #                                              request.POST.get('loc_state'),
+        #                                              request.POST.get('loc_zip'))
+        # if isinstance(loc, ValueError):
+        #     # does this work?
+        #     return EditEvent.get(self, request=request, name=event.name)
 
         event.time_happening = request.POST.get('time_happening')
         event.loc_addr = request.POST.get('loc_addr')

@@ -3,9 +3,6 @@
 # location - string
 # time - string
 # description - string
-import requests
-import asyncio
-
 # below is not set up yet
 # type - string
 # views - int
@@ -13,6 +10,7 @@ import asyncio
 from UWM_Clubs_and_Events.models import Event
 from datetime import datetime, timedelta
 from django.db.models import Q
+
 
 
 class Event_Util():
@@ -93,40 +91,40 @@ class Event_Util():
 
         return filtered_events
 
-    def verify_event_loc(addr, city, state, zip):
-        if addr is None:
-            return ValueError("address cannot be empty")
-        if city is None:
-            return ValueError("city cannot be empty")
-        if state is None:
-            return ValueError("state cannot be empty")
-        if zip is None:
-            return ValueError("zip cannot be empery")
-        returntype = "locations"
-        searchtype = "address"
-        benchmark = "Public_AR_Current"
-        format_type = "json"
-        api_url = f"https://geocoding.geo.census.gov/geocoder/{returntype}/{searchtype}?benchmark={benchmark}&format={format_type}&street={addr}&city={city}&state={state}&zip={zip}"
-        try:
-            result = requests.get(api_url)
-
-            res_data = result.json()
-            res_address = res_data['result']['addressMatches'][0]['matchedAddress']
-            if res_address is None:
-                return ValueError("address inputted does not match")
-
-            # for now I will just change the event with input
-
-
-            #should display this address to user when checking
-            print(res_address)
-            return res_address
-        except requests.exceptions.HTTPError as e:
-            return f"error with http request {e}"
-        except requests.exceptions.RequestException as e:
-            return f"error with  argument in http request, most likley a name of  addr, state, zip, or city  {e}"
-        except Exception as e:
-            print(f"Unexpected error occurred: {e}")
+    # def verify_event_loc(addr, city, state, zip):
+    #     if addr is None:
+    #         return ValueError("address cannot be empty")
+    #     if city is None:
+    #         return ValueError("city cannot be empty")
+    #     if state is None:
+    #         return ValueError("state cannot be empty")
+    #     if zip is None:
+    #         return ValueError("zip cannot be empty")
+    #     returntype = "locations"
+    #     searchtype = "address"
+    #     benchmark = "Public_AR_Current"
+    #     format_type = "json"
+    #     api_url = f"https://geocoding.geo.census.gov/geocoder/{returntype}/{searchtype}?benchmark={benchmark}&format={format_type}&street={addr}&city={city}&state={state}&zip={zip}"
+    #     try:
+    #         result = requests.get(api_url)
+    #         if result.status_code==200:
+    #             res_data = result.json()
+    #             res_address = res_data['result']['addressMatches'][0]['matchedAddress']
+    #             if res_address is None:
+    #                 return ValueError("address inputted does not match")
+    #
+    #             # for now I will just change the event with input
+    #
+    #             #should display this address to user when checking
+    #             print(res_address)
+    #             return res_address
+    #
+    #     except requests.exceptions.HTTPError as e:
+    #         return f"error with http request {e}"
+    #     except requests.exceptions.RequestException as e:
+    #         return f"error with  argument in http request, most likley a name of  addr, state, zip, or city  {e}"
+    #     except Exception as e:
+    #         print(f"Unexpected error occurred: {e}")
 
     def get_event(id):
         try:

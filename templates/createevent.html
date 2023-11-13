@@ -33,6 +33,104 @@
                 });
             });
         </script>
+        <script>
+    async function AddresDisplayer() {
+    const addr = document.getElementById('loc_addr').value.toString();
+    const state = document.getElementById('loc_state').value.toString();
+    const city = finishCity();
+    const zip = document.getElementById('loc_zip').value.toString();
+
+    if (!addr) {
+        throw new Error("Address cannot be empty");
+    }
+    if (!city) {
+        throw new Error("City cannot be empty");
+    }
+    if (!state) {
+        throw new Error("State cannot be empty");
+    }
+    if (!zip) {
+        throw new Error("Zip cannot be empty");
+    }
+    console.log(state);
+
+    const returnType = "locations";
+    const searchType = "address";
+    const benchmark = "Public_AR_Current";
+    const formatType = "json";
+    const apiURL = `https://geocoding.geo.census.gov/geocoder/${returnType}/${searchType}?benchmark=${benchmark}&format=${formatType}&street=${addr}&city=${city}&state=${state}&zip=${zip}`;
+
+    try {
+        const res =  await fetch(encodeURIComponent(apiURL), {
+                method: 'GET',
+            });
+        console.log(res.status);
+
+        if (res.ok) {
+            const resJson = await res.json();
+            console.log(resJson); // Log the entire response for inspection
+            const matchedAdd = resJson.result?.addressMatches[0]?.matchedAddress;
+
+            if (matchedAdd) {
+                document.getElementById("SuggestedAdrress").innerText = `Suggested Address: ${matchedAdd}`;
+                document.getElementById("locErrorMessage").innerText = "";
+
+                // Now check if the suggested address checkbox is checked or not
+                const suggAddCheck = document.getElementById('SuggestedAddress');
+                if (suggAddCheck.checked) {
+                    suggAddCheck.innerText = matchedAdd;
+                } else {
+                    suggAddCheck.style.display = "block";
+                }
+            } else {
+                document.getElementById("locErrorMessage").innerText = "No address matches the one inputted";
+                document.getElementById("SuggestedAdrress").innerText = ""; // Clear the suggestion if no match
+            }
+        } else {
+            document.getElementById("locErrorMessage").innerText = `Error with HTTP request ${res.status}`;
+        }
+    } catch (e) {
+        document.getElementById("SuggestedAdrress").innerText = "";
+        document.getElementById("locErrorMessage").innerText = e.message;
+    }
+}
+async function finishCity(){
+        const city_name = document.getElementById('loc_city').value;
+        const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
+        const headers = {
+            'Accept': 'application/vnd.teleport.v1+json'
+        };
+
+        try {
+            fetch(api_url, {
+                method: 'GET',
+                headers: headers
+            })
+            .then(response => {
+                console.log('Response Headers:', response.headers);
+
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`HTTP request failed with status ${response.status}`);
+                }
+            })
+            .then(json_data => {
+                console.log('API Response:', json_data);
+                 const matchingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
+                return matchingCities;
+            })
+            .catch(error => {
+                console.error('Error with request:', error);
+            });
+
+        } catch (e) {
+            console.error('Error with request:', e);
+        }
+
+            }
+</script>
+
         <style>
             .rounded-input {
                 border-radius: 20px; /* Adjust the border radius as needed */
@@ -88,13 +186,22 @@
                     </select>
                 </div>
                 <div class="elements">
-                    {% if location_err_msg %}
-                        {{ location_err_msg }}
-                    {% endif %}
                     <label for="location">Location: </label>
-                    <input type="text" name="loc_addr" id="loc_addr" value="{{ event.loc_addr }}">
-                    <input type="text" name="loc_city" id="loc_city" value="{{ event.loc_city }}">
-                    <select name="loc_state" id="loc_state" tabindex="8" class="states">
+                    <div id="locErrorMessage" style="color: red;"></div>
+
+                <div>
+                    <label for="loc_addr">Address:</label>
+                <input type="text" name="loc_addr" id="loc_addr" value="{{ event.loc_area }}">
+                </div>
+                <div>
+                    <label for="loc_city">City:</label>
+                <input type="text" name="loc_city" id="loc_city" value="{{ event.loc_city }}">
+                </div>
+
+                <div>
+                    <label for="loc_state">State:</label>
+        <select name="loc_state" id="loc_state" tabindex="8" class="states">
+
                     <option value="0">Select One</option>
                     <option value="AL">Alabama(AL)</option>
                     <option value="AK">Alaska(AK)</option>
@@ -154,7 +261,16 @@
                     <option value="WY">Wyoming(WY)</option>
                     <option value="NA">Not Applicable</option>
                 </select>
-                    <input type="text" name="loc_zip" id="loc_zip" value="{{ event.loc_zip }}">
+                </div>
+                <div>
+                    <label for="loc_zip">ZipCode:</label>
+                <input type="text" name="location" id="loc_zip" value="{{ event.loc_zip }}">
+                     <button type="button" onclick="AddresDisplayer()">Check Address</button>
+                </div>
+                     <div>
+                        <input type="checkbox" id="SuggestedAdrress">
+                        <label for="SuggestedAdrress">is this the Address?</label>
+                    </div>
                 </div>
                 <div class="elements">
                     <label for="time-happening">When is this event? </label>

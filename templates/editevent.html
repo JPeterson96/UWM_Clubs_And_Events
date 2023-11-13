@@ -44,11 +44,18 @@
             </div>
             <div>
                 <label for="name">Location:  </label>
-                {% if location_err_msg %}
-                        {{ location_err_msg }}
-                    {% endif %}
+                <div>
+                    <label for="loc_addr">Address:</label>
                 <input type="text" name="loc_addr" id="loc_addr" value="{{ event.loc_area }}">
+                </div>
+                <div>
+                    <label for="loc_city">City:</label>
                 <input type="text" name="loc_city" id="loc_city" value="{{ event.loc_city }}">
+                </div>
+
+                <div>
+                    <label for="loc_state">State:</label>
+                <input type="text" name="loc_cstate" id="loc_state" value="{{ event.loc_state }}">
                     <select name="loc_state" id="loc_state" tabindex="8" class="states">
                     <option value="0">Select One</option>
                     <option value="AL">Alabama(AL)</option>
@@ -109,7 +116,11 @@
                     <option value="WY">Wyoming(WY)</option>
                     <option value="NA">Not Applicable</option>
                 </select>
+                </div>
+                <div>
+                    <label for="loc_zip">ZipCode:</label>
                 <input type="text" name="location" id="loc_zip" value="{{ event.loc_zip }}">
+                </div>
 
             </div>
             <div>
