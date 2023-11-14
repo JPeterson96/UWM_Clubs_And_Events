@@ -327,10 +327,7 @@ class CreateEvent(View):
 
     def post(self, request):
         tags = Interest.objects.all()
-        current_user = user_util.User_Util.get_user(email=request.session['user'])
-        orgs = Organization.objects.filter(user__email__exact=current_user.email)
         search = request.GET.get('search-input', '')
-        filtered_interests = Interest.objects.filter(tag__icontains=search)
 
         name = request.POST.get('name')
         org_name = request.POST.get('org')
@@ -338,7 +335,6 @@ class CreateEvent(View):
         time_happening = request.POST.get('time-happening')
         description = request.POST.get('description')
         time_published = datetime.now()
-        loc_check = request.POST.get('SuggestedAdrress')
         photo = request.FILES.get('photo')
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         orgs = Organization.objects.filter(user__email__exact=current_user.email)
@@ -348,18 +344,34 @@ class CreateEvent(View):
         try:
             selected_org = Organization.objects.get(name=org_name)
         except Organization.DoesNotExist:
-            return render(request, "createevent.html", {"interests": filtered_interests, "orgs": orgs, "user": current_user,"error_message": "Selected organization does not exist"})
+            return render(request, "createevent.html",
+                          {"interests": filtered_interests, "orgs": orgs, "user": current_user,
+                           "error_message": "Selected organization does not exist"})
 
-        if loc_check is None or loc_check is '':
-            return CreateEvent.get(self,request)
+        addr = request.POST.get('loc_addr')
+        city = request.POST.get('loc_city')
+        zip = request.POST.get('loc_zip')
+        print(city)
 
-        event = Event.objects.create(name=name, organization=selected_org, loc_addr=request.POST.get('loc_addr'),
-                                     loc_city=request.POST.get('loc_city'),
-                                     loc_state=request.POST.get('loc_state'),
-                                     loc_zip=request.POST.get('loc_zip'),
+        addr_check = event_util.Event_Util.verify_event_loc(addr, city, zip)
+        print(addr_check)
+        if (isinstance(addr_check, ValueError)):
+            return render(request, "createevent.html",
+                          {"interests": filtered_interests, "orgs": orgs, "user": current_user,
+                           "error_message": addr_check})
+
+        city_state = [part.strip() for part in city.split(',')]
+        city_name = city_state[0]
+        state_name = city_state[1]
+
+        event = Event.objects.create(name=name, organization=selected_org, loc_addr=addr,
+                                     loc_city=city_name,
+                                     loc_state=state_name,
+                                     loc_zip=zip,
                                      time_happening=time_happening, description=description,
                                      time_published=time_published, image=photo)
         event.save()
+        print("event saved?")
 
         interests = request.POST.getlist("selected_interests")
         for tag in interests:
