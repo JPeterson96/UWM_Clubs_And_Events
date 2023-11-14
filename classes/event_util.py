@@ -27,14 +27,8 @@ class Event_Util():
     # sort_type - small int (0 = not applied, 1 = date, 2 = org_name, 3 = event_name)
     # order - small int (0 = not applied, 1 = ascending, 2 = descending)
     # by_date - small int (0 = not applied, 1 = today, 2 = tomorrow, 3 = this week, 4 = this month, 5 = this year)
-    # clear - boolean
     # interests - list of Interest tags
-    def filter_events(user, sort_type, order, by_date, clear, interests):
-        if clear:
-            return list(Event.objects.all())
-
-        # filtered_events = Event.objects.all()
-
+    def filter_events(user, sort_type, order, by_date, interests):
         if interests:
             # Filter by interests
             query = Q()

@@ -39,19 +39,31 @@ class login(View):
 
 class Homepage(View):
     def get(self, request):
-        all_events = Event.objects.all()
-        paginator = Paginator(all_events, 5)  # 5 events per page
+        # TODO: filter events by user interests
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        all_events = []
 
+        if 'filters' not in request.session:
+            all_events = Event.objects.all()
+        else:
+            all_events = event_util.Event_Util.filter_events(
+                user=current_user,
+                sort_type=request.session['filters'][0],
+                order=request.session['filters'][1],
+                by_date=request.session['filters'][2],
+                interests=None)
+
+        paginator = Paginator(all_events, 5)  # 5 events per page
         page_number = request.GET.get('page')
         events = paginator.get_page(page_number)
-        current_user = user_util.User_Util.get_user(email=request.session['user'])
-        return render(request, "homepage.html", {"Events": events, "user": current_user})
 
+        return render(request, "homepage.html", {"Events": events, "user": current_user})
+    
     def post(self, request):
         sort = request.POST.get('sortType')
         order = request.POST.get('sortOrder')
         date = request.POST.get('dateRange')
-        # clear = request.POST.get('clear')
+        clear = request.POST.get('clear')
         # interests = request.POST.getlist('interests')
         current_user = user_util.User_Util.get_user(email=request.session['user'])
 
@@ -59,33 +71,38 @@ class Homepage(View):
         sort = int(sort)
         order = int(order)
         date = int(date)
-
+        
         filtered_events = event_util.Event_Util.filter_events(
             user=current_user,
             sort_type=sort,
             order=order,
             by_date=date,
-            clear=False,
             interests=None)
+
+        filters = []
+        filters.append(sort)
+        filters.append(order)
+        filters.append(date)
+        # filters.append(interests)
+        request.session['filters'] = filters
 
         paginator = Paginator(filtered_events, 5)
         page_number = request.GET.get('page')
         events = paginator.get_page(page_number)
-
+        
         return render(request, "homepage.html", {"Events": events, "user": current_user})
 
 
-class FilteredHomepage(View):
+class ClearFilters(View):
     def get(self, request):
-        all_events = []
+        del request.session['filters']
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         all_events = event_util.Event_Util.filter_events(
             user=current_user,
-            sort_type=1,
-            order=1,
-            by_date=1,
-            clear=False,
+            sort_type=0,
+            order=0,
+            by_date=0,
             interests=None)
 
         paginator = Paginator(all_events, 5)
@@ -290,7 +307,13 @@ class CreateOrganization(View):
 
         newOrg.save()
 
-        return render(request, "createorganization.html", {"success_message": "Organization Successfully created"})
+        point_of_contacts = User.objects.filter(role__exact=3)
+        currentUser = user_util.User_Util.get_user(email=request.session['user'])
+
+        return render(request, "createorganization.html", {"success_message": "Organization Successfully created",
+                                                           "user": currentUser,
+                                                           "point_of_contacts": point_of_contacts})
+
 
 
 class EditOrganization(View):
@@ -388,6 +411,10 @@ class CreateEvent(View):
                 return render(request, "createevent.html",
                               {"error_message": 'Search Tag could not be applied', "interests": check})
 
+        return render(request, "createevent.html", {'success_message': 'Event created successfully',
+                                                    "orgs": orgs,
+                                                    "user": current_user,
+                                                    "interests": filtered_interests})
         return render(request, "createevent.html",
                       {'success_message': 'Event created successfully', "orgs": orgs, "user": current_user,
                        "interests": filtered_interests})
