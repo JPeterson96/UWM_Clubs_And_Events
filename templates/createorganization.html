@@ -1,36 +1,37 @@
-{%  extends "base.html" %}
-{%  load static %}
-{%  block content %}
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
-        .rounded-input {
-            border-radius: 20px; /* Adjust the border radius as needed */
-        }
-    </style>
-</head>
-<body>
-        <!--Nav bar-->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <style>
+            .rounded-input {
+                border-radius: 20px; /* Adjust the border radius as needed */
+            }
+        </style>
+    </head>
+    <body>
+    <!--Nav bar-->
     <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
-            <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
+            <a href="{% url 'homepage' %}" class="navbar-brand text-dark">UWM Clubs and Events </a>
             <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navmenu"
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navmenu"
             >
-            <span class = "navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown d-flex align-items-center">
                         <span class="me-2">👤</span>
-                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.name }}</a>
+                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">{{ user.name }}</a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
                             <li><a class="dropdown-item" href="#Settings">Settings</a></li>
@@ -43,11 +44,11 @@
     <div style="padding-top: 80px; padding-left: 2%; padding-right: 2%;">
         <h1>Create Organization</h1>
         <form method="post" action="{% url 'createorganization' %}">
-            {%  csrf_token %}
+            {% csrf_token %}
 
             <div class="form-group mb-2">
                 <label for="name">Organization Name (Cannot be changed later): </label>
-                <input type="text" class="form-control rounded-input" id= "name" name="name">
+                <input type="text" class="form-control rounded-input" id="name" name="name">
             </div>
             <!-- List users with role of point of contact -->
             <div class="form-group mb-2">
@@ -71,7 +72,7 @@
                 <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
             </div>
         </form>
-        <p style="padding:1%; color:red"> <em>
+        <p style="padding:1%; color:red"><em>
             {% if error_message %}
                 {{ error_message }}
             {% endif %}
@@ -81,6 +82,6 @@
         </em>
         </p>
     </div>
-</body>
-</html>
+    </body>
+    </html>
 {% endblock %}
