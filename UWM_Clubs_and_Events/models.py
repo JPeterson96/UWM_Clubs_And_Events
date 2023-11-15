@@ -46,7 +46,10 @@ class Organization(models.Model):
 class Event(models.Model):
     name = models.CharField(max_length=30)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, to_field='name')
-    location = models.CharField(max_length=30)
+    loc_addr = models.CharField(max_length=200)
+    loc_state = models.CharField(max_length=200)
+    loc_city = models.CharField(max_length=100)
+    loc_zip = models.CharField(max_length=100)
     # this uses a YYYY-MM-DD for the date, and HH:MM:SS for the time
     time_happening = models.DateTimeField()  # look into these 2 fields some more
     description = models.TextField()

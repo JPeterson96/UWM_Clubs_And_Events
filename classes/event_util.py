@@ -3,7 +3,6 @@
 # location - string
 # time - string
 # description - string
-
 # below is not set up yet
 # type - string
 # views - int
@@ -11,6 +10,7 @@
 from UWM_Clubs_and_Events.models import Event
 from datetime import datetime, timedelta
 from django.db.models import Q
+
 
 
 class Event_Util():
@@ -84,6 +84,16 @@ class Event_Util():
         filtered_events = filtered_events.order_by(*filters)
 
         return filtered_events
+
+    def verify_event_loc(addr, city, zip):
+        if addr is None:
+            return ValueError("address cannot be empty")
+        if city is None:
+            return ValueError("city cannot be empty")
+
+        if zip is None:
+            return ValueError("zip cannot be empty")
+        return True
 
     def get_event(id):
         try:

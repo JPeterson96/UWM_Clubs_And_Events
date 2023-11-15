@@ -75,7 +75,7 @@
                     </div>
                     <p><i class="fas fa-clock"></i> Date & Time: <a href="#" id="time">{{ Event.time_happening }}</a>
                     </p>
-                    <p><i class="fas fa-map-marker-alt"></i> Location: <a href="#" id="map">{{ Event.location }}</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Location: <a href="#" id="map">{{ Event.loc_addr }} {{ Event.loc_city }}, {{ Event.loc_state }} {{ Event.loc_zip }}</a></p>
                     <p>Description: {{ Event.description }}</p>
                 </div>
             </div>
