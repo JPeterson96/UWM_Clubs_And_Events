@@ -5,6 +5,8 @@ from django.contrib.auth import logout
 from UWM_Clubs_and_Events.models import *
 from classes import user_util, event_util, organization_util
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+
 
 
 class login(View):
@@ -457,19 +459,46 @@ class EditEvent(View):
         #     return EditEvent.get(self, request=request, name=event.name)
 
         event.time_happening = request.POST.get('time_happening')
-        event.loc_addr = request.POST.get('loc_addr')
-        event.loc_city = request.POST.get('loc_city')
-        event.loc_state = request.POST.get('loc_state')
-        event.loc_zip = request.POST.get('loc_zip')
         event.description = request.POST.get('description')
         event.image = request.FILES.get('image')
 
         event.save()
 
-        return render(request, "editevent.html", {'message': 'Event Information Changed Successfully!', 'event': event,
-                                                  'time': event.time_happening})
+        return render(request, "editevent.html", {'message': 'Event Information Changed Successfully!', 'event': event, 'time': event.time_happening})
+    
+    
+    
+    
+    
+    
 
 
+
+ 
 class CalendarView(View):
     def get(self, request):
+        all_events = Event.objects.all()
+        context = {
+            "events": all_events,
+        }
         return render(request, "calendar.html", {"name": 'publicEvents'})
+    
+"""    def all_events(request):
+        all_events = Event.objects.all()
+        out = []
+        for event in all_events:
+            out.append({
+                'title': event.name,
+                'id': event.id,
+                'start': event.objects.start.strftime("%m/%d/%Y,%H:%M:%S"),
+                'end': event.end.strftime("%m/%d/%Y,%H:%M:%S"),
+           })
+        return JsonResponse(out, safe=False)  """  
+    
+class accountCalendar(View):
+    def get(self, request):
+        return render(request, "accountCalendar.html", {"name": 'accountCalendar'})
+    
+    
+    
+ 
