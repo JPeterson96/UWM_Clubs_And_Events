@@ -3,7 +3,6 @@
 # location - string
 # time - string
 # description - string
-
 # below is not set up yet
 # type - string
 # views - int
@@ -84,6 +83,18 @@ class Event_Util():
         filtered_events = filtered_events.order_by(*filters)
 
         return filtered_events
+
+    def verify_event_loc(addr, city, zip):
+        if addr is None:
+            return ValueError("address cannot be empty")
+        if city is None:
+            return ValueError("city cannot be empty")
+        if not ',' in city or len(city.split(',')) < 2:
+            return ValueError("city input has to be formated like city,state")
+
+        if zip is None or len(zip)>5:
+            return ValueError("zip format is empty or too long ")
+        return True
 
     def get_event(id):
         try:

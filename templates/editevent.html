@@ -6,6 +6,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <script>
+        async function finishCity() {
+            const city_name = document.getElementById('loc_city').value.toString();
+            const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
+            const headers = {
+                'Accept': 'application/vnd.teleport.v1+json'
+            };
+
+            try {
+                const response = await fetch(api_url, {
+                    method: 'GET',
+                    headers: headers
+                });
+
+                if (response.ok) {
+                    const json_data = await response.json();
+                    const matchingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
+                    updateMatchingCities(matchingCities);
+                } else {
+                    throw new Error(`HTTP request failed with status ${response.status}`);
+                }
+
+            } catch (error) {
+                console.error('Error with request:', error);
+            }
+        }
+
+        function updateMatchingCities(cities) {
+            const matchingCitiesDropdown = document.getElementById('matching_cities');
+            matchingCitiesDropdown.innerHTML = ''; // Clear previous results
+
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.text = city;
+                matchingCitiesDropdown.add(option);
+            });
+        }
+
+        function handleInput() {
+            finishCity();
+            document.getElementById('matching_cities').addEventListener('change', updateInputField);
+        }
+
+        function updateInputField() {
+            const selectedCity = document.getElementById('matching_cities').value;
+            document.getElementById('loc_city').value = selectedCity;
+        }
+
+    </script>
     <title>Edit Event</title>
 </head>
         <!--Nav bar-->
@@ -42,9 +93,26 @@
                 <label for="name">Change Name:  </label>
                 <input type="text" name="name" id="name" value="{{ event.name }}">
             </div>
+            <div class="elements">
+            <label for="location">Location:</label>
+
             <div>
-                <label for="name">Location:  </label>
-                <input type="text" name="location" id="location" value="{{ event.location }}">
+                <label for="loc_addr">Address:</label>
+                <input type="text" class="form-control" id="loc_addr" name="loc_addr" value="{{ event.loc_area }}">
+            </div>
+
+            <div>
+                <label for="loc_city">Enter City Name:</label>
+                <input type="text" class="form-control" id="loc_city" name="loc_city" oninput="handleInput()">
+                <select id="matching_cities" class="form-control"></select>
+            </div>
+
+            <div>
+                <label for="loc_zip">Zip Code:</label>
+                <input type="text" class="form-control" id="loc_zip" name="loc_zip" value="{{ event.loc_zip }}">
+            </div>
+        </div>
+
             </div>
             <div>
                 <label for="time_happening">When is this event:  </label>

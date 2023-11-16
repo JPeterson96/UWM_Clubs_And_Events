@@ -7,6 +7,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script>
+        function showPassword() {
+            var x = document.getElementById("password");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
     <style>
         .rounded-input {
             border-radius: 20px; /* Adjust the border radius as needed */
@@ -35,6 +45,7 @@
                             <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
                             <li><a class="dropdown-item" href="#Settings">Settings</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -44,7 +55,15 @@
         <h1>Create Organization</h1>
         <form method="post" action="{% url 'createorganization' %}">
             {%  csrf_token %}
-
+            <div class="form-group mb-2">
+                <label for="email">Account Email:  </label>
+                <input type="email" class="form-control rounded-input" id="email" name="email">
+            </div>
+            <div class="form-group mb-2">
+                <label for="password">Password:  </label>
+                <input type="password" class="form-control rounded-input" id="password" name="password">
+                <input type="checkbox" onclick="showPassword()"> Show Password
+            </div>
             <div class="form-group mb-2">
                 <label for="name">Organization Name (Cannot be changed later): </label>
                 <input type="text" class="form-control rounded-input" id= "name" name="name">
@@ -72,18 +91,19 @@
             </div>
         </form>
         <p style="padding:1%; color:green">
-            <em>
-                {% if success_message %}
-                    {{ success_message }}
-                {% endif %}
-            </em>
-        </p>
-        <p style="padding:1%; color:red"> <em>
-            {% if error_message %}
-                {{ error_message }}
-            {% endif %}
-        </em>
-        </p>
+    <em>
+        {% if success_message %}
+            {{ success_message }}
+        {% endif %}
+    </em>
+</p>
+<p style="padding:1%; color:red"> <em>
+    {% if error_message %}
+        {{ error_message }}
+    {% endif %}
+</em>
+</p>
+
     </div>
 </body>
 </html>

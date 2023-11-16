@@ -3,7 +3,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from UWM_Clubs_and_Events.models import *
-from classes import user_util, event_util
+from classes import user_util, event_util, organization_util
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 
@@ -44,7 +44,7 @@ class Homepage(View):
         # TODO: filter events by user interests
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         all_events = []
-        
+
         if 'filters' not in request.session:
             all_events = Event.objects.all()
         else:
@@ -80,7 +80,7 @@ class Homepage(View):
             order=order,
             by_date=date,
             interests=None)
-        
+
         filters = []
         filters.append(sort)
         filters.append(order)
@@ -187,15 +187,14 @@ class EditAccount(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
 
-
         student = user_util.User_Util.get_student(current_user.email)
         userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
         temp_name = current_user.name.split(" ", 1)
         if temp_name.__len__() == 1:
-            last_name=''
+            last_name = ''
         else:
-            last_name=temp_name[1]
+            last_name = temp_name[1]
         if student:
             formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
             formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
@@ -290,41 +289,60 @@ class CreateOrganization(View):
                       {"user": current_user, "point_of_contacts": point_of_contacts})
 
     def post(self, request):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        role = 2
         orgname = request.POST.get('name')
         contact_id = request.POST.get('point_of_contact')
-        print(contact_id)
+
         try:
             contactuser = User.objects.get(id=contact_id)
         except User.DoesNotExist:
             return render(request, "createorganization.html", {"error_message": "User does not exist"})
-        membersCount = request.POST.get('member_count')
+        membersCount = int(request.POST.get('member_count'))
         description = request.POST.get('description')
 
-        newOrg = Organization.objects.create(
-            user=contactuser,
-            name=orgname,
-            point_of_contact=contactuser.email,
-            membersCount=membersCount,
-            description=description
-        )
+        try:
+            organization = organization_util.Organization_Util.create_organization(orgname, email, password, role,
+                                                                                   contactuser.email, membersCount,
+                                                                                   description)
+        except Exception as e:
+            current_user = user_util.User_Util.get_user(email=request.session['user'])
+            point_of_contacts = User.objects.filter(role__exact=3)
+            return render(request, "createorganization.html", {"error_message": e, "user": current_user, "point_of_contacts": point_of_contacts})
 
-        newOrg.save()
+        if isinstance(organization, ValueError):
+            current_user = user_util.User_Util.get_user(email=request.session['user'])
+            point_of_contacts = User.objects.filter(role__exact=3)
+            return render(request, "createorganization.html", {"error_message": organization, "user": current_user, "point_of_contacts": point_of_contacts})
 
-        point_of_contacts = User.objects.filter(role__exact=3)
-        currentUser = user_util.User_Util.get_user(email=request.session['user'])
+        # newOrg = Organization.objects.create(
+        #     user=contactuser,
+        #     name=orgname,
+        #     point_of_contact=contactuser.email,
+        #     membersCount=membersCount,
+        #     description=description
+        # )
+        #
+        # newOrg.save()
+        # create a new search tag for the organization if it doesnt exist
 
-        return render(request, "createorganization.html", {"success_message": "Organization Successfully created",
-                                                           "user": currentUser,
-                                                           "point_of_contacts": point_of_contacts})
+        return render(request, "createorganization.html", {"success_message": "Organization Successfully created"})
+
 
 
 
 class EditOrganization(View):
     def get(self, request):
         cur_user = user_util.User_Util.get_user(request.session['user'])
-        org = Organization.objects.get(user=cur_user)
+        if cur_user.role == 3:
+
+            org = Organization.objects.filter(point_of_contact=cur_user)
+            print()
+        else:
+            org = Organization.objects.filter(user=cur_user)
         pocs = User.objects.filter(role=3)
-        return render(request, 'editorganization.html', {'user': cur_user, 'organization': org, 'contacts': pocs})
+        return render(request, 'editorganization.html', {'user': cur_user, 'organizations': org, 'contacts': pocs})
 
     def post(self, request):
         cur_user = user_util.User_Util.get_user(request.session['user'])
@@ -348,12 +366,16 @@ class CreateEvent(View):
         orgs = Organization.objects.filter(user__email__exact=current_user.email)
         search = request.GET.get('search-input', '')
         filtered_interests = Interest.objects.filter(tag__icontains=search)
-        return render(request, "createevent.html", {"interests": filtered_interests, "orgs": orgs, "user": current_user, })
+        return render(request, "createevent.html",
+                      {"interests": filtered_interests, "orgs": orgs, "user": current_user, })
 
     def post(self, request):
+        tags = Interest.objects.all()
+        search = request.GET.get('search-input', '')
+
         name = request.POST.get('name')
         org_name = request.POST.get('org')
-        location = request.POST.get('location')
+
         time_happening = request.POST.get('time-happening')
         description = request.POST.get('description')
         time_published = datetime.now()
@@ -363,19 +385,36 @@ class CreateEvent(View):
         search = request.GET.get('search-input', '')
         filtered_interests = Interest.objects.filter(tag__icontains=search)
 
-
         try:
             selected_org = Organization.objects.get(name=org_name)
         except Organization.DoesNotExist:
-            return render(request, "createevent.html", {"error_message": "Selected organization does not exist",
-                                                        "interests": filtered_interests, 
-                                                        "orgs": orgs, 
-                                                        "user": current_user})
+            return render(request, "createevent.html",
+                          {"interests": filtered_interests, "orgs": orgs, "user": current_user,
+                           "error_message": "Selected organization does not exist"})
 
-        event = Event.objects.create(name=name, organization=selected_org, location=location,
+        addr = request.POST.get('loc_addr')
+        city = request.POST.get('loc_city')
+        zip = request.POST.get('loc_zip')
+        print(city)
+
+        addr_check = event_util.Event_Util.verify_event_loc(addr, city, zip)
+        if (isinstance(addr_check, ValueError)):
+            return render(request, "createevent.html",
+                          {"interests": filtered_interests, "orgs": orgs, "user": current_user,
+                           "error_message": addr_check})
+
+        city_state = [part.strip() for part in city.split(',')]
+        city_name = city_state[0]
+        state_name = city_state[1]
+
+        event = Event.objects.create(name=name, organization=selected_org, loc_addr=addr,
+                                     loc_city=city_name,
+                                     loc_state=state_name,
+                                     loc_zip=zip,
                                      time_happening=time_happening, description=description,
                                      time_published=time_published, image=photo)
         event.save()
+        print("event saved?")
 
         interests = request.POST.getlist("selected_interests")
         for tag in interests:
@@ -384,12 +423,16 @@ class CreateEvent(View):
             # should not get here
             if isinstance(eventTag, ValueError):
                 check = Interest.objects.all()
-                return render(request, "createevent.html", {"error_message": 'Search Tag could not be applied', "interests": check})
+                return render(request, "createevent.html",
+                              {"error_message": 'Search Tag could not be applied', "interests": check})
 
-        return render(request, "createevent.html", {'success_message': 'Event created successfully', 
-                                                    "orgs": orgs, 
-                                                    "user": current_user, 
+        return render(request, "createevent.html", {'success_message': 'Event created successfully',
+                                                    "orgs": orgs,
+                                                    "user": current_user,
                                                     "interests": filtered_interests})
+        return render(request, "createevent.html",
+                      {'success_message': 'Event created successfully', "orgs": orgs, "user": current_user,
+                       "interests": filtered_interests})
 
 
 class EditEvent(View):
@@ -407,16 +450,31 @@ class EditEvent(View):
     def post(self, request, name):
         event = Event.objects.get(name=name)
         event.name = request.POST.get('name')
-        event.location = request.POST.get('location')
-        print(request.POST.get('time_happening'))
+        # loc = event_util.Event_Util.verify_event_loc(request.POST.get('loc_addr'),
+        #                                              request.POST.get('loc_city'),
+        #                                              request.POST.get('loc_state'),
+        #                                              request.POST.get('loc_zip'))
+        # if isinstance(loc, ValueError):
+        #     # does this work?
+        #     return EditEvent.get(self, request=request, name=event.name)
+
         event.time_happening = request.POST.get('time_happening')
         event.description = request.POST.get('description')
-        event.image=request.FILES.get('image')
+        event.image = request.FILES.get('image')
 
         event.save()
 
         return render(request, "editevent.html", {'message': 'Event Information Changed Successfully!', 'event': event, 'time': event.time_happening})
     
+    
+    
+    
+    
+    
+
+
+
+ 
 class CalendarView(View):
     def get(self, request):
         all_events = Event.objects.all()
@@ -425,26 +483,22 @@ class CalendarView(View):
         }
         return render(request, "calendar.html", {"name": 'publicEvents'})
     
-    def all_events(request):
+"""    def all_events(request):
         all_events = Event.objects.all()
         out = []
         for event in all_events:
             out.append({
                 'title': event.name,
                 'id': event.id,
-                'start': event.start.strftime("%m/%d/%Y,%H:%M:%S"),
+                'start': event.objects.start.strftime("%m/%d/%Y,%H:%M:%S"),
                 'end': event.end.strftime("%m/%d/%Y,%H:%M:%S"),
            })
-        return JsonResponse(out, safe=False)    
+        return JsonResponse(out, safe=False)  """  
     
 class accountCalendar(View):
     def get(self, request):
-        all_events = Event.objects.all()
-        context = {
-            "events": all_events,
-        }
         return render(request, "accountCalendar.html", {"name": 'accountCalendar'})
     
     
     
-        
+ 
