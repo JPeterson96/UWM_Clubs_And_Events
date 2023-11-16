@@ -382,7 +382,6 @@ class CreateEvent(View):
         print(city)
 
         addr_check = event_util.Event_Util.verify_event_loc(addr, city, zip)
-        print(addr_check)
         if (isinstance(addr_check, ValueError)):
             return render(request, "createevent.html",
                           {"interests": filtered_interests, "orgs": orgs, "user": current_user,
