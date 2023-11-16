@@ -5,6 +5,8 @@ from django.contrib.auth import logout
 from UWM_Clubs_and_Events.models import *
 from classes import user_util, event_util
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+
 
 
 class login(View):
@@ -417,5 +419,32 @@ class EditEvent(View):
     
 class CalendarView(View):
     def get(self, request):
+        all_events = Event.objects.all()
+        context = {
+            "events": all_events,
+        }
         return render(request, "calendar.html", {"name": 'publicEvents'})
+    
+    def all_events(request):
+        all_events = Event.objects.all()
+        out = []
+        for event in all_events:
+            out.append({
+                'title': event.name,
+                'id': event.id,
+                'start': event.start.strftime("%m/%d/%Y,%H:%M:%S"),
+                'end': event.end.strftime("%m/%d/%Y,%H:%M:%S"),
+           })
+        return JsonResponse(out, safe=False)    
+    
+class accountCalendar(View):
+    def get(self, request):
+        all_events = Event.objects.all()
+        context = {
+            "events": all_events,
+        }
+        return render(request, "accountCalendar.html", {"name": 'accountCalendar'})
+    
+    
+    
         
