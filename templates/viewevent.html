@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-    <html lang="en">
+    <div lang="en">
     <head>
         <meta charset="UTF-8">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -34,7 +34,7 @@
                 <ul class="navbar-nav">
                     {% if user.name == Event.organization.name %}
                         <li class="nav-item">
-                            <a href="{% url 'editevent' Event.name %}" class="nav-link text-dark">Edit Event</a>
+                            <a href="{% url 'editevent' Event.id %}" class="nav-link text-dark">Edit Event</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -71,15 +71,27 @@
                         <p>Any Issues? Contact: <a
                                 href="mailto:{{ Event.organization.point_of_contact }}">{{ Event.organization.point_of_contact }}</a>
                         </p>
-                        <p>Organizer: {{ Event.organization.name }}</p>
+                        <p>Organizer: <a href="{% url 'orgpage' Event.organization.name %}">{{ Event.organization.name }}</a></p>
                     </div>
                     <p><i class="fas fa-clock"></i> Date & Time: <a href="#" id="time">{{ Event.time_happening }}</a>
                     </p>
                     <p><i class="fas fa-map-marker-alt"></i> Location: <a href="#" id="map">{{ Event.loc_addr }} {{ Event.loc_city }}, {{ Event.loc_state }} {{ Event.loc_zip }}</a></p>
                     <p>Description: {{ Event.description }}</p>
+                     <form method="post" action="{% url 'viewevent' Event.id  %}">
+                        {% csrf_token %}
+                        <!-- Your other form fields and buttons go here -->
+                        {% if attend %}
+                            <label name="rsvpbbut" id="rsvpbbut">You are signed up for this event!</label>
+                            <button type="submit" name="unrsvp" id="unrsvp">Click to unRSVP</button>
+                        {% else %}
+                            <button type="submit" name="rsvpbbut" id="rsvpbbut">RSVP</button>
+                        {% endif %}
+                    </form>
                 </div>
             </div>
         </div>
+    </form>
+    </div>
     </div>
     </body>
     </html>

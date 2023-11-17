@@ -87,7 +87,7 @@
         </div>
     </nav>
         <div style="padding-top: 80px; padding-left: 2%; padding-right: 2%;">
-    <form method="post" action="{% url 'editevent' event.name %}">
+    <form method="post" action="{% url 'editevent' event.id %}">
         {% csrf_token %}
             <div>
                 <label for="name">Change Name:  </label>

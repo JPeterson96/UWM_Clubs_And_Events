@@ -28,17 +28,18 @@ urlpatterns = [
     path('homepage/', Homepage.as_view(), name='homepage'),
     path('homepage/filter', ClearFilters.as_view(), name='clearfilters'),
     path('createAccount/', CreateAccount.as_view(), name='createaccount'),
-    path('viewevent<str:name>/', ViewEvent.as_view(), name='viewevent'),
+    path('viewevent/<int:id>/', ViewEvent.as_view(), name='viewevent'),
     path('createAccount/', CreateAccount.as_view(), name='createaccount'),
     path('homepage/viewaccount/', ViewAccount.as_view(), name='viewaccount'),
     path('viewaccount/editaccount', EditAccount.as_view(), name='editaccount'),
     path('createOrganization/', CreateOrganization.as_view(), name='createorganization'),
     path('createEvent/', CreateEvent.as_view(), name='createevent'),
     path('editOrganization/', EditOrganization.as_view(), name='editorganization'),
-    path('editEvent<str:name>/', EditEvent.as_view(), name='editevent'),
+    path('editEvent/<int:id>/', EditEvent.as_view(), name='editevent'),
     path('calendar/', CalendarView.as_view(), name='publicEvents'),
     path('all_events/',CalendarView.as_view(), name='publicEvents'),
     path('homepage/accountCalendar/', accountCalendar.as_view(), name='accountCalendar'),
+    path('orgpage/<str:name>/', OrgPage.as_view(), name='orgpage'),
 
 ] 
 

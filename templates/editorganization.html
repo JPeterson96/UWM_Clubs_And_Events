@@ -44,11 +44,13 @@
                     <label for="password">Change Password: </label>
                     <input type="text" name="password" id="password" value="{{ organization.password }}">
                 </div>
-                <div>
-                    <label for="point_of_contact">Point of Contact: </label>
-                    <input type="text" name="point_of_contact" id="point_of_contact"
-                           value="{{ organization.point_of_contact }}">
-                </div>
+                <label for="point_of_contact">Organization's Point of Contact: </label>
+                <select name="point_of_contact" id="point_of_contact" >
+                    <option value="{{ organization.point_of_contact }}">{{ organization.point_of_contact }}</option>
+                    {% for i in contacts %}
+                        <option value="{{ i.email }}">{{ i.name }}</option>
+                    {% endfor %}
+                </select>
                 <div>
                     <label for="membersCount">Number of Members: </label>
                     <input type="number" name="membersCount" id="membersCount" value="{{ organization.membersCount }}">

@@ -83,19 +83,32 @@ class Organization_Util():
         except:
             return None
 
-    def edit_org(email, point_of_contact, membersCount, description):
-
+    def edit_org(email, password, point_of_contact, membersCount, description):
+        print(email)
         if user_util.User_Util.get_user(point_of_contact) is None:
             return ValueError("Point of Contact is not a valid user")
-        if membersCount < 0:
+        if int(membersCount) < 0:
             return ValueError("Number of members cannot be negative")
-        if description == '':
+        if description is not None and description == '':
             return ValueError("Description cannot be empty")
-        if description is not isinstance(description, str):
-            return ValueError("Description must be of type String")
+        # if description is not isinstance(description, str):
+        #     return ValueError("Description must be of type String")
+        if password == "" or ' ' in password:
+            return ValueError("password format incorrect")
 
-        organization = Organization_Util.get_org_by_user_email(email)
+        # this get user account of org
+        try:
+            org_acc = User.objects.get(email__iexact=email)
+            print("this sit the org object", org_acc.email, org_acc.password)
+        except User.DoesNotExist:
+            return ValueError("user does not exists with this email")
+
+        org_acc.password=password
+
+        organization = Organization_Util.get_org_by_user_email(org_acc.email)
 
         organization.point_of_contact = point_of_contact
         organization.membersCount = membersCount
         organization.description = description
+        org_acc.save()
+        organization.save()
