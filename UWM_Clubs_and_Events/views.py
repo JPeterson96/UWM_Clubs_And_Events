@@ -438,8 +438,8 @@ class CreateEvent(View):
         addr_check = event_util.Event_Util.verify_event_loc(addr, city, zip)
         if isinstance(addr_check, ValueError):
             return render(request, "createevent.html",
-                          {"interests": filtered_interests, "orgs": orgs, "user": current_user,
-                           "error_message": addr_check})
+                          {'name': name,'loc_addr':addr, 'loc_zip':zip, "interests": filtered_interests, "description":description, "orgs": orgs, "user": current_user,
+                           "time": time_happening,"error_message": addr_check})
 
         city_state = [part.strip() for part in city.split(',')]
         city_name = city_state[0]
@@ -497,10 +497,13 @@ class EditEvent(View):
         addr = request.POST.get('loc_addr')
         city = request.POST.get('loc_city')
         zip = request.POST.get('loc_zip')
+        event.time_happening = request.POST.get('time_happening')
+        event.description = request.POST.get('description')
+        event.image = request.FILES.get('image')
 
         addr_check = event_util.Event_Util.verify_event_loc(addr, city, zip)
         if isinstance(addr_check, ValueError):
-            return render(request, "editevent.html", {"event": event, 'time': event.time_happening})
+            return render(request, "editevent.html", {"event": event,'time': event.time_happening})
 
         city_state = [part.strip() for part in city.split(',')]
 
@@ -509,9 +512,7 @@ class EditEvent(View):
         event.loc_state = city_state[1]
         event.loc_zip = zip
 
-        event.time_happening = request.POST.get('time_happening')
-        event.description = request.POST.get('description')
-        event.image = request.FILES.get('image')
+
 
         event.save()
 
