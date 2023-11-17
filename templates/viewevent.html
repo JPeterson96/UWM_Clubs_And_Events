@@ -32,7 +32,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
-                    {% if user.name == Event.organization.name %}
+                    {% if user.email == Event.organization.user.email  %}
                         <li class="nav-item">
                             <a href="{% url 'editevent' Event.id %}" class="nav-link text-dark">Edit Event</a>
                         </li>

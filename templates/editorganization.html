@@ -40,10 +40,6 @@
         <form method="post" action="{% url 'editorganization' %}">
             {% csrf_token %}
             {% for organization in organizations %}
-                <div>
-                    <label for="password">Change Password: </label>
-                    <input type="text" name="password" id="password" value="{{ organization.password }}">
-                </div>
                 <label for="point_of_contact">Organization's Point of Contact: </label>
                 <select name="point_of_contact" id="point_of_contact" >
                     <option value="{{ organization.point_of_contact }}">{{ organization.point_of_contact }}</option>

@@ -274,7 +274,10 @@ class ViewEvent(View):
         eventname = kwargs["id"]
         actEvent = Event.objects.get(id=eventname)
 
+
         current_user = user_util.User_Util.get_user(email=request.session['user'])
+        print(current_user)
+        print(actEvent.organization.user.email)
 
         try:
             event = Event.objects.get(id=eventname)
@@ -376,13 +379,13 @@ class EditOrganization(View):
     def post(self, request):
         cur_user = user_util.User_Util.get_user(request.session['user'])
         org = Organization.objects.get(user=cur_user)
-        new_pass = request.POST.get('password')
+
 
         new_point_of_contact = request.POST.get('point_of_contact')
         membersCount = request.POST.get('membersCount')
         new_description = request.POST.get('description')
 
-        checkEditorg = organization_util.Organization_Util.edit_org(cur_user.email, new_pass, new_point_of_contact,
+        checkEditorg = organization_util.Organization_Util.edit_org(cur_user.email, new_point_of_contact,
                                                                     membersCount, new_description)
 
         if isinstance(checkEditorg, ValueError):
