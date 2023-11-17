@@ -10,18 +10,18 @@
             $(document).ready(function() {
                 // Get the interests elements
                 var interests = document.querySelectorAll('input[name="selected_interests"]');
-    
+
                 // Get the search input element
                 var searchInput = document.getElementById('search-input');
-    
-    
+
+
                 searchInput.addEventListener('input', function() {
                     var searchValue = searchInput.value.toLowerCase();
-    
+
                     interests.forEach(function(interest) {
                         var interestTag = interest.value.toLowerCase();
                         var parentRow = interest.closest('tr');
-    
+
                         if (interestTag.includes(searchValue)) {
                             parentRow.style.display = '';
                         } else {
@@ -113,7 +113,7 @@
                             ☰ Filter
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <form method="post" action="{% url 'homepage' %}">
+                            <form method="post" action="{% url 'orgpage' curr_org.name %}">
                                 {% csrf_token %}
                                 <li class="p-1">
                                     <select name="sortType" id="sortType">
@@ -162,7 +162,7 @@
                                 <li>
                                     <button type="submit" class="btn btn-primary m-1"> Filter </button>
                                     <button type="checkbox" id="clear" name="clear" value=1>
-                                        <a href="{% url 'clearfilters' %}"> 
+                                        <a href="{% url 'clearfilters' %}">
                                             Clear Filters
                                         </a>
                                     </button>

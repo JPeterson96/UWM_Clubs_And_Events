@@ -8,7 +8,6 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 
 
-
 class login(View):
     def get(self, request):
         logout(request)
@@ -60,7 +59,7 @@ class Homepage(View):
         events = paginator.get_page(page_number)
 
         return render(request, "homepage.html", {"Events": events, "user": current_user})
-    
+
     def post(self, request):
         sort = request.POST.get('sortType')
         order = request.POST.get('sortOrder')
@@ -73,7 +72,7 @@ class Homepage(View):
         sort = int(sort)
         order = int(order)
         date = int(date)
-        
+
         filtered_events = event_util.Event_Util.filter_events(
             user=current_user,
             sort_type=sort,
@@ -91,7 +90,7 @@ class Homepage(View):
         paginator = Paginator(filtered_events, 5)
         page_number = request.GET.get('page')
         events = paginator.get_page(page_number)
-        
+
         return render(request, "homepage.html", {"Events": events, "user": current_user})
 
 
@@ -225,6 +224,7 @@ class EditAccount(View):
         addint = request.POST.getlist("interesttoadd")
         startdate = request.POST.get("startdate")
         graddate = request.POST.get("graddate")
+        new_pass = request.POST.get("password")
         # delete major associated with user
 
         if majorstoremove:
@@ -246,14 +246,13 @@ class EditAccount(View):
             for intadd in addint:
                 user_util.User_Util.set_user_interest(current_user.email, intadd)
 
-        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,
+        res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,new_pass,
                                             startdate, graddate)
         if isinstance(res, ValueError):
             return render(request, "editaccount.html", {"message": res})
 
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-
         student = user_util.User_Util.get_student(email=current_user.email)
         return render(request, "viewaccount.html",
                       {"message": "user sucessfully edited", "User": current_user, "Stu": student,
@@ -271,13 +270,46 @@ class Logout(View):
 
 
 class ViewEvent(View):
-    def get(self, request, name):
+    def get(self, request, *args, **kwargs):
+        eventname = kwargs["id"]
+        actEvent = Event.objects.get(id=eventname)
+
+
         current_user = user_util.User_Util.get_user(email=request.session['user'])
+        print(current_user)
+        print(actEvent.organization.user.email)
+
         try:
-            event = Event.objects.get(name=name)
-            return render(request, "viewevent.html", {"Event": event, "user": current_user})
+            event = Event.objects.get(id=eventname)
         except:
             return render(request, "homepage.html", {"error_message": "Event does not exist"})
+
+        user_in_event = UserAttendEvent.objects.filter(user=current_user, event=actEvent)
+
+        return render(request, "viewevent.html", {"Event": event, "user": current_user, "attend": user_in_event})
+
+    def post(self, request, *args, **kwargs):
+        eventname = kwargs["id"]
+        actEvent = Event.objects.get(id=eventname)
+
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        user_in_event = UserAttendEvent.objects.filter(user=current_user, event=actEvent)
+        if user_in_event.exists():
+            unrsvp = request.POST.get('unrsvp')
+            if unrsvp is not None:
+                # delete if user wants
+                user_in_event.get().delete()
+                user_in_event = UserAttendEvent.objects.filter(user=current_user, event=actEvent)
+                return render(request, "viewevent.html",
+                              {"Event": actEvent, "user": current_user, "attend": user_in_event.exists()})
+        else:
+            rsvp = request.POST.get('rsvpbbut')
+            print(rsvp)
+            if rsvp is not None:
+                UserAttendEvent.objects.create(user=current_user, event=actEvent)
+                user_in_event = UserAttendEvent.objects.filter(user=current_user, event=actEvent)
+                return render(request, "viewevent.html",
+                              {"Event": actEvent, "user": current_user, "attend": user_in_event.exists()})
 
 
 class CreateOrganization(View):
@@ -309,12 +341,14 @@ class CreateOrganization(View):
         except Exception as e:
             current_user = user_util.User_Util.get_user(email=request.session['user'])
             point_of_contacts = User.objects.filter(role__exact=3)
-            return render(request, "createorganization.html", {"error_message": e, "user": current_user, "point_of_contacts": point_of_contacts})
+            return render(request, "createorganization.html",
+                          {"error_message": e, "user": current_user, "point_of_contacts": point_of_contacts})
 
         if isinstance(organization, ValueError):
             current_user = user_util.User_Util.get_user(email=request.session['user'])
             point_of_contacts = User.objects.filter(role__exact=3)
-            return render(request, "createorganization.html", {"error_message": organization, "user": current_user, "point_of_contacts": point_of_contacts})
+            return render(request, "createorganization.html",
+                          {"error_message": organization, "user": current_user, "point_of_contacts": point_of_contacts})
 
         # newOrg = Organization.objects.create(
         #     user=contactuser,
@@ -330,15 +364,13 @@ class CreateOrganization(View):
         return render(request, "createorganization.html", {"success_message": "Organization Successfully created"})
 
 
-
-
 class EditOrganization(View):
     def get(self, request):
         cur_user = user_util.User_Util.get_user(request.session['user'])
         if cur_user.role == 3:
 
             org = Organization.objects.filter(point_of_contact=cur_user)
-            print()
+
         else:
             org = Organization.objects.filter(user=cur_user)
         pocs = User.objects.filter(role=3)
@@ -347,14 +379,21 @@ class EditOrganization(View):
     def post(self, request):
         cur_user = user_util.User_Util.get_user(request.session['user'])
         org = Organization.objects.get(user=cur_user)
-        cur_user.password = request.POST.get('password')
 
-        org.point_of_contact = request.POST.get('point_of_contact')
-        org.membersCount = request.POST.get('membersCount')
-        org.description = request.POST.get('description')
+
+        new_point_of_contact = request.POST.get('point_of_contact')
+        membersCount = request.POST.get('membersCount')
+        new_description = request.POST.get('description')
+
+        checkEditorg = organization_util.Organization_Util.edit_org(cur_user.email, new_point_of_contact,
+                                                                    membersCount, new_description)
+
+        if isinstance(checkEditorg, ValueError):
+            return render(request, 'editorganization.html', {'user': cur_user, 'organization': org,
+                                                             'message': checkEditorg})
 
         cur_user.save()
-        org.save()
+
         return render(request, 'editorganization.html', {'user': cur_user, 'organization': org,
                                                          'message': 'Organization information changed successfully!'})
 
@@ -395,13 +434,12 @@ class CreateEvent(View):
         addr = request.POST.get('loc_addr')
         city = request.POST.get('loc_city')
         zip = request.POST.get('loc_zip')
-        print(city)
 
         addr_check = event_util.Event_Util.verify_event_loc(addr, city, zip)
-        if (isinstance(addr_check, ValueError)):
+        if isinstance(addr_check, ValueError):
             return render(request, "createevent.html",
-                          {"interests": filtered_interests, "orgs": orgs, "user": current_user,
-                           "error_message": addr_check})
+                          {'name': name,'loc_addr':addr, 'loc_zip':zip, "interests": filtered_interests, "description":description, "orgs": orgs, "user": current_user,
+                           "time": time_happening,"error_message": addr_check})
 
         city_state = [part.strip() for part in city.split(',')]
         city_name = city_state[0]
@@ -430,26 +468,25 @@ class CreateEvent(View):
                                                     "orgs": orgs,
                                                     "user": current_user,
                                                     "interests": filtered_interests})
-        return render(request, "createevent.html",
-                      {'success_message': 'Event created successfully', "orgs": orgs, "user": current_user,
-                       "interests": filtered_interests})
 
 
 class EditEvent(View):
-    def get(self, request, name):
+    def get(self, request, id):
         current_user = user_util.User_Util.get_user(request.session['user'])
 
         try:
-            event = Event.objects.get(name=name)
+            event = Event.objects.get(pk=id)
             time = event.time_happening.strftime("%Y-%m-%dT%H:%M")
             request.session['oldname'] = event.name
             return render(request, "editevent.html", {"event": event, 'time': time})
         except:
             return render(request, "homepage.html", {"error_message": "Event does not exist"})
 
-    def post(self, request, name):
-        event = Event.objects.get(name=name)
+    def post(self, request, id):
+
+        event = Event.objects.get(pk=id)
         event.name = request.POST.get('name')
+
         # loc = event_util.Event_Util.verify_event_loc(request.POST.get('loc_addr'),
         #                                              request.POST.get('loc_city'),
         #                                              request.POST.get('loc_state'),
@@ -457,24 +494,93 @@ class EditEvent(View):
         # if isinstance(loc, ValueError):
         #     # does this work?
         #     return EditEvent.get(self, request=request, name=event.name)
-
+        addr = request.POST.get('loc_addr')
+        city = request.POST.get('loc_city')
+        zip = request.POST.get('loc_zip')
         event.time_happening = request.POST.get('time_happening')
         event.description = request.POST.get('description')
         event.image = request.FILES.get('image')
 
+        addr_check = event_util.Event_Util.verify_event_loc(addr, city, zip)
+        if isinstance(addr_check, ValueError):
+            return render(request, "editevent.html", {"event": event,'time': event.time_happening})
+
+        city_state = [part.strip() for part in city.split(',')]
+
+        event.loc_addr = addr
+        event.loc_city = city_state[0]
+        event.loc_state = city_state[1]
+        event.loc_zip = zip
+
+
+
         event.save()
 
-        return render(request, "editevent.html", {'message': 'Event Information Changed Successfully!', 'event': event, 'time': event.time_happening})
-    
-    
-    
-    
-    
-    
+        return render(request, "editevent.html", {'message': 'Event Information Changed Successfully!', 'event': event,
+                                                  'time': event.time_happening})
+
+
+class OrgPage(View):
+    def get(self, request, name):
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        all_events=[]
+        curr_org = Organization.objects.get(name=name)
+
+
+        if 'filters' not in request.session:
+            all_events = Event.objects.filter(organization=curr_org)
+        else:
+            all_events = event_util.Event_Util.filter_events(
+                user=current_user,
+                sort_type=request.session['filters'][0],
+                order=request.session['filters'][1],
+                by_date=request.session['filters'][2],
+                interests=None)
+            all_events=all_events.filter(organization=curr_org)
+
+
+        paginator = Paginator(all_events, 5)  # 5 events per page
+        page_number = request.GET.get('page')
+        events = paginator.get_page(page_number)
+        return render(request, "orgpage.html", {"Events": events, "user": current_user, "curr_org": curr_org})
+    def post(self,request,name):
+        sort = request.POST.get('sortType')
+        order = request.POST.get('sortOrder')
+        date = request.POST.get('dateRange')
+        clear = request.POST.get('clear')
+        # interests = request.POST.getlist('interests')
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        curr_org = Organization.objects.get(name=name)
+
+        # convert to int
+        sort = int(sort)
+        order = int(order)
+        date = int(date)
+
+        filtered_events = event_util.Event_Util.filter_events(
+            user=current_user,
+            sort_type=sort,
+            order=order,
+            by_date=date,
+            interests=None)
+        filtered_events=filtered_events.filter(name=name)
+
+        filters = []
+        filters.append(sort)
+        filters.append(order)
+        filters.append(date)
+        # filters.append(interests)
+        request.session['filters'] = filters
+
+        paginator = Paginator(filtered_events, 5)
+        page_number = request.GET.get('page')
+        events = paginator.get_page(page_number)
+
+        return render(request, "orgpage.html", {"Events": events, "user": current_user, "curr_org": curr_org})
 
 
 
- 
+
 class CalendarView(View):
     def get(self, request):
         all_events = Event.objects.all()
@@ -482,7 +588,8 @@ class CalendarView(View):
             "events": all_events,
         }
         return render(request, "calendar.html", {"name": 'publicEvents'})
-    
+
+
 """    def all_events(request):
         all_events = Event.objects.all()
         out = []
@@ -493,12 +600,9 @@ class CalendarView(View):
                 'start': event.objects.start.strftime("%m/%d/%Y,%H:%M:%S"),
                 'end': event.end.strftime("%m/%d/%Y,%H:%M:%S"),
            })
-        return JsonResponse(out, safe=False)  """  
-    
+        return JsonResponse(out, safe=False)  """
+
+
 class accountCalendar(View):
     def get(self, request):
         return render(request, "accountCalendar.html", {"name": 'accountCalendar'})
-    
-    
-    
- 

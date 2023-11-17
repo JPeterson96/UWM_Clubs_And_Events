@@ -44,7 +44,7 @@ class Organization(models.Model):
 
 # Events:  name-str, organization-str, location-str, date-str/Date/Time, description-str, type-str, views-int
 class Event(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, to_field='name')
     loc_addr = models.CharField(max_length=200)
     loc_state = models.CharField(max_length=200)
@@ -114,12 +114,21 @@ class EventTag(models.Model):
         return self.event.name + "/" + self.interest.tag
 
 
+class UserAttendEvent(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.email + "/" + self.event.name
+
+
 class StudentMajor(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     major = models.ForeignKey(Major, on_delete=models.CASCADE, to_field='name')
 
     def __str__(self):
         return self.student.user.email + "/" + self.major.name
+
 
 # class Friend(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
@@ -137,12 +146,9 @@ class StudentMajor(models.Model):
 
 class Calendar(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255,null=True,blank=True)
-    start = models.DateTimeField(null=True,blank=True)
-    end = models.DateTimeField(null=True,blank=True)
- 
-    class Meta:  
+    name = models.CharField(max_length=255, null=True, blank=True)
+    start = models.DateTimeField(null=True, blank=True)
+    end = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
         db_table = "tblevents"
-        
-        
-    
