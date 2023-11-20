@@ -585,9 +585,10 @@ class CalendarView(View):
     def get(self, request):
         all_events = Event.objects.all()
         context = {
+            "name": "publicEvents",
             "events": all_events,
         }
-        return render(request, "calendar.html", {"name": 'publicEvents'})
+        return render(request, "calendar.html", {context})
 
 
 """    def all_events(request):
@@ -605,4 +606,6 @@ class CalendarView(View):
 
 class accountCalendar(View):
     def get(self, request):
-        return render(request, "accountCalendar.html", {"name": 'accountCalendar'})
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        all_events = Event.objects.all()
+        return render(request, "accountCalendar.html", {"name": 'accountCalendar', 'events': all_events, 'user': current_user})
