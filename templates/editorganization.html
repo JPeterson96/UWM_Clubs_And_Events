@@ -36,32 +36,36 @@
             </div>
         </div>
     </nav>
-    <div style="padding-top: 80px; padding-left: 2%; padding-right: 2%;">
-        <form method="post" action="{% url 'editorganization' %}">
-            {% csrf_token %}
-            {% for organization in organizations %}
-                <label for="point_of_contact">Organization's Point of Contact: </label>
-                <select name="point_of_contact" id="point_of_contact" >
-                    <option value="{{ organization.point_of_contact }}">{{ organization.point_of_contact }}</option>
-                    {% for i in contacts %}
-                        <option value="{{ i.email }}">{{ i.name }}</option>
-                    {% endfor %}
-                </select>
-                <div>
-                    <label for="membersCount">Number of Members: </label>
-                    <input type="number" name="membersCount" id="membersCount" value="{{ organization.membersCount }}">
-                </div>
-                <div>
-                    <label for="description">Description: </label>
-                    <input type="text" name="description" id="description" value="{{ organization.description }}">
-                </div>
-                <input type="submit" value="Save Changes">
-                </form>
-                <hr>
 
-                </div>
-            {% endfor %}
-    <p style="padding-left: 2%; padding-top: 2%">{{ message }}</p>
+    <div class="page_container">
+        <div style="padding-top: 80px; padding-left: 2%; padding-right: 2%;">
+            <form method="post" action="{% url 'editorganization' %}">
+                {% csrf_token %}
+                {% for organization in organizations %}
+                    <label for="point_of_contact">Organization's Point of Contact: </label>
+                    <select name="point_of_contact" id="point_of_contact" >
+                        <option value="{{ organization.point_of_contact }}">{{ organization.point_of_contact }}</option>
+                        {% for i in contacts %}
+                            <option value="{{ i.email }}">{{ i.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div>
+                        <label for="membersCount">Number of Members: </label>
+                        <input type="number" name="membersCount" id="membersCount" value="{{ organization.membersCount }}">
+                    </div>
+                    <div>
+                        <label for="description">Description: </label>
+                        <input type="text" name="description" id="description" value="{{ organization.description }}">
+                    </div>
+                    <input type="submit" value="Save Changes">
+                    </form>
+                    <hr>
+
+                    </div>
+                {% endfor %}
+                <p style="padding-left: 2%; padding-top: 2%">{{ message }}</p>
+        </div>
+    </div>
     </body>
     </html>
 {% endblock %}
