@@ -46,7 +46,6 @@ class Homepage(View):
         all_events = []
 
         if 'filters' not in request.session:
-            # TODO: filter events by user interests
             # Filter events by user interests by default
             all_events = event_util.Event_Util.filter_events(
                 user=current_user,
@@ -85,7 +84,8 @@ class Homepage(View):
             user=current_user,
             sort_type=sort,
             order=order,
-            by_date=date)
+            by_date=date,
+            interests=None)
 
         filters = []
         filters.append(sort)

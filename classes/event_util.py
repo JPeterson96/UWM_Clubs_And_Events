@@ -9,6 +9,7 @@
 
 from UWM_Clubs_and_Events.models import Event, StudentInterest, EventTag
 from datetime import datetime, timedelta
+from django.db.models.functions import Lower
 from django.db.models import Q
 
 
@@ -77,9 +78,9 @@ class Event_Util():
 
         if sort_type == 3:
             if order == 1:
-                filters.append("name")
+                filters.append(Lower("name"))
             elif order == 2:
-                filters.append("-name")
+                filters.append(Lower("-name"))
 
         filtered_events = filtered_events.order_by(*filters)
 
