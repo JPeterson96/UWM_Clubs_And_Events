@@ -7,7 +7,7 @@
 # type - string
 # views - int
 
-from UWM_Clubs_and_Events.models import Event
+from UWM_Clubs_and_Events.models import Event, StudentInterest, EventTag
 from datetime import datetime, timedelta
 from django.db.models import Q
 
@@ -32,8 +32,9 @@ class Event_Util():
             # Filter by interests
             query = Q()
             for i in interests:
-                query |= Q(interests__name=i)
+                    query |= Q(eventtag__interest=i)
             filtered_events = Event.objects.filter(query).distinct()
+
         else:
             filtered_events = Event.objects.all()
 
