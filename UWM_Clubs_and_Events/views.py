@@ -40,19 +40,26 @@ class login(View):
 
 class Homepage(View):
     def get(self, request):
-        # TODO: filter events by user interests
         current_user = user_util.User_Util.get_user(email=request.session['user'])
+        user_interests = StudentInterest.objects.filter(student__user=current_user)
+        interest_tags = [interest.type.tag for interest in user_interests]
         all_events = []
 
         if 'filters' not in request.session:
-            all_events = Event.objects.all()
+            # Filter events by user interests by default
+            all_events = event_util.Event_Util.filter_events(
+                user=current_user,
+                sort_type=0,
+                order=0,
+                by_date=0,
+                interests=interest_tags)
         else:
             all_events = event_util.Event_Util.filter_events(
                 user=current_user,
                 sort_type=request.session['filters'][0],
                 order=request.session['filters'][1],
                 by_date=request.session['filters'][2],
-                interests=None)
+                interests=interest_tags)
 
         paginator = Paginator(all_events, 5)  # 5 events per page
         page_number = request.GET.get('page')
@@ -96,7 +103,31 @@ class Homepage(View):
 
 class ClearFilters(View):
     def get(self, request):
-        del request.session['filters']
+        if 'filters' in request.session:
+            del request.session['filters']
+
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        user_interests = StudentInterest.objects.filter(student__user=current_user)
+        interest_tags = [interest.type.tag for interest in user_interests]
+
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        all_events = event_util.Event_Util.filter_events(
+            user=current_user,
+            sort_type=0,
+            order=0,
+            by_date=0,
+            interests=interest_tags)
+
+        paginator = Paginator(all_events, 5)
+        page_number = request.GET.get('page')
+        events = paginator.get_page(page_number)
+
+        return render(request, "homepage.html", {"Events": events, "user": current_user})
+    
+class ClearAllFilters(View):
+    def get(self, request):
+        if 'filters' in request.session:
+            del request.session['filters']
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         all_events = event_util.Event_Util.filter_events(
@@ -402,7 +433,7 @@ class CreateEvent(View):
     def get(self, request):
         tags = Interest.objects.all()
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        orgs = Organization.objects.filter(user__email__exact=current_user.email)
+        orgs = Organization.objects.filter(point_of_contact__exact=current_user.email)
         search = request.GET.get('search-input', '')
         filtered_interests = Interest.objects.filter(tag__icontains=search)
         return render(request, "createevent.html",
@@ -420,7 +451,7 @@ class CreateEvent(View):
         time_published = datetime.now()
         photo = request.FILES.get('photo')
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        orgs = Organization.objects.filter(user__email__exact=current_user.email)
+        orgs = Organization.objects.filter(point_of_contact__exact=current_user.email)
         search = request.GET.get('search-input', '')
         filtered_interests = Interest.objects.filter(tag__icontains=search)
 

@@ -27,6 +27,7 @@ urlpatterns = [
     path("login.html", login.as_view()),
     path('homepage/', Homepage.as_view(), name='homepage'),
     path('homepage/filter', ClearFilters.as_view(), name='clearfilters'),
+    path('homepage/all', ClearAllFilters.as_view(), name='clearallfilters'),
     path('createAccount/', CreateAccount.as_view(), name='createaccount'),
     path('viewevent/<int:id>/', ViewEvent.as_view(), name='viewevent'),
     path('createAccount/', CreateAccount.as_view(), name='createaccount'),

@@ -134,11 +134,12 @@
                                 </li>
                                 <li>
                                     <button type="submit" class="btn btn-primary m-1"> Filter </button>
-                                    <button type="checkbox" id="clear" name="clear" value=1>
-                                        <a href="{% url 'clearfilters' %}"> 
-                                            Clear Filters
-                                        </a>
-                                    </button>
+                                    <a href="{% url 'clearfilters' %}" style="padding-left: 2%;"> 
+                                        Clear
+                                    </a>
+                                    <a href="{% url 'clearallfilters' %}" style="padding-left: 5%;"> 
+                                        Clear All
+                                    </a>
                                 </li>
                             </form>
                         </ul>
