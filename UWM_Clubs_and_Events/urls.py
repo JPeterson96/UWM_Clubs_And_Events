@@ -14,10 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from UWM_Clubs_and_Events.views import *
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
+from .views import CalendarView
 
 
 urlpatterns = [
@@ -38,7 +39,7 @@ urlpatterns = [
     path('editOrganization/', EditOrganization.as_view(), name='editorganization'),
     path('editEvent/<int:id>/', EditEvent.as_view(), name='editevent'),
     path('calendar/', CalendarView.as_view(), name='publicEvents'),
-    path('all_events/',CalendarView.as_view(), name='publicEvents'),
+    path('all_events/',CalendarView.as_view(), name='all_events'),
     path('homepage/accountCalendar/', accountCalendar.as_view(), name='accountCalendar'),
     path('orgpage/<str:name>/', OrgPage.as_view(), name='orgpage'),
 
