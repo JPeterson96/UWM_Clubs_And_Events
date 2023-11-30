@@ -1,42 +1,155 @@
 from django.test import TestCase
 from django.test import Client
 from UWM_Clubs_and_Events.models import Event
+from classes.event_util import Event_Util
+from UWM_Clubs_and_Events.models import User
+from UWM_Clubs_and_Events.models import Organization
+from classes.user_util import User_Util as user_util
+import datetime
 
 class TestCreateValidEvent(TestCase):
     def setUp(self):
         self.client = Client()
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        user_util.create_user(name = "Ilya", email = "kravtso5@uwm.edu", password = "123", role = 3, 
+                              startdate = self.time, graddate = self.time)
+        self.user = user_util.get_user("kravtso5@uwm.edu")
+        self.client.post("/", {"email": "kravtso5@uwm.edu", "password": "123"})
+        self.client.post("/createOrganization/", {"email": "cssmartclub@uwm.edu", "password": "password", 
+                                                    "name": "CS Smart Club", "point_of_contact": "1",
+                                                    "member_count": "1", "description": "description"})
+        self.org = Organization.objects.get(name="CS Smart Club")
+        
+    def test_createEvent(self):
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
+                                                       "loc_addr": "1234 Test St.", 
+                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
+                                                       "time-happening": self.time, 
+                                                       "description": "Test Event", 
+                                                       "photo": "static/event_photos/default.jpeg"})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertEquals(self.resp.context["success_message"], "Event created successfully")
+        self.assertIsNotNone(Event_Util.get_event(1))
 
-    def test_createOrg(self):
-        self.resp = self.client.post("/createevent/", {"name": "Club meeting", "org": "CS Smart Club", 
-                                     "location": "EMS", "date": "2024/01/01", "time": "4:30:00",
-                                     "description": "description"}, follow=True)
-        self.assertEqual("Success: New Event has been created", self.resp.context["msg"],
-                         "Failed creation. One or more fields invalid")
-
-class TestCreateInvalid(TestCase):
+class TestCreateInvalidEvent(TestCase):
     def setUp(self):
         self.client = Client()
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        user_util.create_user(name = "Ilya", email = "kravtso5@uwm.edu", password = "123", role = 3, 
+                              startdate = self.time, graddate = self.time)
+        self.user = user_util.get_user("kravtso5@uwm.edu")
+        self.client.post("/", {"email": "kravtso5@uwm.edu", "password": "123"})
+        self.client.post("/createOrganization/", {"email": "cssmartclub@uwm.edu", "password": "password", 
+                                                    "name": "CS Smart Club", "point_of_contact": "1",
+                                                    "member_count": "1", "description": "description"})
+        self.org = Organization.objects.get(name="CS Smart Club")
 
-    def test_emptyFields(self):
-        self.resp = self.client.post("/createevent/", {"name": "", "org": "",
-                                     "location": "", "date": "", "time": "",
-                                     "description": ""}, follow=True)
-        self.assertEqual("Error: One or more fields invalid", self.resp.context["msg"],
-                         "Event created with one or more fields empty")
+    def test_createEventInvalidName(self):
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        self.resp = self.client.post("/createEvent/", {"name": "", "org": "CS Smart Club", 
+                                                       "loc_addr": "1234 Test St.", 
+                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
+                                                       "time-happening": self.time, 
+                                                       "description": "Test Event", 
+                                                       "photo": "static/event_photos/default.jpeg"})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertEquals(self.resp.context["error_message"], "Invalid event name")
+        self.assertIsNone(Event_Util.get_event(1))
 
-    def test_blankField(self):
-        self.resp = self.client.post("/createevent/", {"name": " ", "org": " ",
-                                     "location": " ", "date": " ", "time": " ",
-                                     "description": " "}, follow=True)
-        self.assertEqual("Error: One or more fields invalid", self.resp.context["msg"],
-                         "Event created with one or more fields blank")
+    def test_createEventInvalidOrg(self):
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "", 
+                                                       "loc_addr": "1234 Test St.", 
+                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
+                                                       "time-happening": self.time, 
+                                                       "description": "Test Event", 
+                                                       "photo": "static/event_photos/default.jpeg"})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertEquals(self.resp.context["error_message"], "Selected organization does not exist")
+        self.assertIsNone(Event_Util.get_event(1))
 
-    def test_duplicateEvent(self):
-        self.event = Event(name = "Club meeting", org = "CS Smart Club", location = "EMS", 
-                           date = "2024/01/01", time = "4:30:00", description = "description")
-        self.event.save()
-        self.resp = self.client.post("/createevent/", {"name": "Club meeting", "org": "CS Smart Club", 
-                                     "location": "EMS", "date": "2024/01/01", "time": "4:30:00",
-                                     "description": "description"}, follow=True)
-        self.assertEqual("Error: One or more fields invalid", self.resp.context["msg"],
-                         "Duplicate event created")
+    def test_createEventInvalidLocAddr(self):
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
+                                                       "loc_addr": "", 
+                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
+                                                       "time-happening": self.time, 
+                                                       "description": "Test Event", 
+                                                       "photo": "static/event_photos/default.jpeg"})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertEquals(self.resp.context["error_message"], "Invalid location address")
+        self.assertIsNone(Event_Util.get_event(1))
+
+
+    def test_createEventInvalidLocCity(self):
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
+                                                       "loc_addr": "1234 Test St.", 
+                                                       "loc_city": "", "loc_zip": "53211", 
+                                                       "time-happening": self.time, 
+                                                       "description": "Test Event", 
+                                                       "photo": "static/event_photos/default.jpeg"})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertIsNone(Event_Util.get_event(1))
+
+    def test_createEventInvalidLocZip(self):
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
+                                                       "loc_addr": "1234 Test St.", 
+                                                       "loc_city": "Milwaukee,WI", "loc_zip": "", 
+                                                       "time-happening": self.time, 
+                                                       "description": "Test Event", 
+                                                       "photo": "static/event_photos/default.jpeg"})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertEquals(self.resp.context["error_message"], "Invalid location zip")
+        self.assertIsNone(Event_Util.get_event(1))
+
+    def test_createEventInvalidDescription(self):
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
+                                                       "loc_addr": "1234 Test St.", 
+                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
+                                                       "time-happening": self.time, 
+                                                       "description": "", 
+                                                       "photo": "static/event_photos/default.jpeg"})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertEquals(self.resp.context["error_message"], "Invalid description")
+        self.assertIsNone(Event_Util.get_event(1))
+
+    def test_createEventInvalidPhoto(self):
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
+                                                       "loc_addr": "1234 Test St.", 
+                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
+                                                       "time-happening": self.time, 
+                                                       "description": "Test Event", 
+                                                       "photo": ""})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertEquals(self.resp.context["error_message"], "Invalid photo")
+        self.assertIsNone(Event_Util.get_event(1))
+
+class TestCreateEventNotLoggedIn(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
+        user_util.create_user(name = "Ilya", email = "kravtso5@uwm.edu", password = "123", role = 3, 
+                              startdate = self.time, graddate = self.time)
+        self.user = user_util.get_user("kravtso5@uwm.edu")
+        self.client.post("/", {"email": "kravtso5@uwm.edu", "password": "123"})
+        self.client.post("/createOrganization/", {"email": "cssmartclub@uwm.edu", "password": "password", 
+                                                    "name": "CS Smart Club", "point_of_contact": "1",
+                                                    "member_count": "1", "description": "description"})
+        self.org = Organization.objects.get(name="CS Smart Club")
+
+    def test_createEventNotLoggedIn(self):
+        self.client.get("/login/")
+        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
+                                                       "loc_addr": "1234 Test St.", 
+                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
+                                                       "time-happening": self.time, 
+                                                       "description": "Test Event", 
+                                                       "photo": "static/event_photos/default.jpeg"})
+        self.assertEqual(self.resp.status_code, 200)
+        self.assertEquals(self.resp.context["error_message"], "You are not logged in")
+        self.assertIsNone(Event_Util.get_event(1))
