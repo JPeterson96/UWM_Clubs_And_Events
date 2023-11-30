@@ -280,7 +280,7 @@ class EditAccount(View):
                 user_util.User_Util.set_user_interest(current_user.email, intadd)
 
         res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,new_pass,
-                                            startdate, graddate)
+                                             graddate)
         if isinstance(res, ValueError):
             return render(request, "editaccount.html", {"message": res})
 
