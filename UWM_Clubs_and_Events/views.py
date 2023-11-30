@@ -514,9 +514,9 @@ class EditEvent(View):
             event = Event.objects.get(pk=id)
             time = event.time_happening.strftime("%Y-%m-%dT%H:%M")
             request.session['oldname'] = event.name
-            return render(request, "editevent.html", {"event": event, 'time': time})
+            return render(request, "editevent.html", {"event": event, 'time': time, 'user': current_user})
         except:
-            return render(request, "homepage.html", {"error_message": "Event does not exist"})
+            return render(request, "homepage.html", {"error_message": "Event does not exist", 'user': current_user})
 
     def post(self, request, id):
 
