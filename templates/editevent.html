@@ -1,143 +1,159 @@
-{%  extends "base.html" %}
-{%  load static %}
-{%  block content %}
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
 
-    <script>
-        async function finishCity() {
-            const city_name = document.getElementById('loc_city').value.toString();
-            const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
-            const headers = {
-                'Accept': 'application/vnd.teleport.v1+json'
-            };
+        <script>
+            async function finishCity() {
+                const city_name = document.getElementById('loc_city').value.toString();
+                const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
+                const headers = {
+                    'Accept': 'application/vnd.teleport.v1+json'
+                };
 
-            try {
-                const response = await fetch(api_url, {
-                    method: 'GET',
-                    headers: headers
-                });
+                try {
+                    const response = await fetch(api_url, {
+                        method: 'GET',
+                        headers: headers
+                    });
 
-                if (response.ok) {
-                    const json_data = await response.json();
-                    const matchingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
-                    updateMatchingCities(matchingCities);
-                } else {
-                    throw new Error(`HTTP request failed with status ${response.status}`);
+                    if (response.ok) {
+                        const json_data = await response.json();
+                        const matchingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
+                        updateMatchingCities(matchingCities);
+                    } else {
+                        throw new Error(`HTTP request failed with status ${response.status}`);
+                    }
+
+                } catch (error) {
+                    console.error('Error with request:', error);
                 }
-
-            } catch (error) {
-                console.error('Error with request:', error);
             }
-        }
 
-        function updateMatchingCities(cities) {
-            const matchingCitiesDropdown = document.getElementById('matching_cities');
-            matchingCitiesDropdown.innerHTML = ''; // Clear previous results
+            function updateMatchingCities(cities) {
+                const matchingCitiesDropdown = document.getElementById('matching_cities');
+                matchingCitiesDropdown.innerHTML = ''; // Clear previous results
 
-            cities.forEach(city => {
-                const option = document.createElement('option');
-                option.value = city;
-                option.text = city;
-                matchingCitiesDropdown.add(option);
-            });
-        }
+                cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.text = city;
+                    matchingCitiesDropdown.add(option);
+                });
+            }
 
-        function handleInput() {
-            finishCity();
-            document.getElementById('matching_cities').addEventListener('change', updateInputField);
-        }
+            function handleInput() {
+                finishCity();
+                document.getElementById('matching_cities').addEventListener('change', updateInputField);
+            }
 
-        function updateInputField() {
-            const selectedCity = document.getElementById('matching_cities').value;
-            document.getElementById('loc_city').value = selectedCity;
-        }
+            function updateInputField() {
+                const selectedCity = document.getElementById('matching_cities').value;
+                document.getElementById('loc_city').value = selectedCity;
+            }
 
-    </script>
-    <title>Edit Event</title>
-</head>
-<body>
+        </script>
+        <title>Edit Event</title>
+    </head>
+    <div>
         <!--Nav bar-->
-    <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
-        <div class="container-fluid">
-            <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navmenu"
-            >
-            <span class = "navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navmenu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown d-flex align-items-center">
-                        <span class="me-2">👤</span>
-                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.name }}</a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
+        <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
+            <div class="container-fluid">
+                <a href="{% url 'homepage' %}" class="navbar-brand text-dark">UWM Clubs and Events </a>
+                <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navmenu"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navmenu">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown d-flex align-items-center">
+                            <span class="me-2">👤</span>
+                            <a href="#" class="nav-link text-dark dropdown-toggle" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">{{ user.name }}</a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
-    <div class="page_container">
-        <div class="container mt-5" style="padding-top: 60px; overflow: hidden;">
-          <div class="row justify-content-center">
-            <div class="card bg-light">
-                <div class="card-body">
-                    <div style="padding-top: 10px; padding-left: 2%; padding-right: 2%;">
-                        <form method="post" action="{% url 'editevent' event.id %}" enctype="multipart/form-data">
-                            {% csrf_token %}
-                                <div>
-                                    <label for="name">Change Name:  </label>
-                                    <input type="text" name="name" id="name" value="{{ event.name }}">
-                                </div>
-                                <div class="elements">
-                                <label for="location">Location:</label>
+        </nav>
+        <div class="page_container">
+            <div class="container mt-5" style="padding-top: 60px; overflow: hidden;">
+                <div class="row justify-content-center">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <div style="padding-top: 10px; padding-left: 2%; padding-right: 2%;">
+                                <form method="post" action="{% url 'editevent' event.id %}"
+                                      enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div>
+                                        <label for="name">Change Name: </label>
+                                        <input type="text" class="form-control" name="name" id="name"
+                                               value="{{ event.name }}">
+                                    </div>
+                                    <div class="elements">
+                                        <label for="location">Location:</label>
 
-                                <div>
-                                    <label for="loc_addr">Address:</label>
-                                    <input type="text" class="form-control" id="loc_addr" name="loc_addr" value="{{ event.loc_addr }}">
-                                </div>
+                                        <div>
+                                            <label for="loc_addr">Address:</label>
+                                            <input type="text" class="form-control" id="loc_addr" name="loc_addr"
+                                                   value="{{ event.loc_addr }}">
+                                        </div>
 
-                                <div>
-                                    <label for="loc_city">Enter City Name:</label>
-                                    <input type="text" class="form-control" id="loc_city" name="loc_city" value="{{ event.loc_city }}, {{ event.loc_state }}" oninput="handleInput()">
-                                    <select id="matching_cities" class="form-control"></select>
-                                </div>
+                                        <div>
+                                            <label for="loc_city">Enter City Name:</label>
+                                            <input type="text" class="form-control" id="loc_city" name="loc_city"
+                                                   value="{{ event.loc_city }}, {{ event.loc_state }}"
+                                                   oninput="handleInput()">
+                                            <select id="matching_cities" class="form-control"></select>
+                                        </div>
 
-                                <div>
-                                    <label for="loc_zip">Zip Code:</label>
-                                    <input type="text" class="form-control" id="loc_zip" name="loc_zip" value="{{ event.loc_zip }}">
-                                </div>
+                                        <div>
+                                            <label for="loc_zip">Zip Code:</label>
+                                            <input type="text" class="form-control" id="loc_zip" name="loc_zip"
+                                                   value="{{ event.loc_zip }}">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="time_happening">When is this event: </label>
+                                        <input type="datetime-local" class="form-control" name="time_happening"
+                                               id="time_happening" value="{{ time }}">
+                                    </div>
+                                    <div>
+                                        <label for="description">Event Description: </label>
+                                        <input type="text" class="form-control" name="description" id="description"
+                                               value="{{ event.description }}">
+                                    </div>
+                                    <div>
+                                        <label for="image">Event Image (UWM Logo by default): </label>
+                                        <input type="file" class="form-control" id="image" name="image"
+                                               value="{{ event.image }}">
+                                    </div>
+                                    <div style="padding:2%">
+                                        <button type="submit" class="btn btn-primary" style="float: right">Submit
+                                        </button>
+                                    </div>
+                                </form>
+                                <p style="padding-left: 2%; padding-top: 2%">{{ message }}</p>
                             </div>
-                                <div>
-                                    <label for="time_happening">When is this event:  </label>
-                                    <input type="datetime-local" name="time_happening" id="time_happening" value="{{ time }}">
-                                </div>
-                                <div>
-                                    <label for="description">Event Description:  </label>
-                                    <input type="text" name="description" id="description" value="{{ event.description }}">
-                                </div>
-                                <div>
-                                    <label for="image">Event Image (UWM Logo by default):  </label>
-                                    <input type="file" id="image" name="image" value="{{ event.image }}">
-                                </div>
-                            <input type="submit">
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
-    <p style="padding-left: 2%; padding-top: 2%">{{ message }}</p>
-</body>
-</body>
-</html>
+    </html>
 {% endblock %}
