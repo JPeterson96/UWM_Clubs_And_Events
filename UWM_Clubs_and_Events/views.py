@@ -166,17 +166,17 @@ class CreateAccount(View):
         startdate = request.POST.get("startdate")
         graddate = request.POST.get("graddate")
 
+        print(startdate)
+
+
         try:
             res = user_util.User_Util.create_user(name=firstName + " " + lastName, email=email, password=password,
                                                   role=0, startdate=startdate, graddate=graddate)
         except Exception as e:
-            return render(request, "createaccount.html", {"error_message": e})
+            return render(request, "createaccount.html", {"message": e, "interests": search,"fName": firstName, "lName":lastName, "email":email, "startdate": startdate, "majors": allmajors})
 
         if isinstance(res, ValueError):
-            return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
-
-            # this is returning the email not the user object?
-        # check_user = user_util.User_Util.get_user(email=email)
+            return render(request, "createaccount.html", {"message": res, "interests": search, "fName": firstName, "lName":lastName, "email":email, "startdate": startdate ,"majors": allmajors})
 
         # adds every tage fo interest to user
 
@@ -184,16 +184,16 @@ class CreateAccount(View):
             try:
                 value = user_util.User_Util.set_student_interest(email=email, interest=tags)
             except Student.DoesNotExist:
-                return render(request, "createaccount.html", {"error_message": "Student does not exist"})
+                return render(request, "createaccount.html", {"message": "student does not exists", "interests": search,"fName": firstName, "lName":lastName, "email":email, "startdate": startdate, "majors": allmajors})
             # should not get here
             if isinstance(value, ValueError):
-                return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
+                return render(request, "createaccount.html", {"message": value, "interests": search,"fName": firstName, "lName":lastName, "email":email, "startdate": startdate,  "majors": allmajors})
 
         for maj in major:
             add_major = user_util.User_Util.set_student_major(email=email, majorname=maj)
 
             if isinstance(add_major, ValueError):
-                return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
+                return render(request, "createaccount.html", {"message": add_major, "interests": search,"fName": firstName, "lName":lastName, "email":email, "startdate": startdate, "majors": allmajors})
         return render(request, "login.html", {"success_message": "user account successfully created"})
 
 
@@ -280,7 +280,7 @@ class EditAccount(View):
                 user_util.User_Util.set_user_interest(current_user.email, intadd)
 
         res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,new_pass,
-                                            startdate, graddate)
+                                             graddate)
         if isinstance(res, ValueError):
             return render(request, "editaccount.html", {"message": res})
 

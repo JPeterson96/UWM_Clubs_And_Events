@@ -93,20 +93,20 @@
                                 {% csrf_token %}
                                 <div class="form-group mb-2">
                                     <label for="firstname">First Name</label>
-                                    <input type="text" class="form-control rounded-input" name="firstname" id="firstname" value="{{ firstname }}">
+                                    <input type="text" class="form-control" name="firstname" id="firstname" value="{{ firstname }}">
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="lastname">Last Name</label>
-                                    <input type="text" class="form-control rounded-input" name="lastname" id="{{ lastname }}" value="{{ lastname }}">
+                                    <input type="text" class="form-control" name="lastname" id="{{ lastname }}" value="{{ lastname }}">
                                 </div>
                             {% if User.role == 0 %}
                                 <div class="form-group mb-2">
                                     <label for="startdate">start date: </label>
-                                    <input type="date" name="startdate" class="form-control rounded-input" value="{{enrollment_date}}">
+                                    <input type="date" name="startdate" class="form-control" value="{{enrollment_date}}" readonly>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="graddate">grad date: </label>
-                                    <input type="date" name = "graddate" class="form-control rounded-input" value="{{graduation_date}}">
+                                    <input type="date" name = "graddate" class="form-control" value="{{graduation_date}}">
                                 </div>
                                 <div class="form-group mb-2">
                                     <th>Your Majors (check the ones you want to remove)</th>
@@ -141,7 +141,7 @@
                             {% endif %}
                                 <div class="form-group mb-3">
                                         <label for="password">Password:  </label>
-                                        <input type="password" class="form-control rounded-input" id="password" name="password">
+                                        <input type="password" class="form-control" id="password" name="password">
                                         <input type="checkbox" onclick="showPassword()"> Show Password
                                     </div>
                                 <th>Your Interests (check the ones you want to remove)</th>
@@ -150,7 +150,6 @@
                                         {% for intm in userinterest %}
                                             <tr>
                                                 <td>
-
                                                 <input type="checkbox" name="interestremoval" value="{{ intm.type.tag }}">
                                                 </td>
                                                 <td>{{  intm.type.tag }}</td>
@@ -160,7 +159,7 @@
                             </td>
                                 <div class="form-group mt-3">
                                     <label for="search-input">Interests</label>
-                                    <input type="text" class="form-control rounded-input" id="search-input" placeholder="Search for interests">
+                                    <input type="text" class="form-control" id="search-input" placeholder="Search for interests">
                                 </div>
                                 <div class="overflow-auto" style="max-height: 150px; padding: .5%;">
                                     <div class="form-check">

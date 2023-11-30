@@ -70,19 +70,19 @@
                             {% csrf_token %}
                             <div class="form-group mb-2">
                                 <label for="firstname">First Name</label>
-                                <input type="text" class="form-control rounded-input" name="firstname" id="firstname">
+                                <input type="text" class="form-control" name="firstname" id="firstname" value="{{ fName }}">
                             </div>
                             <div class="form-group mb-2">
                                 <label for="lastname">Last Name</label>
-                                <input type="text" class="form-control rounded-input" name="lastname" id="lastname">
+                                <input type="text" class="form-control" name="lastname" id="lastname" value="{{ lName }}">
                             </div>
                             <div class="form-group mb-2">
                                 <label for="email">Email</label>
-                                <input type="text" class="form-control rounded-input" name="email" id="email">
+                                <input type="text" class="form-control" name="email" id="email" value="{{ email }}">
                             </div>
                             <div class="form-group mb-2">
                                 <label for="password">Password</label>
-                                <input type="text" class="form-control rounded-input" name="password" id="password">
+                                <input type="text" class="form-control" name="password" id="password">
                             </div>
                             <div class="form-group mb-2">
                                 <label for="major">Major</label>
@@ -100,7 +100,7 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="search-input">Interests</label>
-                                <input type="text" class="form-control rounded-input" id="search-input"
+                                <input type="text" class="form-control" id="search-input"
                                     placeholder="Search for interests">
                             </div>
                             <div class="form-check" style="overflow-y: auto; height: 150px;">
@@ -122,13 +122,13 @@
                             </div>
                             <div class="form-group mb-2 mt-2">
                                 <label for="startdate">start date</label>
-                                <input type="date" name="startdate" class="form-control rounded-input" id="search-input"
-                                    value="startdate">
+                                <input type="date" name="startdate" class="form-control" id="search-input"
+                                    value="{{ startdate }}">
                             </div>
                             <div class="form-group mb-2">
                                 <label for="graddate">grad date</label>
-                                <input type="date" name="graddate" class="form-control rounded-input" id="search-input"
-                                    value="graddate">
+                                <input type="date" name="graddate" class="form-control" id="search-input"
+                                    value="{{ graddate }}">
                             </div>
                             <button type="submit" class="btn btn-primary mt-2">Submit</button>
                             <button class="btn btn-primary mt-2"><a href="{% url 'login' %}" style="color: white;"> Cancel </a></button>
