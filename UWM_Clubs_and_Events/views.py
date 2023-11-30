@@ -435,7 +435,10 @@ class CreateEvent(View):
     def get(self, request):
         tags = Interest.objects.all()
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        orgs = Organization.objects.filter(point_of_contact__exact=current_user.email)
+        if current_user.role == 2:
+            orgs = Organization.objects.filter(point_of_contact__exact=current_user.email)
+        else:
+            orgs = Organization.objects.filter(point_of_contact__exact=current_user.email)
         search = request.GET.get('search-input', '')
         filtered_interests = Interest.objects.filter(tag__icontains=search)
         return render(request, "createevent.html",
