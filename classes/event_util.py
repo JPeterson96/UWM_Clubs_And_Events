@@ -92,7 +92,7 @@ class Event_Util():
         if city is None:
             return ValueError("city cannot be empty")
         if not ',' in city or len(city.split(',')) < 2:
-            return ValueError("city input has to be formated like city,state")
+            return ValueError("city input has to be formatted like city,state")
 
         if zip is None or len(zip)>5:
             return ValueError("zip format is empty or too long ")

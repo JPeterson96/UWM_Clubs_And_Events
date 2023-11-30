@@ -17,11 +17,11 @@
             }
         }
     </script>
-    <style>
-        .rounded-input {
-            border-radius: 20px; /* Adjust the border radius as needed */
-        }
-    </style>
+{#    <style>#}
+{#        .rounded-input {#}
+{#            border-radius: 20px; /* Adjust the border radius as needed */#}
+{#        }#}
+{#    </style>#}
 </head>
 <body>
         <!--Nav bar-->
@@ -62,7 +62,7 @@
                             {%  csrf_token %}
                             <div class="form-group mb-2">
                                 <label for="email">Account Email:  </label>
-                                <input type="email" class="form-control rounded-input" id="email" name="email">
+                                <input type="email" class="form-control" id="email" name="email">
                             </div>
                             <div class="form-group mb-2">
                                 <label for="password">Password:  </label>
