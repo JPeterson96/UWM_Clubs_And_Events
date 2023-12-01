@@ -59,6 +59,27 @@
                 document.getElementById('loc_city').value = selectedCity;
             }
         </script>
+        <script>
+            $(document).ready(function () {
+                var interests = document.querySelectorAll('input[name="selected_interests"]');
+
+                var searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', function () {
+                    var searchValue = searchInput.value.toLowerCase();
+
+                    interests.forEach(function (interest) {
+                        var interestTag = interest.value.toLowerCase();
+                        var parentRow = interest.closest('tr');
+
+                        if (interestTag.includes(searchValue)) {
+                            parentRow.style.display = '';
+                        } else {
+                            parentRow.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        </script>
         <style>
             .rounded-input {
                 border-radius: 20px; /* Adjust the border radius as needed */
