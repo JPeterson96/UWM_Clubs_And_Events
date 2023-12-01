@@ -244,10 +244,26 @@ class EditAccount(View):
     def post(self, request):
         search = Interest.objects.all()
         allmajors = Major.objects.all()
+        allints = Interest.objects.all()
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
+        student = user_util.User_Util.get_student(current_user.email)
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
+        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
+
+        temp_name = current_user.name.split(" ", 1)
+        if temp_name.__len__() == 1:
+            last_name = ''
+        else:
+            last_name = temp_name[1]
+        if student:
+            formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
+            formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
+        else:
+            formatted_enroll = None
+            formatted_graddate = None
 
         firstName = request.POST.get("firstname")
         lastName = request.POST.get("lastname")
@@ -282,7 +298,11 @@ class EditAccount(View):
         res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,new_pass,
                                              graddate)
         if isinstance(res, ValueError):
-            return render(request, "editaccount.html", {"message": res})
+            return render(request, "editaccount.html", {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
+                       "userinterest": userint,
+                       "interests": allints, "firstname": temp_name[0], "lastname": last_name,
+                       "majors": Major.objects.all(), "enrollment_date": formatted_enroll,
+                       "graduation_date": formatted_graddate})
 
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
