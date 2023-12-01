@@ -272,12 +272,12 @@ class EditAccount(View):
         if interestremove:
             for remint in interestremove:
                 interest = Interest.objects.get(tag=remint)
-                StudentInterest.objects.filter(Q(user=current_user, type=interest)).delete()
+                StudentInterest.objects.filter(Q(student=user_util.User_Util.get_student(current_user.email), type=interest)).delete()
 
         if addint:
             # now dd if any in the list
             for intadd in addint:
-                user_util.User_Util.set_user_interest(current_user.email, intadd)
+                user_util.User_Util.set_student_interest(current_user.email, intadd)
 
         res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,new_pass,
                                              graddate)
