@@ -43,9 +43,9 @@
           <div class="col-md-6">
             <div class="card bg-light">
               <div class="card-body text-center">
-                <form style="max-width: 480px; margin : auto;" method="post" action="{% url 'login' %}">
+                <form style="max-width: 325px; margin : auto;" method="post" action="{% url 'login' %}">
                   {% csrf_token %}
-                  <img src="{% static 'uwmLogo.jpg' %}" height="400" width="100%" alt="Logo">
+                  <img src="{% static 'uwmLogo.jpg' %}" height="auto" width="100%" alt="Logo">
                   <h1 class="h3 mb-3 font-weight-normal text-center">Please Sign In</h1>
                   <label for="emailAddress" class="sr-only"></label>
                   <input type="email" name="email" id="id_email" class="form-control" placeholder="Email" required autofocus>

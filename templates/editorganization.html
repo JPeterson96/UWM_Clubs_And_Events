@@ -30,7 +30,6 @@
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
                                 <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
-                                <li><a class="dropdown-item" href="#Settings">Settings</a></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                             </ul>
                         </li>
@@ -60,11 +59,11 @@
                                     </select> -->
                                     <div class="card-text">
                                         <label for="membersCount">Number of Members: </label>
-                                        <input type="number" name="membersCount" id="membersCount" value="{{ organization.membersCount }}">
+                                        <input type="number" class="form-control" name="membersCount" id="membersCount" value="{{ organization.membersCount }}">
                                     </div>
                                     <div class="card-text" style="padding: 1%; padding-left: 0%;">
                                         <label for="description">Description: </label>
-                                        <input type="text" name="description" id="description" value="{{ organization.description }}">
+                                        <input type="text" class="form-control" name="description" id="description" value="{{ organization.description }}">
                                     </div>
                                     <div style="padding: 2%; padding-left: 0%;">
                                         <input type="submit" value="Save Changes">

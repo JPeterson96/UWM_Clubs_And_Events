@@ -166,17 +166,17 @@ class CreateAccount(View):
         startdate = request.POST.get("startdate")
         graddate = request.POST.get("graddate")
 
+        print(startdate)
+
+
         try:
             res = user_util.User_Util.create_user(name=firstName + " " + lastName, email=email, password=password,
                                                   role=0, startdate=startdate, graddate=graddate)
         except Exception as e:
-            return render(request, "createaccount.html", {"error_message": e})
+            return render(request, "createaccount.html", {"message": e, "interests": search,"fName": firstName, "lName":lastName, "email":email, "startdate": startdate, "majors": allmajors})
 
         if isinstance(res, ValueError):
-            return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
-
-            # this is returning the email not the user object?
-        # check_user = user_util.User_Util.get_user(email=email)
+            return render(request, "createaccount.html", {"message": res, "interests": search, "fName": firstName, "lName":lastName, "email":email, "startdate": startdate ,"majors": allmajors})
 
         # adds every tage fo interest to user
 
@@ -184,16 +184,16 @@ class CreateAccount(View):
             try:
                 value = user_util.User_Util.set_student_interest(email=email, interest=tags)
             except Student.DoesNotExist:
-                return render(request, "createaccount.html", {"error_message": "Student does not exist"})
+                return render(request, "createaccount.html", {"message": "student does not exists", "interests": search,"fName": firstName, "lName":lastName, "email":email, "startdate": startdate, "majors": allmajors})
             # should not get here
             if isinstance(value, ValueError):
-                return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
+                return render(request, "createaccount.html", {"message": value, "interests": search,"fName": firstName, "lName":lastName, "email":email, "startdate": startdate,  "majors": allmajors})
 
         for maj in major:
             add_major = user_util.User_Util.set_student_major(email=email, majorname=maj)
 
             if isinstance(add_major, ValueError):
-                return render(request, "createaccount.html", {"message": res, "interests": search, "majors": allmajors})
+                return render(request, "createaccount.html", {"message": add_major, "interests": search,"fName": firstName, "lName":lastName, "email":email, "startdate": startdate, "majors": allmajors})
         return render(request, "login.html", {"success_message": "user account successfully created"})
 
 
@@ -244,10 +244,26 @@ class EditAccount(View):
     def post(self, request):
         search = Interest.objects.all()
         allmajors = Major.objects.all()
+        allints = Interest.objects.all()
 
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
+        student = user_util.User_Util.get_student(current_user.email)
+        userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
+        userint = StudentInterest.objects.filter(student__user__email=current_user.email)
+
+        temp_name = current_user.name.split(" ", 1)
+        if temp_name.__len__() == 1:
+            last_name = ''
+        else:
+            last_name = temp_name[1]
+        if student:
+            formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
+            formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
+        else:
+            formatted_enroll = None
+            formatted_graddate = None
 
         firstName = request.POST.get("firstname")
         lastName = request.POST.get("lastname")
@@ -263,26 +279,30 @@ class EditAccount(View):
         if majorstoremove:
             for remmaj in majorstoremove:
                 actMaj = Major.objects.get(name=remmaj)
-                StudentMajor.objects.filter(Q(user=current_user, major=actMaj)).delete()
+                StudentMajor.objects.filter(Q(student=student, major=actMaj)).delete()
 
         for newmaj in addedmajor:
-            user_util.User_Util.set_user_major(current_user.email, newmaj)
+            user_util.User_Util.set_student_major(current_user.email, newmaj)
 
         ##now add and remove intereests
         if interestremove:
             for remint in interestremove:
                 interest = Interest.objects.get(tag=remint)
-                StudentInterest.objects.filter(Q(user=current_user, type=interest)).delete()
+                StudentInterest.objects.filter(Q(student=student, type=interest)).delete()
 
         if addint:
             # now dd if any in the list
             for intadd in addint:
-                user_util.User_Util.set_user_interest(current_user.email, intadd)
+                user_util.User_Util.set_student_interest(current_user.email, intadd)
 
         res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,new_pass,
-                                            startdate, graddate)
+                                             graddate)
         if isinstance(res, ValueError):
-            return render(request, "editaccount.html", {"message": res})
+            return render(request, "editaccount.html", {"message": res, "User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
+                       "userinterest": userint,
+                       "interests": allints, "firstname": temp_name[0], "lastname": last_name,
+                       "majors": Major.objects.all(), "enrollment_date": formatted_enroll,
+                       "graduation_date": formatted_graddate})
 
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
         current_user = user_util.User_Util.get_user(email=request.session['user'])
@@ -354,18 +374,39 @@ class CreateOrganization(View):
                       {"user": current_user, "point_of_contacts": point_of_contacts})
 
     def post(self, request):
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        point_of_contacts = User.objects.filter(role__exact=3)
         email = request.POST.get('email')
+        if email == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter an email"})
         password = request.POST.get('password')
+        if password == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter a password"})
         role = 2
         orgname = request.POST.get('name')
+        if orgname == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter an Organization Name"})
         contact_id = request.POST.get('point_of_contact')
+        if contact_id == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please select your Organization's Point of Contact"})
 
         try:
             contactuser = User.objects.get(id=contact_id)
         except User.DoesNotExist:
             return render(request, "createorganization.html", {"error_message": "User does not exist"})
-        membersCount = int(request.POST.get('member_count'))
+        membersCount = request.POST.get('member_count')
+        if request.POST.get('member_count') == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter the number of members in the Organization"})
+        membersCount = int(membersCount)
         description = request.POST.get('description')
+        if description == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter a description"})
 
         try:
             organization = organization_util.Organization_Util.create_organization(orgname, email, password, role,
@@ -514,9 +555,9 @@ class EditEvent(View):
             event = Event.objects.get(pk=id)
             time = event.time_happening.strftime("%Y-%m-%dT%H:%M")
             request.session['oldname'] = event.name
-            return render(request, "editevent.html", {"event": event, 'time': time})
+            return render(request, "editevent.html", {"event": event, 'time': time, 'user': current_user})
         except:
-            return render(request, "homepage.html", {"error_message": "Event does not exist"})
+            return render(request, "homepage.html", {"error_message": "Event does not exist", 'user': current_user})
 
     def post(self, request, id):
 

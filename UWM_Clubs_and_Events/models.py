@@ -22,8 +22,8 @@ class User(models.Model):
 
 class Student(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='email')
-    enrollment_date = models.DateField(null=True, editable=False)
-    graduation_date = models.DateField(null=True)
+    enrollment_date = models.DateField(null=True)
+    graduation_date = models.DateField(blank=True,null=True)
 
     def __str__(self):
         return self.user.email
