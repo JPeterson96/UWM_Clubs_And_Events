@@ -279,7 +279,7 @@ class EditAccount(View):
         if majorstoremove:
             for remmaj in majorstoremove:
                 actMaj = Major.objects.get(name=remmaj)
-                StudentMajor.objects.filter(Q(user=current_user, major=actMaj)).delete()
+                StudentMajor.objects.filter(Q(student=student, major=actMaj)).delete()
 
         for newmaj in addedmajor:
             user_util.User_Util.set_student_major(current_user.email, newmaj)
@@ -288,7 +288,7 @@ class EditAccount(View):
         if interestremove:
             for remint in interestremove:
                 interest = Interest.objects.get(tag=remint)
-                StudentInterest.objects.filter(Q(student=user_util.User_Util.get_student(current_user.email), type=interest)).delete()
+                StudentInterest.objects.filter(Q(student=student, type=interest)).delete()
 
         if addint:
             # now dd if any in the list
@@ -374,18 +374,39 @@ class CreateOrganization(View):
                       {"user": current_user, "point_of_contacts": point_of_contacts})
 
     def post(self, request):
+        current_user = user_util.User_Util.get_user(email=request.session['user'])
+        point_of_contacts = User.objects.filter(role__exact=3)
         email = request.POST.get('email')
+        if email == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter an email"})
         password = request.POST.get('password')
+        if password == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter a password"})
         role = 2
         orgname = request.POST.get('name')
+        if orgname == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter an Organization Name"})
         contact_id = request.POST.get('point_of_contact')
+        if contact_id == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please select your Organization's Point of Contact"})
 
         try:
             contactuser = User.objects.get(id=contact_id)
         except User.DoesNotExist:
             return render(request, "createorganization.html", {"error_message": "User does not exist"})
-        membersCount = int(request.POST.get('member_count'))
+        membersCount = request.POST.get('member_count')
+        if request.POST.get('member_count') == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter the number of members in the Organization"})
+        membersCount = int(membersCount)
         description = request.POST.get('description')
+        if description == '':
+            return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
+                point_of_contacts, "error_message": "Please enter a description"})
 
         try:
             organization = organization_util.Organization_Util.create_organization(orgname, email, password, role,

@@ -42,6 +42,7 @@
                         <span class="me-2">👤</span>
                         <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.name }}</a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
                             <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                         </ul>
@@ -76,7 +77,7 @@
                             <!-- List users with role of point of contact -->
                             <div class="form-group mb-2">
                                 <label for="point_of_contact">Organization's Point of Contact: </label>
-                                <select name="point_of_contact" id="point_of_contact">
+                                <select name="point_of_contact" class="form-control" id="point_of_contact">
                                     <option value="">--- Select a User ---</option>
                                     {% for i in point_of_contacts %}
                                         <option value="{{ i.id }}">{{ i.name }}</option>
