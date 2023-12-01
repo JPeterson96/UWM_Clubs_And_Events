@@ -282,7 +282,7 @@ class EditAccount(View):
                 StudentMajor.objects.filter(Q(user=current_user, major=actMaj)).delete()
 
         for newmaj in addedmajor:
-            user_util.User_Util.set_user_major(current_user.email, newmaj)
+            user_util.User_Util.set_student_major(current_user.email, newmaj)
 
         ##now add and remove intereests
         if interestremove:
@@ -298,7 +298,7 @@ class EditAccount(View):
         res = user_util.User_Util.edit_user(firstName + " " + lastName, current_user.email,new_pass,
                                              graddate)
         if isinstance(res, ValueError):
-            return render(request, "editaccount.html", {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
+            return render(request, "editaccount.html", {"message": res, "User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
                        "userinterest": userint,
                        "interests": allints, "firstname": temp_name[0], "lastname": last_name,
                        "majors": Major.objects.all(), "enrollment_date": formatted_enroll,

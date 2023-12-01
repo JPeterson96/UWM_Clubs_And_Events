@@ -8,6 +8,7 @@
 # friends - user[]
 
 from UWM_Clubs_and_Events.models import *
+import datetime
 import re
 
 
@@ -27,10 +28,6 @@ class User_Util():
             return ValueError("you must enter a start date")
         if startdate is None or startdate == "":
             return ValueError("must put a start date ")
-        # chckstartdate= datetime.strftime(startdate, "%Y-%m-%d")
-        # chckgraddate = datetime.strftime(graddate, "%Y-%m-%d")
-        # if chckgraddate <= startdate:
-        #     return ValueError("grad date must come after start date")
 
         user=None
         try:
