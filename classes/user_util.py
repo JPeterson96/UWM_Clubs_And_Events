@@ -27,8 +27,10 @@ class User_Util():
             return ValueError("you must enter a start date")
         if startdate is None or startdate == "":
             return ValueError("must put a start date ")
-        if graddate is None or graddate == "":
-            return ValueError("must put a grad date this can be changed later ")
+        # chckstartdate= datetime.strftime(startdate, "%Y-%m-%d")
+        # chckgraddate = datetime.strftime(graddate, "%Y-%m-%d")
+        # if chckgraddate <= startdate:
+        #     return ValueError("grad date must come after start date")
 
         user=None
         try:
@@ -46,6 +48,9 @@ class User_Util():
     def edit_user(name, email, new_pass, graddate):
 
         curr_user = User_Util.get_user(email=email)
+        student = Student.objects.get(user=curr_user)
+        # chckstartdate = datetime.strftime(student.enrollment_date, "%Y-%m-%d")
+        # chckgraddate = datetime.strftime(graddate, "%Y-%m-%d")
 
         if name is not None and name != '':
             curr_user.name = name
