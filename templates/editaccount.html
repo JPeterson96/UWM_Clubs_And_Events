@@ -73,6 +73,7 @@
                         <span class="me-2">👤</span>
                         <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ User.name }}</a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
                             <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                         </ul>
@@ -141,7 +142,7 @@
                             {% endif %}
                                 <div class="form-group mb-3">
                                         <label for="password">Password:  </label>
-                                        <input type="password" class="form-control" id="password" name="password">
+                                        <input type="password" class="form-control" id="password" name="password" value={{ User.password }}>
                                         <input type="checkbox" onclick="showPassword()"> Show Password
                                 {% if User.role < 2 %}
                                     </div>
