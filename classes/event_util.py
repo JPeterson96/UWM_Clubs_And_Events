@@ -80,7 +80,7 @@ class Event_Util():
             if order == 1:
                 filters.append(Lower("name"))
             elif order == 2:
-                filters.append(Lower("-name"))
+                filters.append(-(Lower("name")))
 
         filtered_events = filtered_events.order_by(*filters)
 
