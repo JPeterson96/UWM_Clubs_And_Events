@@ -15,46 +15,46 @@ class User_Util():
     def create_user(name, email, password, role, startdate, graddate):
         pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
 
-        try:
-            # User.objects.create(name, email, password, role)
-            if name == "":
-                return ValueError("name is blank or cannot blank ")
-            if email is None or re.match(pattern, email) is None or email == "" or ' ' in email:
-                return ValueError("email does not exists or is not a proper email")
-            if User_Util.get_user(email) is not None:
-                return ValueError("user with email exists ")
-            if password == "" or ' ' in password:
-                return ValueError("password format incorrect")
-            
-            try:
-                user = User.objects.create(email=email, password=password, name=name, role=role)
-                student = Student.objects.create(user=user, enrollment_date=startdate, graduation_date=graddate)
-            except Exception as e:
-                raise ValueError(e)
-            
-            user.save()
-            student.save()
+        if name == "":
+            return ValueError("name is blank or cannot blank ")
+        if email is None or re.match(pattern, email) is None or email == "" or ' ' in email:
+            return ValueError("email does not exists or is not a proper email")
+        if User_Util.get_user(email) is not None:
+            return ValueError("user with email exists ")
+        if password == "" or ' ' in password:
+            return ValueError("password format incorrect")
+        if startdate is None or startdate == "":
+            return ValueError("you must enter a start date")
+        if startdate is None or startdate == "":
+            return ValueError("must put a start date ")
+        if graddate is None or graddate == "":
+            return ValueError("must put a grad date this can be changed later ")
 
-            return True
+        user=None
+        try:
+            user = User.objects.create(email=email, password=password, name=name, role=role)
+            student = Student.objects.create(user=user, enrollment_date=startdate, graduation_date=graddate)
         except Exception as e:
+            user.delete()
             raise ValueError(e)
 
-    def edit_user(name, email, new_pass, startdate, graddate):
+        user.save()
+        student.save()
+
+        return True
+
+    def edit_user(name, email, new_pass, graddate):
 
         curr_user = User_Util.get_user(email=email)
-        print(email)
 
-        if name is not None and name is not '':
+        if name is not None and name != '':
             curr_user.name = name
-        if startdate is not '':
-            print(" this is the start", startdate)
-            curr_user.gradStartDate = startdate
-        if graddate is not '':
+        if graddate != '':
             curr_user.gradEndDate = graddate
         if new_pass == "" or ' ' in new_pass:
             return ValueError("password format incorrect")
         else:
-            curr_user.password=new_pass
+            curr_user.password = new_pass
         curr_user.save()
 
     def set_student_interest(email, interest):
@@ -69,7 +69,7 @@ class User_Util():
                 relInterest = Interest.objects.get(tag__exact=interest)
             except Exception as e:
                 raise ValueError(e)
-            
+
             userinterest = StudentInterest.objects.create(student=student, type=relInterest)
             userinterest.save()
             return True
@@ -94,7 +94,7 @@ class User_Util():
             return User.objects.get(email=email)
         except:
             return None
-        
+
     def get_student(email):
         try:
             user = User_Util.get_user(email=email)
@@ -107,7 +107,7 @@ class User_Util():
             return User.objects.all()
         except:
             return None
-        
+
     def get_all_students(self):
         try:
             return User.objects.filter(role=1)
