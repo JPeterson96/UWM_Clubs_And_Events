@@ -48,7 +48,6 @@ class User_Util():
     def edit_user(name, email, new_pass, graddate):
 
         curr_user = User_Util.get_user(email=email)
-        student = Student.objects.get(user=curr_user)
         # chckstartdate = datetime.strftime(student.enrollment_date, "%Y-%m-%d")
         # chckgraddate = datetime.strftime(graddate, "%Y-%m-%d")
 
