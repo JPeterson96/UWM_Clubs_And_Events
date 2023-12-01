@@ -99,7 +99,7 @@
                                     <label for="lastname">Last Name</label>
                                     <input type="text" class="form-control" name="lastname" id="{{ lastname }}" value="{{ lastname }}">
                                 </div>
-                            {% if User.role == 0 %}
+                            {% if User.role < 2 %}
                                 <div class="form-group mb-2">
                                     <label for="startdate">start date: </label>
                                     <input type="date" name="startdate" class="form-control" value="{{enrollment_date}}" readonly>
@@ -143,6 +143,7 @@
                                         <label for="password">Password:  </label>
                                         <input type="password" class="form-control" id="password" name="password">
                                         <input type="checkbox" onclick="showPassword()"> Show Password
+                                {% if User.role < 2 %}
                                     </div>
                                 <th>Your Interests (check the ones you want to remove)</th>
                                 </td>
@@ -178,6 +179,7 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                {% endif %}
                                 </div>
                                 <div style="padding:2%; padding-left: 0%;">
                                     <button type="submit" class="btn btn-primary">Submit</button>
