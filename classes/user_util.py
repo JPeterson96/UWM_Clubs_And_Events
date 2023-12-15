@@ -9,6 +9,7 @@
 
 from UWM_Clubs_and_Events.models import *
 import datetime
+from django.db.models import Q
 import re
 
 
@@ -29,7 +30,7 @@ class User_Util():
         if startdate is None or startdate == "":
             return ValueError("must put a start date ")
 
-        user=None
+        user = None
         try:
             user = User.objects.create(email=email, password=password, name=name, role=role)
             student = Student.objects.create(user=user, enrollment_date=startdate, graduation_date=graddate)
@@ -45,37 +46,69 @@ class User_Util():
     def edit_user(name, email, new_pass, graddate):
 
         curr_user = User_Util.get_user(email=email)
-        # chckstartdate = datetime.strftime(student.enrollment_date, "%Y-%m-%d")
-        # chckgraddate = datetime.strftime(graddate, "%Y-%m-%d")
+        stu = Student.objects.get(user=curr_user)
+        firstname,lastname=User_Util.user_get_last_name(name)
 
-        if name is not None and name != '':
-            curr_user.name = name
-        if graddate != '':
-            curr_user.gradEndDate = graddate
+        if name=='' or firstname=='' or lastname=='' :
+            return ValueError("must return a non empty name first and last name")
+        if stu:
+            if graddate != '':
+                stu.graduation_date = graddate
         if new_pass == "" or ' ' in new_pass:
             return ValueError("password format incorrect")
         else:
             curr_user.password = new_pass
+        curr_user.name = name
         curr_user.save()
+        stu.save()
 
-    def set_student_interest(email, interest):
+    def user_get_last_name(user_name):
+        temp_name = user_name.split(" ", 1)
+        if temp_name.__len__() == 1:
+            last_name = ''
+        else:
+            last_name = temp_name[1]
+        return temp_name[0], last_name
+
+    def get_grad_dates(student):
+        if student:
+            formatted_enroll = student.enrollment_date.strftime("%Y-%m-%d")
+            formatted_graddate = student.graduation_date.strftime("%Y-%m-%d")
+        else:
+            formatted_enroll = None
+            formatted_graddate = None
+        return (formatted_enroll, formatted_graddate)
+
+    def set_user_interest(email, interest):
+        curruser = User.objects.get(email__iexact=email)
+        realInterest = None
         try:
-            if email == "":
-                return ValueError("email cannot be empty")
-            try:
-                student = User_Util.get_student(email=email)
-            except Exception as e:
-                raise ValueError(e)
-            try:
-                relInterest = Interest.objects.get(tag__exact=interest)
-            except Exception as e:
-                raise ValueError(e)
-
-            userinterest = StudentInterest.objects.create(student=student, type=relInterest)
-            userinterest.save()
-            return True
+            relInterest = Interest.objects.get(tag__exact=interest)
         except Exception as e:
             raise ValueError(e)
+        person = User_Util.get_student(email=email)
+        userinterest = StudentInterest.objects.create(student=person, type=relInterest)
+        userinterest.save()
+
+    def remove_major(majorstoremove, student):
+        for remmaj in majorstoremove:
+            actMaj = Major.objects.get(name=remmaj)
+            StudentMajor.objects.filter(Q(student=student, major=actMaj)).delete()
+
+    def add_student_major(addedmajor, curr_user_email, userMaj):
+        for newmaj in addedmajor:
+            if newmaj not in userMaj.values_list('major', flat=True):
+                User_Util.set_student_major(curr_user_email, newmaj)
+
+    def remove_interest_from_user(interestremove, student):
+        for remint in interestremove:
+            interest = Interest.objects.get(tag=remint)
+            StudentInterest.objects.filter(Q(student=student, type=interest)).delete()
+
+    def add_interest_to_user(addint, userint, curr_user_email):
+        for intadd in addint:
+            if intadd not in userint.values_list('type', flat=True):
+                User_Util.set_user_interest(curr_user_email, intadd)
 
     def set_student_major(email, majorname):
         try:
