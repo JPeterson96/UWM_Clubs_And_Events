@@ -9,13 +9,15 @@
         <title>Create Account</title>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            $(document).ready(function () {
+            {#https://stackoverflow.com/questions/12366410/alternative-for-document-ready-function#}
+            {#this told me to use document.addEventListener('DOMContentLoaded', function() for jquery  instead of $document.ready #}
+            document.addEventListener('DOMContentLoaded', function() {
                 var interests = document.querySelectorAll('input[name="selected_interests"]');
 
                 var searchInput = document.getElementById('search-input');
                 searchInput.addEventListener('input', function () {
                     var searchValue = searchInput.value.toLowerCase();
-
+                    {#logic for this code to hide interests found in the list that includes interest name https://stackoverflow.com/questions/51568383/style-display-none-works-in-else-but-not-in-if#}
                     interests.forEach(function (interest) {
                         var interestTag = interest.value.toLowerCase();
                         var parentRow = interest.closest('tr');
@@ -53,7 +55,6 @@
             </div>
         </div>
     </nav>
-
     <div class="page_container">
         <div class="container mt-5 vh-90" style="padding-top: 60px; overflow: hidden;">
             <div class="row justify-content-center">

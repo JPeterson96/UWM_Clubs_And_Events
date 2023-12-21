@@ -7,13 +7,12 @@
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            $(document).ready(function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Get the interests elements
                 var interests = document.querySelectorAll('input[name="selected_interests"]');
 
                 // Get the search input element
                 var searchInput = document.getElementById('search-input');
-
 
                 searchInput.addEventListener('input', function () {
                     var searchValue = searchInput.value.toLowerCase();
@@ -57,7 +56,6 @@
                 z-index: 2;
             }
         </style>
-
     </head>
     <body>
     <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
