@@ -2,66 +2,66 @@
 {% load static %}
 {% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Account</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .rounded-input {
-            border-radius: 20px; /* Adjust the border radius as needed */
-        }
-    </style>
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Get the interests elements
-            var interests = document.querySelectorAll('input[name="interesttoadd"]');
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Edit Account</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <style>
+            .rounded-input {
+                border-radius: 20px; /* Adjust the border radius as needed */
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Get the interests elements
+                var interests = document.querySelectorAll('input[name="interesttoadd"]');
 
-            // Get the search input element
-            var searchInput = document.getElementById('search-input');
+                // Get the search input element
+                var searchInput = document.getElementById('search-input');
 
 
-            searchInput.addEventListener('input', function() {
-                var searchValue = searchInput.value.toLowerCase();
+                searchInput.addEventListener('input', function () {
+                    var searchValue = searchInput.value.toLowerCase();
 
-                interests.forEach(function(interest) {
-                    var interestTag = interest.value.toLowerCase();
-                    var parentRow = interest.closest('tr');
+                    interests.forEach(function (interest) {
+                        var interestTag = interest.value.toLowerCase();
+                        var parentRow = interest.closest('tr');
 
-                    if (interestTag.includes(searchValue)) {
-                        parentRow.style.display = '';
-                    } else {
-                        parentRow.style.display = 'none';
-                    }
+                        if (interestTag.includes(searchValue)) {
+                            parentRow.style.display = '';
+                        } else {
+                            parentRow.style.display = 'none';
+                        }
+                    });
                 });
             });
-        });
 
-        function showPassword() {
-            var x = document.getElementById("password");
-            if (x.type === "password") {
-                x.type = "text";
-            } else {
-                x.type = "password";
+            function showPassword() {
+                var x = document.getElementById("password");
+                if (x.type === "password") {
+                    x.type = "text";
+                } else {
+                    x.type = "password";
+                }
             }
-        }
 
-    </script>
-</head>
-<body>
-  <!--Nav bar-->
+        </script>
+    </head>
+    <body>
+    <!--Nav bar-->
     <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
-            <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
+            <a href="{% url 'homepage' %}" class="navbar-brand text-dark">UWM Clubs and Events </a>
             <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navmenu"
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navmenu"
             >
-            <span class = "navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
@@ -71,7 +71,8 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown d-flex align-items-center">
                         <span class="me-2">👤</span>
-                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ User.name }}</a>
+                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">{{ User.name }}</a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
                             <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
@@ -94,94 +95,105 @@
                                 {% csrf_token %}
                                 <div class="form-group mb-2">
                                     <label for="firstname">First Name</label>
-                                    <input type="text" class="form-control" name="firstname" id="firstname" value="{{ firstname }}">
+                                    <input type="text" class="form-control" name="firstname" id="firstname"
+                                           value="{{ firstname }}">
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="lastname">Last Name</label>
-                                    <input type="text" class="form-control" name="lastname" id="{{ lastname }}" value="{{ lastname }}">
+                                    <input type="text" class="form-control" name="lastname" id="{{ lastname }}"
+                                           value="{{ lastname }}">
                                 </div>
-                            {% if User.role < 2 %}
-                                <div class="form-group mb-2">
-                                    <label for="startdate">start date: </label>
-                                    <input type="date" name="startdate" class="form-control" value="{{enrollment_date}}" readonly>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <label for="graddate">grad date: </label>
-                                    <input type="date" name = "graddate" class="form-control" value="{{graduation_date}}">
-                                </div>
-                                <div class="form-group mb-2">
-                                    <th>Your Majors (check the ones you want to remove)</th>
+                                {% if User.role < 2 %}
+                                    <div class="form-group mb-2">
+                                        <label for="startdate">start date: </label>
+                                        <input type="date" name="startdate" class="form-control"
+                                               value="{{ enrollment_date }}" readonly>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label for="graddate">grad date: </label>
+                                        <input type="date" name="graddate" class="form-control"
+                                               value="{{ graduation_date }}">
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <th>Your Majors (check the ones you want to remove)</th>
+                                        </td>
+                                        <div class="overflow-auto"
+                                             style="max-height: 150px; padding: .5%; padding-top: 0%;">
+                                            <table>
+                                                {% for umaj in usermajors %}
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" name="majorremoval"
+                                                                   value="{{ umaj.major.name }}">
+                                                        </td>
+                                                        <td>{{ umaj.major.name }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                    </div>
                                     </td>
-                                    <div class="overflow-auto" style="max-height: 150px; padding: .5%; padding-top: 0%;">
+                                    <div class="form-group mb-2">
+                                        <label for="major">Major</label>
+                                        <div class="overflow-auto" style="max-height: 150px; padding: .5%;">
+                                            {% for major in majors %}
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="majorlist"
+                                                           value="{{ major.name }}" id="major_{{ major.name }}">
+                                                    <label class="form-check-label" for="major_{{ major.name }}">
+                                                        {{ major.name }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="form-group mb-3">
+                                    <label for="password">Password: </label>
+                                    <input type="password" class="form-control" id="password" name="password"
+                                           value={{ User.password }}>
+                                    <input type="checkbox" onclick="showPassword()"> Show Password
+                                    {% if User.role < 2 %}
+                                        </div>
+                                        <th>Your Interests (check the ones you want to remove)</th>
+                                        </td>
                                         <table>
-                                            {% for umaj in usermajors %}
+                                            {% for intm in userinterest %}
                                                 <tr>
                                                     <td>
-                                                    <input type="checkbox" name="majorremoval" value="{{ umaj.major.name }}">
+                                                        <input type="checkbox" name="interestremoval"
+                                                               value="{{ intm.type.tag }}">
                                                     </td>
-                                                    <td>{{ umaj.major.name }}</td>
+                                                    <td>{{ intm.type.tag }}</td>
                                                 </tr>
                                             {% endfor %}
                                         </table>
-                                    </div>
-                                </div>
-                            </td>
-                                <div class="form-group mb-2">
-                                    <label for="major">Major</label>
-                                    <div class="overflow-auto" style="max-height: 150px; padding: .5%;">
-                                        {% for major in majors %}
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" name="majorlist" value="{{ major.name }}" id="major_{{ major.name }}">
-                                            <label class="form-check-label" for="major_{{ major.name }}">
-                                                {{ major.name }}
-                                            </label>
+                                        </td>
+                                        <div class="form-group mt-3">
+                                            <label for="search-input">Interests</label>
+                                            <input type="text" class="form-control" id="search-input"
+                                                   placeholder="Search for interests">
                                         </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% endif %}
-                                <div class="form-group mb-3">
-                                        <label for="password">Password:  </label>
-                                        <input type="password" class="form-control" id="password" name="password" value={{ User.password }}>
-                                        <input type="checkbox" onclick="showPassword()"> Show Password
-                                {% if User.role < 2 %}
-                                    </div>
-                                <th>Your Interests (check the ones you want to remove)</th>
-                                </td>
-                                    <table>
-                                        {% for intm in userinterest %}
-                                            <tr>
-                                                <td>
-                                                <input type="checkbox" name="interestremoval" value="{{ intm.type.tag }}">
-                                                </td>
-                                                <td>{{  intm.type.tag }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </table>
-                            </td>
-                                <div class="form-group mt-3">
-                                    <label for="search-input">Interests</label>
-                                    <input type="text" class="form-control" id="search-input" placeholder="Search for interests">
-                                </div>
-                                <div class="overflow-auto" style="max-height: 150px; padding: .5%;">
-                                    <div class="form-check">
-                                        <table>
-                                            <tbody id="interests-table">
+                                        <div class="overflow-auto" style="max-height: 150px; padding: .5%;">
+                                        <div class="form-check">
+                                            <table>
+                                                <tbody id="interests-table">
                                                 {% for interest in interests %}
-                                                <tr>
-                                                    <td>
-                                                        <label class="form-check-label">
-                                                            <input type="checkbox" class="form-check-input" name="interesttoadd" value="{{ interest.tag }}">
-                                                            {{ interest.tag }}
-                                                        </label>
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" class="form-check-input"
+                                                                       name="interesttoadd" value="{{ interest.tag }}">
+                                                                {{ interest.tag }}
+                                                            </label>
+                                                        </td>
+                                                    </tr>
                                                 {% endfor %}
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endif %}
                                     </div>
-                                {% endif %}
-                                </div>
                                 <div style="padding:2%; padding-left: 0%;">
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                     <button><a href="{% url 'viewaccount' %}"> Cancel </a></button>
@@ -193,6 +205,6 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+    </body>
+    </html>
 {% endblock %}

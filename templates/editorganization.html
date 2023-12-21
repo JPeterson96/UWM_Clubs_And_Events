@@ -2,47 +2,47 @@
 {% load static %}
 {% block content %}
 
-<!DOCTYPE html>
+    <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Edit Organization</title>
-   </head>
+    </head>
     <body>
-        <!--Nav bar-->
-        <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
-            <div class="container-fluid">
-                <a href="{% url 'homepage' %}" class="navbar-brand text-dark">UWM Clubs and Events </a>
-                <button
-                        class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navmenu"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navmenu">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item dropdown d-flex align-items-center">
-                            <span class="me-2">👤</span>
-                            <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">{{ user.name }}</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
-                                <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+    <!--Nav bar-->
+    <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
+        <div class="container-fluid">
+            <a href="{% url 'homepage' %}" class="navbar-brand text-dark">UWM Clubs and Events </a>
+            <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navmenu"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown d-flex align-items-center">
+                        <span class="me-2">👤</span>
+                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">{{ user.name }}</a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
+                            <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
-        </nav>
-        <!-- Organization cards -->
-        <div class="page_container w-50">
-            <div style="padding-top: 90px;">
-                <form method="post" action="{% url 'editorganization' %}">
-                    {% csrf_token %}
-                    {% for organization in organizations %}
+        </div>
+    </nav>
+    <!-- Organization cards -->
+    <div class="page_container w-50">
+        <div style="padding-top: 90px;">
+            <form method="post" action="{% url 'editorganization' %}">
+                {% csrf_token %}
+                {% for organization in organizations %}
                     <div class="card mb-3">
                         <div class="row no-gutters">
                             <div class="col-md-8 ">
@@ -59,11 +59,13 @@
                                     </select> -->
                                     <div class="card-text">
                                         <label for="membersCount">Number of Members: </label>
-                                        <input type="number" class="form-control" name="membersCount" id="membersCount" value="{{ organization.membersCount }}">
+                                        <input type="number" class="form-control" name="membersCount" id="membersCount"
+                                               value="{{ organization.membersCount }}">
                                     </div>
                                     <div class="card-text" style="padding: 1%; padding-left: 0%;">
                                         <label for="description">Description: </label>
-                                        <input type="text" class="form-control" name="description" id="description" value="{{ organization.description }}">
+                                        <input type="text" class="form-control" name="description" id="description"
+                                               value="{{ organization.description }}">
                                     </div>
                                     <div style="padding: 2%; padding-left: 0%;">
                                         <input type="submit" value="Save Changes">
@@ -72,12 +74,12 @@
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
-                </form>
-                <hr>
-                <p style="padding-left: 2%; padding-top: 2%">{{ message }}</p>
-            </div>
+                {% endfor %}
+            </form>
+            <hr>
+            <p style="padding-left: 2%; padding-top: 2%">{{ message }}</p>
         </div>
+    </div>
     </body>
     </html>
 {% endblock %}

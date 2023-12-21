@@ -1,59 +1,59 @@
 {% extends "base.html" %}
 {% load static %}
-   
+
 {% block title %}Python Django Ajax FullCalender CRUD (Create, Read, Update and Delete){% endblock title %}
 {% block content %}
 
-<html>
+    <html>
     <head>
 
     </head>
     <body>
-        <!--Nav bar-->
-        <div style="padding: 3%; padding-top: 60px;">
-            <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
-                <div class="container-fluid">
-                    <a href={% url 'homepage' %} class="navbar-brand text-dark"> UWM Clubs and Events </a>
-                    <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navmenu"
-                    >
-                    <span class = "navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navmenu">
-                        <ul class="navbar-nav">
-                        </ul>
-                    </div>
+    <!--Nav bar-->
+    <div style="padding: 3%; padding-top: 60px;">
+        <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
+            <div class="container-fluid">
+                <a href={% url 'homepage' %} class="navbar-brand text-dark"> UWM Clubs and Events </a>
+                <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navmenu"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navmenu">
+                    <ul class="navbar-nav">
+                    </ul>
                 </div>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown d-flex align-items-center">
-                        <span class="me-2">👤</span>
-                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.name }}</a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
-                            <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
+            </div>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown d-flex align-items-center">
+                    <span class="me-2">👤</span>
+                    <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">{{ user.name }}</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
+                        <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
 
 
-            <div class="page_container">
-                <div class="container mt-5 vh-90" style="overflow: hidden;">
-                  <div class="row justify-content-center">
+        <div class="page_container">
+            <div class="container mt-5 vh-90" style="overflow: hidden;">
+                <div class="row justify-content-center">
                     <div class="card bg-light">
                         <div class="card-body text-center">
                             <div class="page_container">
-                                <div class = "calendar-container"   
-                                    <div class = "card">
-                                        <div class= "card-body">
-                                            <div class="col-md-12">    
-                                                <div id='calendar'>
-                                                </div> 
-                                            </div> 
+                                <div class="calendar-container"
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="col-md-12">
+                                            <div id='calendar'>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -63,19 +63,20 @@
                 </div>
             </div>
         </div>
-<style>
-    .calendar-container {
-        max-width: 80%;  
-        margin: auto;    
-        padding: 20px;  
-    }
-    
-    @media (max-width: 768px) {
+    </div>
+    <style>
         .calendar-container {
-            max-width: 100%; /* Full width on smaller screens */
+            max-width: 80%;
+            margin: auto;
+            padding: 20px;
         }
-    }
-</style>
 
-   
+        @media (max-width: 768px) {
+            .calendar-container {
+                max-width: 100%; /* Full width on smaller screens */
+            }
+        }
+    </style>
+
+
 {% endblock content %}

@@ -2,12 +2,12 @@
 {% load static %}
 {% block content %}
 
-<html>
+    <html>
     <head>
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // Get the interests elements
                 var interests = document.querySelectorAll('input[name="selected_interests"]');
 
@@ -15,10 +15,10 @@
                 var searchInput = document.getElementById('search-input');
 
 
-                searchInput.addEventListener('input', function() {
+                searchInput.addEventListener('input', function () {
                     var searchValue = searchInput.value.toLowerCase();
 
-                    interests.forEach(function(interest) {
+                    interests.forEach(function (interest) {
                         var interestTag = interest.value.toLowerCase();
                         var parentRow = interest.closest('tr');
 
@@ -62,23 +62,23 @@
     <body>
     <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
-            <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
+            <a href="{% url 'homepage' %}" class="navbar-brand text-dark">UWM Clubs and Events </a>
             <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navmenu"
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navmenu"
             >
-            <span class = "navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
                     {% if user.role == 3 %}
                         <li class="nav-item">
-                            <a href="{%  url 'createorganization' %}" class="nav-link text-dark">Create Organization</a>
+                            <a href="{% url 'createorganization' %}" class="nav-link text-dark">Create Organization</a>
                         </li>
                     {% endif %}
-                    {%  if user.role > 1 %}
+                    {% if user.role > 1 %}
 
                         <li class="nav-item">
                             <a href="{% url 'createevent' %}" class="nav-link text-dark">Create Event</a>
@@ -91,7 +91,8 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown d-flex align-items-center">
                         <span class="me-2">👤</span>
-                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.name }}</a>
+                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">{{ user.name }}</a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
                             <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
@@ -107,7 +108,8 @@
             <div class="container mt-4">
                 <div class="d-flex justify-content-end mb-3">
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                             ☰ Filter
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
@@ -116,26 +118,26 @@
                                 <li class="p-1">
                                     <select name="sortType" id="sortType">
                                         <option value=0>--- Sort Type ---</option>
-                                        <option value=1> Date </option>
-                                        <option value=2> Org Name </option>
-                                        <option value=3> Event Name </option>
+                                        <option value=1> Date</option>
+                                        <option value=2> Org Name</option>
+                                        <option value=3> Event Name</option>
                                     </select>
                                 </li>
                                 <li class="p-1">
                                     <select name="sortOrder" id="sortOrder">
                                         <option value=0>--- Sort Order ---</option>
-                                        <option value=1> A - Z </option>
-                                        <option value=2> Z - A </option>
+                                        <option value=1> A - Z</option>
+                                        <option value=2> Z - A</option>
                                     </select>
                                 </li>
                                 <li class="p-1">
                                     <select name="dateRange" id="dateRange">
                                         <option value=0>--- Events Happening ---</option>
-                                        <option value=1> Today </option>
-                                        <option value=2> Tomorrow </option>
-                                        <option value=3> This Week </option>
-                                        <option value=4> This Month </option>
-                                        <option value=5> This Year </option>
+                                        <option value=1> Today</option>
+                                        <option value=2> Tomorrow</option>
+                                        <option value=3> This Week</option>
+                                        <option value=4> This Month</option>
+                                        <option value=5> This Year</option>
                                     </select>
                                 </li>
                                 <li class="p-1">
@@ -143,22 +145,23 @@
                                     <div class="form-check" style="overflow-y: auto; height: 150px;">
                                         <table>
                                             <tbody id="interests-table">
-                                                {% for interest in interests %}
+                                            {% for interest in interests %}
                                                 <tr>
                                                     <td>
                                                         <label class="form-check-label">
-                                                            <input type="checkbox" class="form-check-input" name="selected_interests" value="{{ interest.tag }}">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                   name="selected_interests" value="{{ interest.tag }}">
                                                             {{ interest.tag }}
                                                         </label>
                                                     </td>
                                                 </tr>
-                                                {% endfor %}
+                                            {% endfor %}
                                             </tbody>
                                         </table>
                                     </div>
                                 </li>
                                 <li>
-                                    <button type="submit" class="btn btn-primary m-1"> Filter </button>
+                                    <button type="submit" class="btn btn-primary m-1"> Filter</button>
                                     <button type="checkbox" id="clear" name="clear" value=1>
                                         <a href="{% url 'clearfilters' %}">
                                             Clear Filters
@@ -171,25 +174,28 @@
                 </div>
             </div>
             {% for i in Events %}
-            <div class="card mb-3">
-                <div class="row no-gutters">
-                    <div class="col-md-4" style="width: 20%; max-height: 130px;">
-                        {% if i.image %}
-                            <image src="{{ i.image.url }}" class="card-img" alt="{{i.name}}" style="width: 100%; height:130px; object-fit: cover;"></image>
-                        {% else %}
-                            <image src="{% static 'uwmLogo.jpg' %}" class="card-img" alt="{{i.name}}" style="width: 100%; height:130px; object-fit: cover;"></image>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-8 ">
-                        <div class="card-body">
-                            <h5 class="card-title mb-0"><a href="{% url 'viewevent' id=i.id %}">{{ i.name }}</a></h5>
-                            <p class="card-text mb-2">{{ i.time_happening }}</p>
-                            <h6 class="card-subtitle text-muted">{{ i.organization }}</h6>
-                            <p class="card-text text-truncate">{{ i.description }}</p>
+                <div class="card mb-3">
+                    <div class="row no-gutters">
+                        <div class="col-md-4" style="width: 20%; max-height: 130px;">
+                            {% if i.image %}
+                                <image src="{{ i.image.url }}" class="card-img" alt="{{ i.name }}"
+                                       style="width: 100%; height:130px; object-fit: cover;"></image>
+                            {% else %}
+                                <image src="{% static 'uwmLogo.jpg' %}" class="card-img" alt="{{ i.name }}"
+                                       style="width: 100%; height:130px; object-fit: cover;"></image>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8 ">
+                            <div class="card-body">
+                                <h5 class="card-title mb-0"><a href="{% url 'viewevent' id=i.id %}">{{ i.name }}</a>
+                                </h5>
+                                <p class="card-text mb-2">{{ i.time_happening }}</p>
+                                <h6 class="card-subtitle text-muted">{{ i.organization }}</h6>
+                                <p class="card-text text-truncate">{{ i.description }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             {% endfor %}
             <div class="pagination">
                 <ul class="pagination justify-content-center">
@@ -227,5 +233,5 @@
         </div>
     </div>
     </body>
-</html>
+    </html>
 {% endblock %}

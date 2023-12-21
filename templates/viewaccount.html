@@ -10,103 +10,104 @@
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
-            <div class="container-fluid">
-                <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
-                <button
+    <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
+        <div class="container-fluid">
+            <a href="{% url 'homepage' %}" class="navbar-brand text-dark">UWM Clubs and Events </a>
+            <button
                     class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#navmenu"
-                >
-                <span class = "navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navmenu">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a href="{% url 'editaccount' %}" class="nav-link text-dark"> Edit Account </a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item dropdown d-flex align-items-center">
-                            <span class="me-2">👤</span>
-                            <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ User.name }}</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="{% url 'editaccount' %}" class="nav-link text-dark"> Edit Account </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown d-flex align-items-center">
+                        <span class="me-2">👤</span>
+                        <a href="#" class="nav-link text-dark dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">{{ User.name }}</a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'accountCalendar' %}"> My Calendar</a></li>
                             <li><a class="dropdown-item" href="{% url 'viewaccount' %}">View Account</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                        </li>
-                    </ul>
-                </div>
+                    </li>
+                </ul>
             </div>
-        </nav>
-        <div class="page_container">
-            <div class="container mt-5" style="padding-top: 60px; overflow: hidden;">
-                <div class="row justify-content-center">
-                    <div class="card bg-light">
-                        <div class="card-body">
-                            <div class="container">
-                                <h1> Your Account Details </h1>
-                                <form action="{% url 'viewaccount' %}" method="post">
-                                    {% csrf_token %}
-                                    {{ message }}
-                                    <div class="card ">
+        </div>
+    </nav>
+    <div class="page_container">
+        <div class="container mt-5" style="padding-top: 60px; overflow: hidden;">
+            <div class="row justify-content-center">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="container">
+                            <h1> Your Account Details </h1>
+                            <form action="{% url 'viewaccount' %}" method="post">
+                                {% csrf_token %}
+                                {{ message }}
+                                <div class="card ">
+                                    <div class="card-body">
+                                        <h5 class="card-title">User Information</h5>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td>Name</td>
+                                                <td>{{ User.name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Email</td>
+                                                <td>{{ User.email }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Role</td>
+                                                <td>{{ User.get_role_display }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                {% if User.role == 0 %}
+                                    <div class="card">
                                         <div class="card-body">
-                                            <h5 class="card-title">User Information</h5>
+                                            <h5 class="card-title">Graduation Dates</h5>
                                             <table class="table table-bordered">
                                                 <tr>
-                                                    <td>Name</td>
-                                                    <td>{{ User.name }}</td>
+                                                    <td>Start Graduation Date</td>
+                                                    <td>{{ Stu.enrollment_date }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Email</td>
-                                                    <td>{{ User.email }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Role</td>
-                                                    <td>{{ User.get_role_display }}</td>
+                                                    <td>End Graduation Date</td>
+                                                    <td>{{ Stu.graduation_date }}</td>
                                                 </tr>
                                             </table>
                                         </div>
                                     </div>
-                                    {% if User.role == 0 %}
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Graduation Dates</h5>
-                                                <table class="table table-bordered">
-                                                    <tr>
-                                                        <td>Start Graduation Date</td>
-                                                        <td>{{ Stu.enrollment_date }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>End Graduation Date</td>
-                                                        <td>{{ Stu.graduation_date }}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Student Majors</h5>
+                                            <ul class="list-group">
+                                                {% for umaj in usermajors %}
+                                                    <li class="list-group-item">{{ umaj.major.name }}</li>
+                                                {% endfor %}
+                                            </ul>
                                         </div>
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Student Majors</h5>
-                                                <ul class="list-group">
-                                                    {% for umaj in usermajors %}
-                                                        <li class="list-group-item">{{ umaj.major.name }}</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Student Interests</h5>
+                                            <ul class="list-group">
+                                                {% for intm in userinterest %}
+                                                    <li class="list-group-item">{{ intm.type.tag }}</li>
+                                                {% endfor %}
+                                            </ul>
                                         </div>
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Student Interests</h5>
-                                                <ul class="list-group">
-                                                    {% for intm in userinterest %}
-                                                        <li class="list-group-item">{{ intm.type.tag }}</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                    {% if User.role >= 2 %}
+                                    </div>
+                                {% endif %}
+                                {% if User.role >= 2 %}
                                     <div class="card">
                                         <div class="card-body">
                                             <h5 class="card-title">User Organizations</h5>
@@ -117,14 +118,14 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    {% endif %}
-                                </form>
-                            </div>
+                                {% endif %}
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </body>
     </html>
 {% endblock %}

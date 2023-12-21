@@ -18,9 +18,9 @@
                 });
             });
         </script>
-{#        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"#}
-{#              integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"#}
-{#              crossorigin="anonymous">#}
+        {#        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"#}
+        {#              integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"#}
+        {#              crossorigin="anonymous">#}
         <title>{{ Event.name }}</title>
     </head>
     <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
@@ -31,7 +31,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav">
-                    {% if user.email == Event.organization.user.email  %}
+                    {% if user.email == Event.organization.user.email %}
                         <li class="nav-item">
                             <a href="{% url 'editevent' Event.id %}" class="nav-link text-dark">Edit Event</a>
                         </li>
@@ -55,49 +55,54 @@
         </div>
     </nav>
     <div class="page_container">
-        <div class="container mt-5" style="padding-top: 60px; overflow: hidden;">
-          <div class="row justify-content-center">
-            <div class="card bg-light">
-                <div class="card-body">
-                    <div class="container" style="padding-top: 10px;">
-                        <div class="row justify-content-center">
-                            <div class="card mb-3" style="display: inline-block;">
-                                {% if Event.image %}
-                                    <img src="{{ Event.image.url }}" class="card-img-top" alt="{{ i.name }}"
-                                        style="width: 100%; max-height: 250px; object-fit: cover;">
-                                {% else %}
-                                    <img src="{% static 'uwmLogo.jpg' %}" class="card-img-top" alt="{{ i.name }}"
-                                        style="width: 100%; max-height: 250px; object-fit: cover;">
-                                {% endif %}
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ Event.name }}</h5>
-                                    <div class="contact">
-                                        <p>Any Issues? Contact: <a
-                                                href="mailto:{{ Event.organization.point_of_contact }}">{{ Event.organization.point_of_contact }}</a>
-                                        </p>
-                                        <p>Organizer: <a href="{% url 'orgpage' Event.organization.name %}">{{ Event.organization.name }}</a></p>
-                                    </div>
-{#                                    fas stuff is boostrap for emoji images#}
-                                    <p><i class="fas fa-clock"></i> Date & Time: <a href="#" id="time">{{ Event.time_happening }}</a>
+    <div class="container mt-5" style="padding-top: 60px; overflow: hidden;">
+    <div class="row justify-content-center">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="container" style="padding-top: 10px;">
+                    <div class="row justify-content-center">
+                        <div class="card mb-3" style="display: inline-block;">
+                            {% if Event.image %}
+                                <img src="{{ Event.image.url }}" class="card-img-top" alt="{{ i.name }}"
+                                     style="width: 100%; max-height: 250px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'uwmLogo.jpg' %}" class="card-img-top" alt="{{ i.name }}"
+                                     style="width: 100%; max-height: 250px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ Event.name }}</h5>
+                                <div class="contact">
+                                    <p>Any Issues? Contact: <a
+                                            href="mailto:{{ Event.organization.point_of_contact }}">{{ Event.organization.point_of_contact }}</a>
                                     </p>
-                                    <p><i class="fas fa-map-marker-alt"></i> Location: <a href="#" id="map">{{ Event.loc_addr }} {{ Event.loc_city }}, {{ Event.loc_state }} {{ Event.loc_zip }}</a></p>
-                                    <p>Description: {{ Event.description }}</p>
-                                    <form method="post" action="{% url 'viewevent' Event.id  %}">
-                                        {% csrf_token %}
-                                        {% if attend %}
-                                            <label name="rsvpbbut" id="rsvpbbut">You are signed up for this event!</label>
-                                            <button type="submit" name="unrsvp" id="unrsvp">Click to not attend</button>
-                                        {% else %}
-                                            <button type="submit" name="rsvpbbut" id="rsvpbbut">RSVP</button>
-                                        {% endif %}
-                                    </form>
+                                    <p>Organizer: <a
+                                            href="{% url 'orgpage' Event.organization.name %}">{{ Event.organization.name }}</a>
+                                    </p>
                                 </div>
+                                {#                                    fas stuff is boostrap for emoji images#}
+                                <p><i class="fas fa-clock"></i> Date & Time: <a href="#"
+                                                                                id="time">{{ Event.time_happening }}</a>
+                                </p>
+                                <p><i class="fas fa-map-marker-alt"></i> Location: <a href="#"
+                                                                                      id="map">{{ Event.loc_addr }} {{ Event.loc_city }}, {{ Event.loc_state }} {{ Event.loc_zip }}</a>
+                                </p>
+                                <p>Description: {{ Event.description }}</p>
+                                <form method="post" action="{% url 'viewevent' Event.id %}">
+                                    {% csrf_token %}
+                                    {% if attend %}
+                                        <label name="rsvpbbut" id="rsvpbbut">You are signed up for this event!</label>
+                                        <button type="submit" name="unrsvp" id="unrsvp">Click to not attend</button>
+                                    {% else %}
+                                        <button type="submit" name="rsvpbbut" id="rsvpbbut">RSVP</button>
+                                    {% endif %}
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </body>
     </html>
 {% endblock %}
