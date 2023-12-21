@@ -71,12 +71,13 @@
                                 {% endif %}
                                 <div class="card-body">
                                     <h5 class="card-title">{{ Event.name }}</h5>
-                                    <div class="contact-info">
+                                    <div class="contact">
                                         <p>Any Issues? Contact: <a
                                                 href="mailto:{{ Event.organization.point_of_contact }}">{{ Event.organization.point_of_contact }}</a>
                                         </p>
                                         <p>Organizer: <a href="{% url 'orgpage' Event.organization.name %}">{{ Event.organization.name }}</a></p>
                                     </div>
+{#                                    fas stuff is boostrap for emoji images#}
                                     <p><i class="fas fa-clock"></i> Date & Time: <a href="#" id="time">{{ Event.time_happening }}</a>
                                     </p>
                                     <p><i class="fas fa-map-marker-alt"></i> Location: <a href="#" id="map">{{ Event.loc_addr }} {{ Event.loc_city }}, {{ Event.loc_state }} {{ Event.loc_zip }}</a></p>
