@@ -60,7 +60,6 @@
 
     </head>
     <body>
-    <!--Nav bar-->
     <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
             <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
@@ -171,7 +170,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Event card -->
             {% for i in Events %}
             <div class="card mb-3">
                 <div class="row no-gutters">
@@ -195,7 +193,6 @@
             {% endfor %}
             <div class="pagination">
                 <ul class="pagination justify-content-center">
-
                     {% if Events.has_previous %}
                         <li class="page-item">
                             <a class="page-link" href="?page=1" aria-label="First">
@@ -208,13 +205,11 @@
                             </a>
                         </li>
                     {% endif %}
-
                     <li class="page-item disabled">
                         <span class="page-link">
                             Page {{ Events.number }} of {{ Events.paginator.num_pages }}
                         </span>
                     </li>
-
                     {% if Events.has_next %}
                         <li class="page-item">
                             <a class="page-link" href="?page={{ Events.next_page_number }}">
