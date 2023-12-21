@@ -57,7 +57,7 @@
             }
         </script>
         <script>
-            $(document).ready(function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 var interests = document.querySelectorAll('input[name="selected_interests"]');
 
                 var searchInput = document.getElementById('search-input');
@@ -66,12 +66,14 @@
 
                     interests.forEach(function (interest) {
                         var interestTag = interest.value.toLowerCase();
-                        var parentRow = interest.closest('tr');
+                        {# used to help the logic below #}
+                        var trSection = interest.closest('tr');
 
+                    {#logic for this code to hide interests found in the list that includes interest name https://stackoverflow.com/questions/51568383/style-display-none-works-in-else-but-not-in-if#}
                         if (interestTag.includes(searchValue)) {
-                            parentRow.style.display = '';
+                            trSection.style.display = '';
                         } else {
-                            parentRow.style.display = 'none';
+                            trSection.style.display = 'none';
                         }
                     });
                 });
