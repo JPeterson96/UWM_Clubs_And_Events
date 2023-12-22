@@ -18,7 +18,7 @@ class TestCreateValidUser(TestCase):
                                                       "majorlist": "Computer Science", "selected_interests": "Computer Science", 
                                                       "startdate": "2021-09-01", "graddate": "2021-12-01"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["success_message"], "user account successfully created")
+        self.assertEquals(self.resp.context["message"], "user account successfully created")
         self.assertIsNotNone(user_util.get_user("kravtso5@uwm.edu"))
 
 class TestCreateInvalidUser(TestCase):
