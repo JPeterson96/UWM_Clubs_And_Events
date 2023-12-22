@@ -50,13 +50,6 @@
                                     <div class="card-title">
                                         <h4>{{ organization.name }}</h4>
                                     </div>
-                                    <!-- <select class="card-text" name="point_of_contact" id="point_of_contact" >
-                                        <label for="point_of_contact">Point of Contact: </label>
-                                        <option value="{{ organization.point_of_contact }}">{{ organization.point_of_contact }}</option>
-                                        {% for i in contacts %}
-                                            <option value="{{ i.email }}">{{ i.name }}</option>
-                                        {% endfor %}
-                                    </select> -->
                                     <div class="card-text">
                                         <label for="membersCount">Number of Members: </label>
                                         <input type="number" class="form-control" name="membersCount" id="membersCount" value="{{ organization.membersCount }}">

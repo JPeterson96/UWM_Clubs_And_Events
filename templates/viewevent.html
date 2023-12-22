@@ -6,7 +6,6 @@
     <head>
         <meta charset="UTF-8">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-        <!--grabs location of address and displays google maps--->
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const address = document.getElementById('map');
@@ -18,12 +17,9 @@
                 });
             });
         </script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-              integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-              crossorigin="anonymous">
+
         <title>{{ Event.name }}</title>
     </head>
-    <!--Nav bar-->
     <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
             <a href="{% url 'homepage' %}" class="navbar-brand text-dark">UWM Clubs and Events </a>
@@ -55,7 +51,6 @@
             </div>
         </div>
     </nav>
-
     <div class="page_container">
         <div class="container mt-5" style="padding-top: 60px; overflow: hidden;">
           <div class="row justify-content-center">
@@ -73,19 +68,19 @@
                                 {% endif %}
                                 <div class="card-body">
                                     <h5 class="card-title">{{ Event.name }}</h5>
-                                    <div class="contact-info">
+                                    <div class="contact">
                                         <p>Any Issues? Contact: <a
                                                 href="mailto:{{ Event.organization.point_of_contact }}">{{ Event.organization.point_of_contact }}</a>
                                         </p>
                                         <p>Organizer: <a href="{% url 'orgpage' Event.organization.name %}">{{ Event.organization.name }}</a></p>
                                     </div>
+{#                                    fas stuff is boostrap for emoji images#}
                                     <p><i class="fas fa-clock"></i> Date & Time: <a href="#" id="time">{{ Event.time_happening }}</a>
                                     </p>
                                     <p><i class="fas fa-map-marker-alt"></i> Location: <a href="#" id="map">{{ Event.loc_addr }} {{ Event.loc_city }}, {{ Event.loc_state }} {{ Event.loc_zip }}</a></p>
                                     <p>Description: {{ Event.description }}</p>
                                     <form method="post" action="{% url 'viewevent' Event.id  %}">
                                         {% csrf_token %}
-                                        <!-- Your other form fields and buttons go here -->
                                         {% if attend %}
                                             <label name="rsvpbbut" id="rsvpbbut">You are signed up for this event!</label>
                                             <button type="submit" name="unrsvp" id="unrsvp">Click to not attend</button>
