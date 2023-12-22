@@ -414,16 +414,6 @@ class CreateOrganization(View):
             return render(request, "createorganization.html",
                           {"error_message": organization, "user": current_user, "point_of_contacts": point_of_contacts})
 
-        # newOrg = Organization.objects.create(
-        #     user=contactuser,
-        #     name=orgname,
-        #     point_of_contact=contactuser.email,
-        #     membersCount=membersCount,
-        #     description=description
-        # )
-        #
-        # newOrg.save()
-        # create a new search tag for the organization if it doesnt exist
 
         return render(request, "createorganization.html", {"success_message": "Organization Successfully created"})
 
