@@ -112,25 +112,6 @@
                                         <option value=5> This Year </option>
                                     </select>
                                 </li>
-                                <!-- <li class="p-1">
-                                    <p> Additional Interests: </p>
-                                    <div class="form-check" style="overflow-y: auto; height: 150px;">
-                                        <table>
-                                            <tbody id="interests-table">
-                                                {% for interest in interests %}
-                                                <tr>
-                                                    <td>
-                                                        <label class="form-check-label">
-                                                            <input type="checkbox" class="form-check-input" name="selected_interests" value="{{ interest.tag }}">
-                                                            {{ interest.tag }}
-                                                        </label>
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </li> -->
                                 <li style="padding-top: 5%;"> 
                                     <button type="submit" class="btn btn-primary m-1"> Filter </button>
                                     <a href="{% url 'clearfilters' %}" style="padding-left: 2%;"> 

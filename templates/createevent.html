@@ -11,56 +11,57 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
         <script>
-            async function finishCity() {
-                const city_name = document.getElementById('loc_city').value.toString();
-                const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
-                const headers = {
-                    'Accept': 'application/vnd.teleport.v1+json'
-                };
-                try {
-                    const response = await fetch(api_url, {
-                        method: 'GET',
-                        headers: headers
-                    });
-                    if (response.ok) {
-                        const json_data = await response.json();
-                        const matchingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
-                        updateMatchingCities(matchingCities);
-                    } else {
-                        throw new Error(`HTTP request failed with status ${response.status}`);
-                    }
+            document.addEventListener('DOMContentLoaded', function() {
 
-                } catch (error) {
-                    console.error('Error with request:', error);
-                }
-            }
+                var location = document.getElementById('loc_city');
+                var matchcities = document.getElementById('matching_cities')
+
+                location.addEventListener('input',  async function (){
+                    const city_name = document.getElementById('loc_city').value.toString();
+                    const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
+                    const headers = {
+                        'Accept': 'application/vnd.teleport.v1+json'
+                    };
+                    try {
+                        const response = await fetch(api_url, {
+                            method: 'GET',
+                            headers: headers
+                        });
+                        if (response.ok) {
+                            const json_data = await response.json();
+                            const resultingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
+                            var res=updateMatchingCities(resultingCities);
+                            res.addEventListener('click', function (){
+                                location.value=matchcities.value
+                            });
+                        } else {
+                            throw new Error(`request failed ${response.status}`);
+                        }
+
+                    } catch (error) {
+                        console.error('Error on request:', error);
+                    }
+                })
+            });
 
             function updateMatchingCities(cities) {
-                const matchingCitiesDropdown = document.getElementById('matching_cities');
-                matchingCitiesDropdown.innerHTML = ''; // Clear previous results
+                const matchingcities= document.getElementById('matching_cities');
+                matchingcities.innerHTML = '';
 
                 cities.forEach(city => {
                     const option = document.createElement('option');
                     option.value = city;
                     option.text = city;
-                    matchingCitiesDropdown.add(option);
+                    matchingcities.add(option);
                 });
+
+                return matchingcities;
             }
 
-            function handleInput() {
-                finishCity();
-                document.getElementById('matching_cities').addEventListener('change', updateInputField);
-            }
-
-            function updateInputField() {
-                const selectedCity = document.getElementById('matching_cities').value;
-                document.getElementById('loc_city').value = selectedCity;
-            }
         </script>
         <script>
-            $(document).ready(function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 var interests = document.querySelectorAll('input[name="selected_interests"]');
 
                 var searchInput = document.getElementById('search-input');
@@ -69,12 +70,14 @@
 
                     interests.forEach(function (interest) {
                         var interestTag = interest.value.toLowerCase();
-                        var parentRow = interest.closest('tr');
+                        {# used to help the logic below #}
+                        var trSection = interest.closest('tr');
 
+                    {#logic for this code to hide interests found in the list that includes interest name https://stackoverflow.com/questions/51568383/style-display-none-works-in-else-but-not-in-if#}
                         if (interestTag.includes(searchValue)) {
-                            parentRow.style.display = '';
+                            trSection.style.display = '';
                         } else {
-                            parentRow.style.display = 'none';
+                            trSection.style.display = 'none';
                         }
                     });
                 });
