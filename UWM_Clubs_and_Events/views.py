@@ -185,7 +185,7 @@ class CreateAccount(View):
 
         for tags in interests:
             try:
-                value = user_util.User_Util.set_student_interest(email=email, interest=tags)
+                value = user_util.User_Util.set_user_interest(email=email, interest=tags)
             except Student.DoesNotExist:
                 return render(request, "createaccount.html",
                               {"message": "student does not exists", "interests": search, "fName": firstName,
