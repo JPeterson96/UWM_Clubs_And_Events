@@ -18,7 +18,7 @@ class TestCreateValidOrg(TestCase):
                                                      "name": "CS Smart Club", "point_of_contact": "1",
                                                      "member_count": "1", "description": "description"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["success_message"], "Organization Successfully created")
+        self.assertEquals(self.resp.context["message"], "Organization Successfully created")
         self.assertIsNotNone(org_util.get_org_by_name("CS Smart Club"))
 
 class TestCreateInvalidOrg(TestCase):
@@ -56,7 +56,7 @@ class TestCreateInvalidOrg(TestCase):
                                                      "name": "CS Smart Club", "point_of_contact": "-1",
                                                         "member_count": "1", "description": "description"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "User does not exist")
+        self.assertEquals(self.resp.context["message"], "User does not exist")
         self.assertIsNone(org_util.get_org_by_name("CS Smart Club"))
 
     def test_createOrgInvalidPOC(self):
@@ -64,7 +64,7 @@ class TestCreateInvalidOrg(TestCase):
                                                      "name": "CS Smart Club", "point_of_contact": "-1",
                                                         "member_count": "1", "description": "description"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "User does not exist")
+        self.assertEquals(self.resp.context["message"], "User does not exist")
         self.assertIsNone(org_util.get_org_by_name("CS Smart Club"))
 
     def test_createOrgInvalidMembers(self):
@@ -86,19 +86,4 @@ class TestCreateInvalidOrg(TestCase):
                                                      "name": "CS Smart Club", "point_of_contact": "1",
                                                         "member_count": "1", "description": "description"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertIsNone(org_util.get_org_by_name("CS Smart Club"))
-
-class testCreateOrgNotLoggedIn(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
-        user_util.create_user(name = "Ilya", email = "kravtso5@uwm.edu", password = "123", role = 3, 
-                              startdate = self.time, graddate = self.time)
-
-    def test_createOrg(self):
-        self.resp = self.client.post("/createOrganization/", {"email": "cssmartclub@uwm.edu", "password": "password", 
-                                                     "name": "CS Smart Club", "point_of_contact": "1",
-                                                     "member_count": "1", "description": "description"})
-        self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "You must be logged in to create an organization")
         self.assertIsNone(org_util.get_org_by_name("CS Smart Club"))

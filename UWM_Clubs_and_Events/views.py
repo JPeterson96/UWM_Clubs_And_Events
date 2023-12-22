@@ -25,15 +25,15 @@ class login(View):
         except:
             noSuchUser = True
         if email == '' and password == '':
-            return render(request, "login.html", {"error_message": "Nothing entered"})
+            return render(request, "login.html", {"message": "Nothing entered"})
         elif email == '':
-            return render(request, "login.html", {"error_message": "No email"})
+            return render(request, "login.html", {"message": "No email"})
         elif password == '':
-            return render(request, "login.html", {"error_message": "no password"})
+            return render(request, "login.html", {"message": "no password"})
         elif noSuchUser:
-            return render(request, "login.html", {"error_message": "no user in database"})
+            return render(request, "login.html", {"message": "no user in database"})
         elif badPassword:
-            return render(request, "login.html", {"error_message": "no user with this password"})
+            return render(request, "login.html", {"message": "no user with this password"})
         else:
             request.session['user'] = user.email
             return redirect("homepage")
@@ -185,7 +185,7 @@ class CreateAccount(View):
 
         for tags in interests:
             try:
-                value = user_util.User_Util.set_student_interest(email=email, interest=tags)
+                value = user_util.User_Util.set_user_interest(email=email, interest=tags)
             except Student.DoesNotExist:
                 return render(request, "createaccount.html",
                               {"message": "student does not exists", "interests": search, "fName": firstName,
@@ -203,7 +203,7 @@ class CreateAccount(View):
                 return render(request, "createaccount.html",
                               {"message": add_major, "interests": search, "fName": firstName, "lName": lastName,
                                "email": email, "startdate": startdate, "majors": allmajors})
-        return render(request, "login.html", {"success_message": "user account successfully created"})
+        return render(request, "login.html", {"message": "user account successfully created"})
 
 
 class ViewAccount(View):
@@ -325,7 +325,7 @@ class ViewEvent(View):
         try:
             event = Event.objects.get(id=eventname)
         except:
-            return render(request, "homepage.html", {"error_message": "Event does not exist"})
+            return render(request, "homepage.html", {"message": "Event does not exist"})
 
         user_in_event = UserAttendEvent.objects.filter(user=current_user, event=actEvent)
 
@@ -369,34 +369,34 @@ class CreateOrganization(View):
         email = request.POST.get('email')
         if email == '':
             return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
-                point_of_contacts, "error_message": "Please enter an email"})
+                point_of_contacts, "message": "Please enter an email"})
         password = request.POST.get('password')
         if password == '':
             return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
-                point_of_contacts, "error_message": "Please enter a password"})
+                point_of_contacts, "message": "Please enter a password"})
         role = 2
         orgname = request.POST.get('name')
         if orgname == '':
             return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
-                point_of_contacts, "error_message": "Please enter an Organization Name"})
+                point_of_contacts, "message": "Please enter an Organization Name"})
         contact_id = request.POST.get('point_of_contact')
         if contact_id == '':
             return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
-                point_of_contacts, "error_message": "Please select your Organization's Point of Contact"})
+                point_of_contacts, "message": "Please select your Organization's Point of Contact"})
 
         try:
             contactuser = User.objects.get(id=contact_id)
         except User.DoesNotExist:
-            return render(request, "createorganization.html", {"error_message": "User does not exist"})
+            return render(request, "createorganization.html", {"message": "User does not exist"})
         membersCount = request.POST.get('member_count')
         if request.POST.get('member_count') == '':
             return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
-                point_of_contacts, "error_message": "Please enter the number of members in the Organization"})
+                point_of_contacts, "message": "Please enter the number of members in the Organization"})
         membersCount = int(membersCount)
         description = request.POST.get('description')
         if description == '':
             return render(request, 'createorganization.html', {'user': current_user, "point_of_contacts":
-                point_of_contacts, "error_message": "Please enter a description"})
+                point_of_contacts, "message": "Please enter a description"})
 
         try:
             organization = organization_util.Organization_Util.create_organization(orgname, email, password, role,
@@ -406,13 +406,13 @@ class CreateOrganization(View):
             current_user = user_util.User_Util.get_user(email=request.session['user'])
             point_of_contacts = User.objects.filter(role__exact=3)
             return render(request, "createorganization.html",
-                          {"error_message": e, "user": current_user, "point_of_contacts": point_of_contacts})
+                          {"message": e, "user": current_user, "point_of_contacts": point_of_contacts})
 
         if isinstance(organization, ValueError):
             current_user = user_util.User_Util.get_user(email=request.session['user'])
             point_of_contacts = User.objects.filter(role__exact=3)
             return render(request, "createorganization.html",
-                          {"error_message": organization, "user": current_user, "point_of_contacts": point_of_contacts})
+                          {"message": organization, "user": current_user, "point_of_contacts": point_of_contacts})
 
         # newOrg = Organization.objects.create(
         #     user=contactuser,
@@ -425,7 +425,7 @@ class CreateOrganization(View):
         # newOrg.save()
         # create a new search tag for the organization if it doesnt exist
 
-        return render(request, "createorganization.html", {"success_message": "Organization Successfully created"})
+        return render(request, "createorganization.html", {"message": "Organization Successfully created"})
 
 
 class EditOrganization(View):
@@ -495,7 +495,7 @@ class CreateEvent(View):
         except Organization.DoesNotExist:
             return render(request, "createevent.html",
                           {"interests": filtered_interests, "orgs": orgs, "user": current_user,
-                           "error_message": "Selected organization does not exist"})
+                           "message": "Selected organization does not exist"})
 
         addr = request.POST.get('loc_addr')
         city = request.POST.get('loc_city')
@@ -506,7 +506,7 @@ class CreateEvent(View):
             return render(request, "createevent.html",
                           {'name': name, 'loc_addr': addr, 'loc_zip': zip, "interests": filtered_interests,
                            "description": description, "orgs": orgs, "user": current_user,
-                           "time": time_happening, "error_message": addr_check})
+                           "time": time_happening, "message": addr_check})
 
         city_state = [part.strip() for part in city.split(',')]
         city_name = city_state[0]
@@ -529,9 +529,9 @@ class CreateEvent(View):
             if isinstance(eventTag, ValueError):
                 check = Interest.objects.all()
                 return render(request, "createevent.html",
-                              {"error_message": 'Search Tag could not be applied', "interests": check})
+                              {"message": 'Search Tag could not be applied', "interests": check})
 
-        return render(request, "createevent.html", {'success_message': 'Event created successfully',
+        return render(request, "createevent.html", {'message': 'Event created successfully',
                                                     "orgs": orgs,
                                                     "user": current_user,
                                                     "interests": filtered_interests})
@@ -547,7 +547,7 @@ class EditEvent(View):
             request.session['oldname'] = event.name
             return render(request, "editevent.html", {"event": event, 'time': time, 'user': current_user})
         except:
-            return render(request, "homepage.html", {"error_message": "Event does not exist", 'user': current_user})
+            return render(request, "homepage.html", {"message": "Event does not exist", 'user': current_user})
 
     def post(self, request, id):
 

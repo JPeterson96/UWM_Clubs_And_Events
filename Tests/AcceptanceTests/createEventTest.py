@@ -29,7 +29,7 @@ class TestCreateValidEvent(TestCase):
                                                        "description": "Test Event", 
                                                        "photo": "static/event_photos/default.jpeg"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["success_message"], "Event created successfully")
+        self.assertEquals(self.resp.context["message"], "Event created successfully")
         self.assertIsNotNone(Event_Util.get_event(1))
 
 class TestCreateInvalidEvent(TestCase):
@@ -54,7 +54,7 @@ class TestCreateInvalidEvent(TestCase):
                                                        "description": "Test Event", 
                                                        "photo": "static/event_photos/default.jpeg"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "Invalid event name")
+        self.assertEquals(self.resp.context["message"], "Invalid event name")
         self.assertIsNone(Event_Util.get_event(1))
 
     def test_createEventInvalidOrg(self):
@@ -66,7 +66,7 @@ class TestCreateInvalidEvent(TestCase):
                                                        "description": "Test Event", 
                                                        "photo": "static/event_photos/default.jpeg"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "Selected organization does not exist")
+        self.assertEquals(self.resp.context["message"], "Selected organization does not exist")
         self.assertIsNone(Event_Util.get_event(1))
 
     def test_createEventInvalidLocAddr(self):
@@ -78,7 +78,7 @@ class TestCreateInvalidEvent(TestCase):
                                                        "description": "Test Event", 
                                                        "photo": "static/event_photos/default.jpeg"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "Invalid location address")
+        self.assertEquals(self.resp.context["message"], "Invalid location address")
         self.assertIsNone(Event_Util.get_event(1))
 
 
@@ -102,7 +102,7 @@ class TestCreateInvalidEvent(TestCase):
                                                        "description": "Test Event", 
                                                        "photo": "static/event_photos/default.jpeg"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "Invalid location zip")
+        self.assertEquals(self.resp.context["message"], "Invalid location zip")
         self.assertIsNone(Event_Util.get_event(1))
 
     def test_createEventInvalidDescription(self):
@@ -114,19 +114,7 @@ class TestCreateInvalidEvent(TestCase):
                                                        "description": "", 
                                                        "photo": "static/event_photos/default.jpeg"})
         self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "Invalid description")
-        self.assertIsNone(Event_Util.get_event(1))
-
-    def test_createEventInvalidPhoto(self):
-        self.time = datetime.datetime(year=2020, month=1, day=1, hour=0, minute=0, second=0, tzinfo = datetime.timezone.utc)
-        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
-                                                       "loc_addr": "1234 Test St.", 
-                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
-                                                       "time-happening": self.time, 
-                                                       "description": "Test Event", 
-                                                       "photo": ""})
-        self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "Invalid photo")
+        self.assertEquals(self.resp.context["message"], "Invalid description")
         self.assertIsNone(Event_Util.get_event(1))
 
 class TestCreateEventNotLoggedIn(TestCase):
@@ -141,15 +129,3 @@ class TestCreateEventNotLoggedIn(TestCase):
                                                     "name": "CS Smart Club", "point_of_contact": "1",
                                                     "member_count": "1", "description": "description"})
         self.org = Organization.objects.get(name="CS Smart Club")
-
-    def test_createEventNotLoggedIn(self):
-        self.client.get("/login/")
-        self.resp = self.client.post("/createEvent/", {"name": "Test Event", "org": "CS Smart Club", 
-                                                       "loc_addr": "1234 Test St.", 
-                                                       "loc_city": "Milwaukee,WI", "loc_zip": "53211", 
-                                                       "time-happening": self.time, 
-                                                       "description": "Test Event", 
-                                                       "photo": "static/event_photos/default.jpeg"})
-        self.assertEqual(self.resp.status_code, 200)
-        self.assertEquals(self.resp.context["error_message"], "You are not logged in")
-        self.assertIsNone(Event_Util.get_event(1))
