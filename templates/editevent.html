@@ -8,8 +8,10 @@
         <meta charset="UTF-8">
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+
                 var location = document.getElementById('loc_city');
                 var matchcities = document.getElementById('matching_cities')
+
                 location.addEventListener('input',  async function (){
                     const city_name = document.getElementById('loc_city').value.toString();
                     const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
@@ -121,7 +123,7 @@
                                         <input type="text" class="form-control" name="name" id="name"
                                                value="{{ event.name }}">
                                     </div>
-                                    <div class="elements">
+                                    <div class="event_details">
                                         <label for="location">Location:</label>
 
                                         <div>
@@ -144,7 +146,6 @@
                                                    value="{{ event.loc_zip }}">
                                         </div>
                                     </div>
-
                                     <div>
                                         <label for="time_happening">When is this event: </label>
                                         <input type="datetime-local" class="form-control" name="time_happening"
