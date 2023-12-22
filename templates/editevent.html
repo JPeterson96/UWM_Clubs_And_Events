@@ -6,56 +6,75 @@
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-
         <script>
-            async function finishCity() {
-                const city_name = document.getElementById('loc_city').value.toString();
-                const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
-                const headers = {
-                    'Accept': 'application/vnd.teleport.v1+json'
-                };
+            document.addEventListener('DOMContentLoaded', function() {
+                var location = document.getElementById('loc_city');
+                var matchcities = document.getElementById('matching_cities')
+                location.addEventListener('input',  async function (){
+                    const city_name = document.getElementById('loc_city').value.toString();
+                    const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
+                    const headers = {
+                        'Accept': 'application/vnd.teleport.v1+json'
+                    };
+                    try {
+                        const response = await fetch(api_url, {
+                            method: 'GET',
+                            headers: headers
+                        });
+                        if (response.ok) {
+                            const json_data = await response.json();
+                            const resultingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
+                            var res=updateMatchingCities(resultingCities);
+                            res.addEventListener('click', function (){
+                                location.value=matchcities.value
+                            });
+                        } else {
+                            throw new Error(`request failed ${response.status}`);
+                        }
 
-                try {
-                    const response = await fetch(api_url, {
-                        method: 'GET',
-                        headers: headers
-                    });
-
-                    if (response.ok) {
-                        const json_data = await response.json();
-                        const matchingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
-                        updateMatchingCities(matchingCities);
-                    } else {
-                        throw new Error(`HTTP request failed with status ${response.status}`);
+                    } catch (error) {
+                        console.error('Error on request:', error);
                     }
-
-                } catch (error) {
-                    console.error('Error with request:', error);
-                }
-            }
+                })
+            });
 
             function updateMatchingCities(cities) {
-                const matchingCitiesDropdown = document.getElementById('matching_cities');
-                matchingCitiesDropdown.innerHTML = ''; // Clear previous results
+                const matchingcities= document.getElementById('matching_cities');
+                matchingcities.innerHTML = '';
 
                 cities.forEach(city => {
                     const option = document.createElement('option');
                     option.value = city;
                     option.text = city;
-                    matchingCitiesDropdown.add(option);
+                    matchingcities.add(option);
                 });
+
+                return matchingcities;
             }
 
-            function handleInput() {
-                finishCity();
-                document.getElementById('matching_cities').addEventListener('change', updateInputField);
-            }
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var interests = document.querySelectorAll('input[name="selected_interests"]');
 
-            function updateInputField() {
-                const selectedCity = document.getElementById('matching_cities').value;
-                document.getElementById('loc_city').value = selectedCity;
-            }
+                var searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', function () {
+                    var searchValue = searchInput.value.toLowerCase();
 
+                    interests.forEach(function (interest) {
+                        var interestTag = interest.value.toLowerCase();
+                        {# used to help the logic below #}
+                        var trSection = interest.closest('tr');
+
+                    {#logic for this code to hide interests found in the list that includes interest name https://stackoverflow.com/questions/51568383/style-display-none-works-in-else-but-not-in-if#}
+                        if (interestTag.includes(searchValue)) {
+                            trSection.style.display = '';
+                        } else {
+                            trSection.style.display = 'none';
+                        }
+                    });
+                });
+            });
         </script>
         <title>Edit Event</title>
     </head>
@@ -115,7 +134,7 @@
                                             <label for="loc_city">Enter City Name:</label>
                                             <input type="text" class="form-control" id="loc_city" name="loc_city"
                                                    value="{{ event.loc_city }}, {{ event.loc_state }}"
-                                                   oninput="handleInput()">
+                                                   >
                                             <select id="matching_cities" class="form-control"></select>
                                         </div>
 
@@ -152,7 +171,6 @@
                     </div>
                 </div>
             </div>
-
 
         </div>
     </div>
