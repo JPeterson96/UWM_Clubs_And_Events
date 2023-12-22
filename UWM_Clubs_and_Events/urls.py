@@ -14,7 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from UWM_Clubs_and_Events.views import *
+from UWM_Clubs_and_Events.views.accountCalendar import accountCalendar
+from UWM_Clubs_and_Events.views.CalendarView import CalendarView
+from UWM_Clubs_and_Events.views.ClearAllFilters import ClearAllFilters
+from UWM_Clubs_and_Events.views.ClearFilters import ClearFilters
+from UWM_Clubs_and_Events.views.CreateAccount import CreateAccount
+from UWM_Clubs_and_Events.views.CreateEvent import CreateEvent
+from UWM_Clubs_and_Events.views.CreateOrganization import CreateOrganization
+from UWM_Clubs_and_Events.views.EditAccount import EditAccount
+from UWM_Clubs_and_Events.views.EditEvent import EditEvent
+from UWM_Clubs_and_Events.views.EditOrganization import EditOrganization
+from UWM_Clubs_and_Events.views.Homepage import Homepage
+from UWM_Clubs_and_Events.views.login import login
+from UWM_Clubs_and_Events.views.Logout import Logout
+from UWM_Clubs_and_Events.views.OrgPage import OrgPage
+from UWM_Clubs_and_Events.views.ViewAccount import ViewAccount
+from UWM_Clubs_and_Events.views.ViewEvent import ViewEvent
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
@@ -39,7 +54,7 @@ urlpatterns = [
     path('editOrganization/', EditOrganization.as_view(), name='editorganization'),
     path('editEvent/<int:id>/', EditEvent.as_view(), name='editevent'),
     path('calendar/', CalendarView.as_view(), name='publicEvents'),
-    path('all_events/',CalendarView.as_view(), name='all_events'),
+    path('all_events/', CalendarView.as_view(), name='all_events'),
     path('homepage/accountCalendar/', accountCalendar.as_view(), name='accountCalendar'),
     path('orgpage/<str:name>/', OrgPage.as_view(), name='orgpage'),
 
