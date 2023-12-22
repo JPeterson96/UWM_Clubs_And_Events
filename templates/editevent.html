@@ -7,12 +7,12 @@
     <head>
         <meta charset="UTF-8">
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
 
                 var location = document.getElementById('loc_city');
                 var matchcities = document.getElementById('matching_cities')
 
-                location.addEventListener('input',  async function (){
+                location.addEventListener('input', async function () {
                     const city_name = document.getElementById('loc_city').value.toString();
                     const api_url = `https://api.teleport.org/api/cities/?search=${city_name}`;
                     const headers = {
@@ -26,9 +26,9 @@
                         if (response.ok) {
                             const json_data = await response.json();
                             const resultingCities = json_data?._embedded?.["city:search-results"]?.map(result => result.matching_full_name);
-                            var res=updateMatchingCities(resultingCities);
-                            res.addEventListener('click', function (){
-                                location.value=matchcities.value
+                            var res = updateMatchingCities(resultingCities);
+                            res.addEventListener('click', function () {
+                                location.value = matchcities.value
                             });
                         } else {
                             throw new Error(`request failed ${response.status}`);
@@ -41,7 +41,7 @@
             });
 
             function updateMatchingCities(cities) {
-                const matchingcities= document.getElementById('matching_cities');
+                const matchingcities = document.getElementById('matching_cities');
                 matchingcities.innerHTML = '';
 
                 cities.forEach(city => {
@@ -56,7 +56,7 @@
 
         </script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 var interests = document.querySelectorAll('input[name="selected_interests"]');
 
                 var searchInput = document.getElementById('search-input');
@@ -68,7 +68,7 @@
                         {# used to help the logic below #}
                         var trSection = interest.closest('tr');
 
-                    {#logic for this code to hide interests found in the list that includes interest name https://stackoverflow.com/questions/51568383/style-display-none-works-in-else-but-not-in-if#}
+                        {#logic for this code to hide interests found in the list that includes interest name https://stackoverflow.com/questions/51568383/style-display-none-works-in-else-but-not-in-if#}
                         if (interestTag.includes(searchValue)) {
                             trSection.style.display = '';
                         } else {
@@ -123,7 +123,7 @@
                                         <input type="text" class="form-control" name="name" id="name"
                                                value="{{ event.name }}">
                                     </div>
-                                    <div class="elements">
+                                    <div class="event_details">
                                         <label for="location">Location:</label>
 
                                         <div>
@@ -136,7 +136,7 @@
                                             <label for="loc_city">Enter City Name:</label>
                                             <input type="text" class="form-control" id="loc_city" name="loc_city"
                                                    value="{{ event.loc_city }}, {{ event.loc_state }}"
-                                                   >
+                                            >
                                             <select id="matching_cities" class="form-control"></select>
                                         </div>
 
