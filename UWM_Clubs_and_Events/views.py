@@ -494,7 +494,7 @@ class CreateEvent(View):
         except Organization.DoesNotExist:
             return render(request, "createevent.html",
                           {'name': name, 'loc_addr': addr, 'loc_zip': zip, "interests": filtered_interests,
-                           "description": description,"time": time_happening, "interests": filtered_interests, "orgs": orgs, "user": current_user,
+                           "description": description,"time": time_happening, "orgs": orgs, "user": current_user,
                            "error_message": "Selected organization does not exist"})
 
         city_state = [part.strip() for part in city.split(',')]
