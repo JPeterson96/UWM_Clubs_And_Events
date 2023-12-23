@@ -7,25 +7,25 @@
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            $(document).ready(function() {
-                // Get the interests elements
+            document.addEventListener('DOMContentLoaded', function() {
+
+                {#how to use the qeuery selector https://stackoverflow.com/questions/15148659/how-can-i-use-queryselector-on-to-pick-an-input-element-by-name#}
                 var interests = document.querySelectorAll('input[name="selected_interests"]');
-    
-                // Get the search input element
+
                 var searchInput = document.getElementById('search-input');
-    
-    
-                searchInput.addEventListener('input', function() {
+                searchInput.addEventListener('input', function () {
                     var searchValue = searchInput.value.toLowerCase();
-    
-                    interests.forEach(function(interest) {
+
+                    interests.forEach(function (interest) {
                         var interestTag = interest.value.toLowerCase();
-                        var parentRow = interest.closest('tr');
-    
+                        {# used to help the logic below #}
+                        var trSection = interest.closest('tr');
+
+                    {#logic for this code to hide interests found in the list that includes interest name https://stackoverflow.com/questions/51568383/style-display-none-works-in-else-but-not-in-if#}
                         if (interestTag.includes(searchValue)) {
-                            parentRow.style.display = '';
+                            trSection.style.display = '';
                         } else {
-                            parentRow.style.display = 'none';
+                            trSection.style.display = 'none';
                         }
                     });
                 });
@@ -112,25 +112,6 @@
                                         <option value=5> This Year </option>
                                     </select>
                                 </li>
-                                <!-- <li class="p-1">
-                                    <p> Additional Interests: </p>
-                                    <div class="form-check" style="overflow-y: auto; height: 150px;">
-                                        <table>
-                                            <tbody id="interests-table">
-                                                {% for interest in interests %}
-                                                <tr>
-                                                    <td>
-                                                        <label class="form-check-label">
-                                                            <input type="checkbox" class="form-check-input" name="selected_interests" value="{{ interest.tag }}">
-                                                            {{ interest.tag }}
-                                                        </label>
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </li> -->
                                 <li style="padding-top: 5%;"> 
                                     <button type="submit" class="btn btn-primary m-1"> Filter </button>
                                     <a href="{% url 'clearfilters' %}" style="padding-left: 2%;"> 

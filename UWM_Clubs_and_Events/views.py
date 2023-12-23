@@ -185,7 +185,7 @@ class CreateAccount(View):
 
         for tags in interests:
             try:
-                value = user_util.User_Util.set_student_interest(email=email, interest=tags)
+                value = user_util.User_Util.set_user_interest(email=email, interest=tags)
             except Student.DoesNotExist:
                 return render(request, "createaccount.html",
                               {"message": "student does not exists", "interests": search, "fName": firstName,
@@ -228,7 +228,6 @@ class EditAccount(View):
         current_user = user_util.User_Util.get_user(email=request.session['user'])
         userInOrgs = MembersIn.objects.filter(user__email__exact=current_user.email)
 
-
         student = user_util.User_Util.get_student(current_user.email)
         userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
@@ -237,7 +236,6 @@ class EditAccount(View):
 
         if student:
             formatted_enroll, formatted_graddate = user_util.User_Util.get_grad_dates(student)
-
 
         return render(request, "editaccount.html",
                       {"User": current_user, "Stu": student, "MemsInOrg": userInOrgs, "usermajors": userMaj,
@@ -257,7 +255,6 @@ class EditAccount(View):
         student = user_util.User_Util.get_student(current_user.email)
         userMaj = StudentMajor.objects.filter(student__user__email__exact=current_user.email)  ##student__user__email
         userint = StudentInterest.objects.filter(student__user__email=current_user.email)
-
 
         firstName = request.POST.get("firstname")
         lastName = request.POST.get("lastname")
@@ -414,17 +411,6 @@ class CreateOrganization(View):
             return render(request, "createorganization.html",
                           {"error_message": organization, "user": current_user, "point_of_contacts": point_of_contacts})
 
-        # newOrg = Organization.objects.create(
-        #     user=contactuser,
-        #     name=orgname,
-        #     point_of_contact=contactuser.email,
-        #     membersCount=membersCount,
-        #     description=description
-        # )
-        #
-        # newOrg.save()
-        # create a new search tag for the organization if it doesnt exist
-
         return render(request, "createorganization.html", {"success_message": "Organization Successfully created"})
 
 
@@ -486,16 +472,11 @@ class CreateEvent(View):
         time_published = datetime.now()
         photo = request.FILES.get('photo')
         current_user = user_util.User_Util.get_user(email=request.session['user'])
-        orgs = Organization.objects.filter(point_of_contact__exact=current_user.email)
+        orgs = Organization.objects.filter(user__exact=current_user)
         search = request.GET.get('search-input', '')
         filtered_interests = Interest.objects.filter(tag__icontains=search)
 
-        try:
-            selected_org = Organization.objects.get(name=org_name)
-        except Organization.DoesNotExist:
-            return render(request, "createevent.html",
-                          {"interests": filtered_interests, "orgs": orgs, "user": current_user,
-                           "error_message": "Selected organization does not exist"})
+
 
         addr = request.POST.get('loc_addr')
         city = request.POST.get('loc_city')
@@ -507,6 +488,14 @@ class CreateEvent(View):
                           {'name': name, 'loc_addr': addr, 'loc_zip': zip, "interests": filtered_interests,
                            "description": description, "orgs": orgs, "user": current_user,
                            "time": time_happening, "error_message": addr_check})
+
+        try:
+            selected_org = Organization.objects.get(name=org_name)
+        except Organization.DoesNotExist:
+            return render(request, "createevent.html",
+                          {'name': name, 'loc_addr': addr, 'loc_zip': zip, "interests": filtered_interests,
+                           "description": description,"time": time_happening, "orgs": orgs, "user": current_user,
+                           "error_message": "Selected organization does not exist"})
 
         city_state = [part.strip() for part in city.split(',')]
         city_name = city_state[0]

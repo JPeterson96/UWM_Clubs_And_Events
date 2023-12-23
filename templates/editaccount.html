@@ -14,30 +14,28 @@
         }
     </style>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Get the interests elements
-            var interests = document.querySelectorAll('input[name="interesttoadd"]');
+      <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var interests = document.querySelectorAll('input[name="selected_interests"]');
 
-            // Get the search input element
-            var searchInput = document.getElementById('search-input');
+                var searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', function () {
+                    var searchValue = searchInput.value.toLowerCase();
 
+                    interests.forEach(function (interest) {
+                        var interestTag = interest.value.toLowerCase();
+                        {# used to help the logic below #}
+                        var trSection = interest.closest('tr');
 
-            searchInput.addEventListener('input', function() {
-                var searchValue = searchInput.value.toLowerCase();
-
-                interests.forEach(function(interest) {
-                    var interestTag = interest.value.toLowerCase();
-                    var parentRow = interest.closest('tr');
-
-                    if (interestTag.includes(searchValue)) {
-                        parentRow.style.display = '';
-                    } else {
-                        parentRow.style.display = 'none';
-                    }
+                    {#logic for this code to hide interests found in the list that includes interest name https://stackoverflow.com/questions/51568383/style-display-none-works-in-else-but-not-in-if#}
+                        if (interestTag.includes(searchValue)) {
+                            trSection.style.display = '';
+                        } else {
+                            trSection.style.display = 'none';
+                        }
+                    });
                 });
             });
-        });
 
         function showPassword() {
             var x = document.getElementById("password");
@@ -51,7 +49,6 @@
     </script>
 </head>
 <body>
-  <!--Nav bar-->
     <nav class="navbar navbar-expand-lg bg-warning navbar-dark fixed-top py-3">
         <div class="container-fluid">
             <a href="{% url 'homepage' %}" class="navbar-brand text-dark" >UWM Clubs and Events </a>
